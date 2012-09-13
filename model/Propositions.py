@@ -66,7 +66,7 @@ class Implication(Proposition):
         else: self.value = not antecedent.value or consequent.value
         self.symbol = (antecedent, 'implies', consequent)
 
-class Biimplication(Proposition):
-
-class ExclusiveOr(Proposition):
+#class Biimplication(Proposition):
+#
+#class ExclusiveOr(Proposition):
         
