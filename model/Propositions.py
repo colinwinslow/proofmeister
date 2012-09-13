@@ -3,7 +3,7 @@ Created on Sep 12, 2012
 
 @author: colinwinslow
 '''
-from collections import set
+
 
 class Proposition():
     
@@ -18,10 +18,23 @@ class Proposition():
         return self.symbol
     
     def getPlainText(self):
-        return self.symbol
+        return self.getSymbols()
     
     def getValue(self):
         return self.value
+    
+    def getSymbols(self):
+        if type(self.symbol) is str:
+            return self.symbol
+        else:
+            output = []
+            for i in self.symbol:
+                try:
+                    output.append(i.getSymbols())
+                except:
+                    output.append(i)
+            return tuple(output)
+                
         
     
         
