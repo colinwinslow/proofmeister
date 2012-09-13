@@ -24,6 +24,11 @@ class Test(unittest.TestCase):
         assert p == p2
         assert q != p2
         assert qT != pT
+        
+    def testNegation(self):
+        p = Proposition('p')
+        notp = Negation(p)
+        assert notp.getPlainText() == ('not','p')
 
 
     def testConjunctionEquivalence(self):
@@ -55,17 +60,26 @@ class Test(unittest.TestCase):
         
         idem = Idempotence()
         assert idem.getSucessors(pandp)[0].getPlainText() == ('p','implies','q')
-    
-    def testAssociativityConjunction(self):
+        
+    def testDoubleNegative(self):
         p = Proposition('p')
-        q = Proposition('q')
-        r = Proposition('r')
-        
-        pandq = Conjunction(p,q)
-        pandqANDr = Conjunction(pandq,r)
-        
-        assoc = Associativity()
-        print assoc.getSucessors(pandqANDr)
+        notp = Negation(p)
+        doubleNeg = Negation(notp)
+        doubleNegativity = DoubleNegativity()
+        assert doubleNegativity.getSucessors(doubleNeg) == p
+            
+         
+         
+#    def testAssociativityConjunction(self):
+#        p = Proposition('p')
+#        q = Proposition('q')
+#        r = Proposition('r')
+#        
+#        pandq = Conjunction(p,q)
+#        pandqANDr = Conjunction(pandq,r)
+#        
+#        assoc = Associativity()
+#        print assoc.getSucessors(pandqANDr)
         
 
 if __name__ == "__main__":

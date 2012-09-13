@@ -11,9 +11,6 @@ class Proposition():
         self.symbol = (symbol)
         self.value = value
         
-    def __str__(self):
-        return self.getPlainText()
-        
     def __eq__(self,other):
         return self.symbol==other.symbol
     
@@ -49,11 +46,11 @@ class Proposition():
         
 class Negation(Proposition):
     
-    def __init__(self,parent):
-        if parent.value==None:
+    def __init__(self,prop):
+        if prop.value==None:
             self.value = None
-        else: self.value = not parent.value
-        self.symbol = (NegOp(), parent.symbol)
+        else: self.value = not prop.value
+        self.symbol = (NegOp(), prop)
             
         
     

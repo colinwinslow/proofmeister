@@ -19,6 +19,15 @@ class Idempotence():
         if prop.operands[0]==prop.operands[1]:
             return (prop.operands[0],'Idempotent Law')
         
+class DoubleNegativity():
+    
+    def __init__(self):
+        self.appliesTo = ('Negation')
+    
+    def getSucessors(self,prop):
+        if isinstance(prop.symbol[1],Negation):
+            return prop.symbol[1].symbol[1]
+        
 
 
 #class Associativity():
