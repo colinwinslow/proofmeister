@@ -5,7 +5,6 @@ Created on Sep 12, 2012
 '''
 from collections import set
 
-
 class Proposition():
     
     def __init__(self,symbol,value=None):
