@@ -3,7 +3,7 @@ Created on Sep 12, 2012
 
 @author: colinwinslow
 '''
-
+from LogicalOperators import *
 
 class Proposition():
     
@@ -13,6 +13,8 @@ class Proposition():
 
     def getLaTeX(self):
         return self.symbol
+                
+                
     
     def getMathML(self):
         return self.symbol
@@ -29,10 +31,7 @@ class Proposition():
         else:
             output = []
             for i in self.symbol:
-                try:
-                    output.append(i.getSymbols())
-                except:
-                    output.append(i)
+                output.append(i.getSymbols())
             return tuple(output)
                 
         
@@ -55,7 +54,7 @@ class Conjunction(Proposition):
         if prop1.value==None or prop2.value==None:
             self.value = None
         else: self.value = prop1.value and prop2.value
-        self.symbol = (prop1, 'and', prop2)
+        self.symbol = (prop1, AndOp(), prop2)
     
     #this one will need an equivalence method so A&B == B&A
     
@@ -66,7 +65,7 @@ class Disjunction(Proposition):
         if prop1.value==None or prop2.value==None:
             self.value = None
         else: self.value = prop1.value or prop2.value
-        self.symbol = (prop1, 'or', prop2)
+        self.symbol = (prop1, OrOp(), prop2)
         
     #this one will need an equivalence method so AvB == BvA
     
@@ -77,7 +76,7 @@ class Implication(Proposition):
         if antecedent.value==None or consequent.value==None:
             self.value = None
         else: self.value = not antecedent.value or consequent.value
-        self.symbol = (antecedent, 'implies', consequent)
+        self.symbol = (antecedent, ImpOp(), consequent)
 
 #class Biimplication(Proposition):
 #
