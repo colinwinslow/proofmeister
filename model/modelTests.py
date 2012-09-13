@@ -10,7 +10,7 @@ from Propositions import *
 class Test(unittest.TestCase):
 
 
-    def testConjunction(self):
+    def testConjunctionEquivalence(self):
         p = Proposition('p',True)
         q = Proposition('q',False)
         pandq = Conjunction(p,q)
