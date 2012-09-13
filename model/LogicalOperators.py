@@ -10,7 +10,7 @@ class AndOp():
         return '\\wedge'
                 
     def getSymbols(self):
-        return 'and '       
+        return 'and'       
     
     def getMathML(self):
         return 'mathml AND'
@@ -27,7 +27,7 @@ class OrOp():
         return '\\vee'
                 
     def getSymbols(self):
-        return 'or '       
+        return 'or'       
     
     def getMathML(self):
         return 'mathml OR'
@@ -36,7 +36,7 @@ class OrOp():
         return self.getSymbols()
     
     def __str__(self):
-        return "v "
+        return "v"
     
 class ImpOp():
     
@@ -44,7 +44,7 @@ class ImpOp():
         return '\\rightarrow'
                 
     def getSymbols(self):
-        return 'implies '       
+        return 'implies'       
     
     def getMathML(self):
         return 'mathml IMPLIES'
