@@ -54,3 +54,38 @@ class ImpOp():
     
     def __str__(self):
         return "->"
+    
+class XorOp():
+    
+    def getLaTeX(self):
+        return '\\oplus'
+                
+    def getSymbols(self):
+        return 'xor'       
+    
+    def getMathML(self):
+        return 'mathml XOR'
+    
+    def getPlainText(self):
+        return self.getSymbols()
+    
+    def __str__(self):
+        return "XOR"
+
+class BimpOp():
+    
+    def getLaTeX(self):
+        return '\\leftrightarrow'
+                
+    def getSymbols(self):
+        return 'iff'       
+    
+    def getMathML(self):
+        return 'mathml iff'
+    
+    def getPlainText(self):
+        return self.getSymbols()
+    
+    def __str__(self):
+        return "iff"
+    
