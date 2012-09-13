@@ -10,6 +10,18 @@ class Proposition():
     def __init__(self,symbol,value=None):
         self.symbol = (symbol)
         self.value = value
+        
+    def __str__(self):
+        return self.getPlainText()
+        
+    def __eq__(self,other):
+        return self.symbol==other.symbol
+    
+    def __ne__(self,other):
+        return self.symbol!=other.symbol
+    
+    def __hash__(self):
+        return hash(self.symbol)
 
     def getLaTeX(self):
         return self.symbol
@@ -41,47 +53,46 @@ class Negation(Proposition):
         if parent.value==None:
             self.value = None
         else: self.value = not parent.value
-        self.symbol = ('~', parent.symbol)
+        self.symbol = (NegOp(), parent.symbol)
             
         
     
 class Conjunction(Proposition):
     
     def __init__(self,prop1,prop2):
-        print prop1,prop2
-        self.conjunctees = frozenset((prop1,prop2))
+        self.operands = (prop1,prop2)
         if prop1.value==None or prop2.value==None:
             self.value = None
         else: self.value = prop1.value and prop2.value
         self.symbol = (prop1, AndOp(), prop2)
     
     def __eq__(self,other):
-        return self.conjunctees == other.conjunctees
+        return frozenset(self.operands) == frozenset(other.operands)
     
     def __ne__(self,other):
-        return self.conjunctees != other.conjunctees
+        return frozenset(self.operands) != frozenset(other.operands)
     
     def __hash__(self):
-        return hash((self.conjunctees,'Conjunction'))
+        return hash((frozenset(self.operands),'Conjunction'))
         
     
 class Disjunction(Proposition):
     
     def __init__(self,prop1,prop2):
-        self.disjunctees = frozenset((prop1,prop2))
+        self.operands = (prop1,prop2)
         if prop1.value==None or prop2.value==None:
             self.value = None
         else: self.value = prop1.value or prop2.value
         self.symbol = (prop1, OrOp(), prop2)
         
     def __eq__(self,other):
-        return self.disjunctees == other.disjunctees
+        return frozenset(self.operands) == frozenset(other.operands)
     
     def __ne__(self,other):
-        return self.disjunctees != other.disjunctees
+        return frozenset(self.operands) != frozenset(other.operands)
     
     def __hash__(self):
-        return hash((self.disjunctees,"Disjunction"))
+        return hash((frozenset(self.operands),"Disjunction"))
     
 class Implication(Proposition):
     def __init__(self, antecedent, consequent):
@@ -100,6 +111,8 @@ class Implication(Proposition):
     
     def __hash__(self):
         return hash((self.antecedent,self.consequent,"Implication"))
+    def __str__(self):
+        return self.getPlainText()
 
 #class Biimplication(Proposition):
 #

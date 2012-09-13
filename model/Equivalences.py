@@ -4,22 +4,41 @@ Created on Sep 13, 2012
 @author: colinwinslow
 '''
 
-class EquivalenceRule():
-    def __init__(self,cases):
-        self.cases = cases
+from Propositions import *
+
+
+class Idempotence():
+    
+    def __init__(self):
+        self.appliesTo = ('Conjunction','Disjunction')
         
-
-
-
-class Idempotence(EquivalenceRule):
-    
-    super.__init__(('And','Or'))
-    
+    def getSucessors(self,prop):
+        return self.simplify(prop)
+        
     def simplify(self,prop):
-        if prop.conjunctees[0]==prop.conjunctees[1]:
-            return (prop.conjunctees[0],'Idempotent Law')
-            
+        if prop.operands[0]==prop.operands[1]:
+            return (prop.operands[0],'Idempotent Law')
         
+
+
+#class Associativity():
+#    
+#    def __init__(self):
+#        self.appliesTo = ('Conjunction','Disjunction')
+#        
+#    def getSucessors(self,prop):
+#        if isinstance(prop.operands[0],Conjunction) or isinstance(prop.operands[1],Conjunction):
+#            conj = self.conjunctionAssociate(prop)
+#        if isinstance(prop.operands[0],Disjunction) or isinstance(prop.operands[1],Disjunction):
+#            disj = self.disjunctionAssociate(prop)
+#        return conj+disj
+#            
+#        
+#    def conjunctionAssociate(self,prop):
+#        output = []
+#        print prop.getPlainText()
+#        for p in prop.operands:
+#            if 
+#            return (prop.operands[0],'Associative Law')
         
-    def expand(self,prop):
     

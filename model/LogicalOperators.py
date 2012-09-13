@@ -4,6 +4,23 @@ Created on Sep 13, 2012
 @author: colinwinslow
 '''
 
+class NegOp():
+    def getLaTeX(self):
+        return '\\neg'
+                
+    def getSymbols(self):
+        return 'not'       
+    
+    def getMathML(self):
+        return 'mathml NEGATION'
+    
+    def getPlainText(self):
+        return self.getSymbols()
+    
+    def __str__(self):
+        return "~"
+    
+
 class AndOp():
     
     def getLaTeX(self):
