@@ -3,23 +3,20 @@ Created on Sep 13, 2012
 
 @author: colinwinslow
 '''
+import unittest
 from Propositions import *
 
 
+class Test(unittest.TestCase):
 
-p = Proposition('p',True)
-q = Proposition('q',False)
 
-aandb = Conjunction(p,q)
-banda = Conjunction(q,p)
+    def testConjunction(self):
+        p = Proposition('p',True)
+        q = Proposition('q',False)
+        pandq = Conjunction(p,q)
+        qandp = Conjunction(q,p)
+        assert pandq == qandp
 
-print "b&a == a&b", banda == aandb
-
-pimpliesq = Implication(p,q)
-qimpliesp = Implication(q,p)
-pimpliesqagain = Implication(p,q)
-
-bimp = Conjunction(pimpliesq,qimpliesp)
-
-print bimp.getSymbols()
-print pimpliesq == pimpliesqagain
+if __name__ == "__main__":
+    #import sys;sys.argv = ['', 'Test.testName']
+    unittest.main()
