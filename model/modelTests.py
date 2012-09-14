@@ -28,7 +28,9 @@ class Test(unittest.TestCase):
     def testNegation(self):
         p = Proposition('p')
         notp = Negation(p)
-        assert notp.getPlainText() == ('not','p')
+        pt = str(notp)
+        assert str(notp) == "~p"
+        
 
 
     def testConjunctionEquivalence(self):
@@ -68,7 +70,8 @@ class Test(unittest.TestCase):
         
         
         idem = Idempotence()
-        assert idem.getSuccessors(pandp)[0].getPlainText() == ('p','implies','q')
+        print str(idem.getSuccessors(pandp)[0])
+        assert str(idem.getSuccessors(pandp)[0]) == '(p -> q)'
         
 #    def testDoubleNegative(self):
 #        p = Proposition('p')

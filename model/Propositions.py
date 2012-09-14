@@ -17,6 +17,7 @@ class Proposition(object):
     def __init__(self,symbol,value=None):
         self.symbol = (symbol)
         self.value = value
+        self.operator = None
         
     def __eq__(self,other):
         return self.symbol==other.symbol
@@ -33,20 +34,20 @@ class Proposition(object):
     def getMathML(self):
         return self.symbol
     
-    def getPlainText(self):
-        return self.getSymbols()
-    
     def getValue(self):
         return self.value
     
     def getSymbols(self):
-        if type(self.symbol) is str:
+        if self.operator==None:
             return self.symbol
         else:
+            print 'prop getsymbols'
             output = []
             for i in self.symbol:
                 output.append(i.getSymbols())
             return tuple(output)
+    def __str__(self):
+        return str(self.symbol)
                 
         
           
@@ -55,7 +56,7 @@ class Negation(Proposition):
     def __new__(cls,prop):
         '''automatically replaces would-be double negatives with positivies'''
         if isinstance(prop,Negation):
-            return prop.symbol[1]
+            return prop.symbol
         else:
             return super(Negation, cls).__new__(cls)
     
@@ -63,16 +64,23 @@ class Negation(Proposition):
         if prop.value==None:
             self.value = None
         else: self.value = not prop.value
-        self.symbol = (NegOp(), prop)
+        self.symbol = prop
+        self.operator = NegOp()
     
     def __eq__(self,other):
-        return self.symbol[1] == other.symbol[1]
+        return self.symbol == other.symbol
     
     def __ne__(self,other):
-        return self.symbol[1] != other.symbol[1]
+        return self.symbol != other.symbol
     
     def __hash__(self):
-        return hash((self.symbol[1],'Negation'))
+        return hash((self.symbol,'Negation'))
+    
+    def getSymbols(self):
+        return (NegOp(),self.symbol)
+    
+    def __str__(self):
+        return str(self.operator)+str(self.symbol)
         
             
         
@@ -87,6 +95,7 @@ class Conjunction(Proposition):
             self.value = None
         else: self.value = prop1.value and prop2.value
         self.symbol = (prop1, AndOp(), prop2)
+        self.operator = AndOp()
     
     def __eq__(self,other):
         return frozenset(self.operands) == frozenset(other.operands)
@@ -96,6 +105,9 @@ class Conjunction(Proposition):
     
     def __hash__(self):
         return hash((frozenset(self.operands),'Conjunction'))
+    
+    def __str__(self):
+        return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
         
     
 class Disjunction(Proposition):
@@ -108,6 +120,7 @@ class Disjunction(Proposition):
             self.value = None
         else: self.value = prop1.value or prop2.value
         self.symbol = (prop1, OrOp(), prop2)
+        self.operator = OrOp()
         
     def __eq__(self,other):
         return frozenset(self.operands) == frozenset(other.operands)
@@ -118,6 +131,9 @@ class Disjunction(Proposition):
     def __hash__(self):
         return hash((frozenset(self.operands),"Disjunction"))
     
+    def __str__(self):
+        return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
+    
 class Implication(Proposition):
     def __init__(self, antecedent, consequent):
         self.antecedent = antecedent
@@ -126,6 +142,7 @@ class Implication(Proposition):
             self.value = None
         else: self.value = not antecedent.value or consequent.value
         self.symbol = (antecedent, ImpOp(), consequent)
+        self.operator = ImpOp()
         
     def __eq__(self,other):
         return self.antecedent == other.antecedent and self.consequent == other.consequent
@@ -135,8 +152,9 @@ class Implication(Proposition):
     
     def __hash__(self):
         return hash((self.antecedent,self.consequent,"Implication"))
+    
     def __str__(self):
-        return self.getPlainText()
+        return '('+str(self.antecedent)+' '+str(self.operator)+' '+str(self.consequent)+')'
 
 #class Biimplication(Proposition):
 #

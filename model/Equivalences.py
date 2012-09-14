@@ -29,22 +29,21 @@ class DoubleNegativity():
     
     def getSuccessors(self,prop):
         if isinstance(prop,Negation):
-            print prop.symbol.getPlainText()
-            if isinstance(prop.symbol[1],Negation):
-                return prop.symbol[1].symbol[1]
+            if isinstance(prop.symbol,Negation):
+                return prop.symbol.symbol
         
 class DeMorgansSplit():
     def __init__(self):
         self.appliesTo = ('Negation')
     
     def getSuccessors(self,prop):
-        if isinstance(prop.symbol[1], Conjunction):
-            nota = Negation(prop.symbol[1].a)
-            notb = Negation(prop.symbol[1].b)
+        if isinstance(prop.symbol, Conjunction):
+            nota = Negation(prop.symbol.a)
+            notb = Negation(prop.symbol.b)
             return Disjunction(nota,notb)
-        elif isinstance(prop.symbol[1], Disjunction):
-            nota = Negation(prop.symbol[1].a)
-            notb = Negation(prop.symbol[1].b)
+        elif isinstance(prop.symbol, Disjunction):
+            nota = Negation(prop.symbol.a)
+            notb = Negation(prop.symbol.b)
             return Conjunction(nota,notb)
         
 class DeMorgansJoin():
@@ -96,7 +95,6 @@ class Contraposition():
 #        
 #    def conjunctionAssociate(self,prop):
 #        output = []
-#        print prop.getPlainText()
 #        for p in prop.operands:
 #            if 
 #            return (prop.a,'Associative Law')
