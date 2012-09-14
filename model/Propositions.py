@@ -81,6 +81,8 @@ class Conjunction(Proposition):
     
     def __init__(self,prop1,prop2):
         self.operands = (prop1,prop2)
+        self.a = prop1
+        self.b = prop2
         if prop1.value==None or prop2.value==None:
             self.value = None
         else: self.value = prop1.value and prop2.value
@@ -99,6 +101,8 @@ class Conjunction(Proposition):
 class Disjunction(Proposition):
     
     def __init__(self,prop1,prop2):
+        self.a = prop1
+        self.b = prop2
         self.operands = (prop1,prop2)
         if prop1.value==None or prop2.value==None:
             self.value = None
