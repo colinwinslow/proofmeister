@@ -97,6 +97,16 @@ class Test(unittest.TestCase):
         dms = DeMorgansSplit()
         assert dms.getSucessors(negatedDisj) == Conjunction(notp,notq)
         
+    def testDeMorgansConjunctionJoin(self):
+        p = Proposition('p')
+        q = Proposition('q')
+        notp = Negation(p)
+        notq = Negation(q)
+        pandq = Conjunction(p,q)
+        notpandnotq = Conjunction(notp,notq)
+        dmj = DeMorgansJoin()
+        print dmj.getSuccessors(notpandnotq).getPlainText()
+        
     def testSucessorMechanism(self):
         successorFuncs = [Idempotence(),DoubleNegativity(),DeMorgansSplit()]
         p = Proposition('p')

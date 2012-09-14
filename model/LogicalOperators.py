@@ -1,6 +1,8 @@
 '''
 Created on Sep 13, 2012
-
+These exist not to do actual operations, but to be included in-line with actual
+proposition objects so that it'll be easier to generate LaTeX (or MathML or 
+whatever) of the proof from the graph trace. 
 @author: colinwinslow
 '''
 

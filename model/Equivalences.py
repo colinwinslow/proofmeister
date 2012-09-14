@@ -46,6 +46,18 @@ class DeMorgansSplit():
             notb = Negation(prop.symbol[1].operands[1])
             return Conjunction(nota,notb)
         
+class DeMorgansJoin():
+    def __init__(self):
+        self.appliesTo = ('Conjunction','Disjunction')
+    def getSuccessors(self,prop):
+        print prop
+        if isinstance(prop,Conjunction):
+            output = Negation(Disjunction(Negation(prop.operands[0]),Negation(prop.operands[1])))
+        elif isinstance(prop,Disjunction):
+            output = Negation(Conjunction(Negation(prop.operands[0]),Negation(prop.operands[1])))
+        else: output = []
+        return output        
+        
         
 
 
