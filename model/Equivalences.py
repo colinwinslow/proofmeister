@@ -19,8 +19,8 @@ class Idempotence():
             return self.simplify(prop)
         
     def simplify(self,prop):
-        if prop.operands[0]==prop.operands[1]:
-            return (prop.operands[0],'Idempotent Law')
+        if prop.a==prop.b:
+            return (prop.a,'Idempotent Law')
         
 class DoubleNegativity():
     
@@ -39,12 +39,12 @@ class DeMorgansSplit():
     
     def getSucessors(self,prop):
         if isinstance(prop.symbol[1], Conjunction):
-            nota = Negation(prop.symbol[1].operands[0])
-            notb = Negation(prop.symbol[1].operands[1])
+            nota = Negation(prop.symbol[1].a)
+            notb = Negation(prop.symbol[1].b)
             return Disjunction(nota,notb)
         elif isinstance(prop.symbol[1], Disjunction):
-            nota = Negation(prop.symbol[1].operands[0])
-            notb = Negation(prop.symbol[1].operands[1])
+            nota = Negation(prop.symbol[1].a)
+            notb = Negation(prop.symbol[1].b)
             return Conjunction(nota,notb)
         
 class DeMorgansJoin():
@@ -52,9 +52,9 @@ class DeMorgansJoin():
         self.appliesTo = ('Conjunction','Disjunction')
     def getSuccessors(self,prop):
         if isinstance(prop,Conjunction):
-            output = Negation(Disjunction(Negation(prop.operands[0]),Negation(prop.operands[1])))
+            output = Negation(Disjunction(Negation(prop.a),Negation(prop.b)))
         elif isinstance(prop,Disjunction):
-            output = Negation(Conjunction(Negation(prop.operands[0]),Negation(prop.operands[1])))
+            output = Negation(Conjunction(Negation(prop.a),Negation(prop.b)))
         else: output = []
         return output 
     
@@ -64,7 +64,7 @@ class ImplicationLaw():
         
     def getSuccessors(self,prop):
         if isinstance(prop,Disjunction):
-            return Implication(Negation(prop.operands[0]),prop.operands[1])
+            return Implication(Negation(prop.a),prop.b)
         if isinstance(prop,Implication):
             return Disjunction(Negation(prop.antecedent),prop.consequent)
         
@@ -87,9 +87,9 @@ class Contraposition():
 #        self.appliesTo = ('Conjunction','Disjunction')
 #        
 #    def getSucessors(self,prop):
-#        if isinstance(prop.operands[0],Conjunction) or isinstance(prop.operands[1],Conjunction):
+#        if isinstance(prop.a,Conjunction) or isinstance(prop.b,Conjunction):
 #            conj = self.conjunctionAssociate(prop)
-#        if isinstance(prop.operands[0],Disjunction) or isinstance(prop.operands[1],Disjunction):
+#        if isinstance(prop.a,Disjunction) or isinstance(prop.b,Disjunction):
 #            disj = self.disjunctionAssociate(prop)
 #        return conj+disj
 #            
@@ -99,4 +99,4 @@ class Contraposition():
 #        print prop.getPlainText()
 #        for p in prop.operands:
 #            if 
-#            return (prop.operands[0],'Associative Law')
+#            return (prop.a,'Associative Law')
