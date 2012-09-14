@@ -1,5 +1,11 @@
 '''
 Created on Sep 12, 2012
+This is the class heirarchy. Everything inherits from Proposition. Pay close
+attention to __eq__ and __hash__ and such as these need to be equivalent in 
+many cases.
+
+Values are allow propositions to be assigned truth values, but this isn't 
+in use for the time being.
 
 @author: colinwinslow
 '''
@@ -51,6 +57,16 @@ class Negation(Proposition):
             self.value = None
         else: self.value = not prop.value
         self.symbol = (NegOp(), prop)
+    
+    def __eq__(self,other):
+        return self.symbol[1] == other.symbol[1]
+    
+    def __ne__(self,other):
+        return self.symbol[1] != other.symbol[1]
+    
+    def __hash__(self):
+        return hash((self.symbol[1],'Negation'))
+        
             
         
     

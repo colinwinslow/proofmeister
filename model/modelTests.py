@@ -38,6 +38,15 @@ class Test(unittest.TestCase):
         qandp = Conjunction(q,p)
         assert pandq == qandp
         
+    def testDisjunctionEquivalence(self):
+        p = Proposition('p',True)
+        q = Proposition('q',False)
+        p2 = Proposition('p',False)
+        q2 = Proposition('q',True)
+        porq = Disjunction(p,q)
+        qorp = Disjunction(p2,q2)
+        assert porq == qorp
+        
     def testConjunctionNonEquivalence(self):
         p = Proposition('p',True)
         q = Proposition('q',False)
@@ -67,6 +76,44 @@ class Test(unittest.TestCase):
         doubleNeg = Negation(notp)
         doubleNegativity = DoubleNegativity()
         assert doubleNegativity.getSucessors(doubleNeg) == p
+        
+    def testDeMorganConjunctionSplit(self):
+        p = Proposition('p')
+        q = Proposition('q')
+        notp = Negation(p)
+        notq = Negation(q)
+        pandq = Conjunction(p,q)
+        negatedConj = Negation(pandq)
+        dms = DeMorgansSplit()
+        assert dms.getSucessors(negatedConj) == Disjunction(notp,notq)
+        
+    def testDeMorganDisjunctionSplit(self):
+        p = Proposition('p')
+        q = Proposition('q')
+        notp = Negation(p)
+        notq = Negation(q)
+        porq = Disjunction(p,q)
+        negatedDisj = Negation(porq)
+        dms = DeMorgansSplit()
+        assert dms.getSucessors(negatedDisj) == Conjunction(notp,notq)
+        
+    def testSucessorMechanism(self):
+        successorFuncs = [Idempotence(),DoubleNegativity(),DeMorgansSplit()]
+        p = Proposition('p')
+        q = Proposition('q')
+        notp = Negation(p)
+        notq = Negation(q)
+        porq = Disjunction(p,q)
+        negatedDisj = Negation(porq)
+        doubleneg= Negation(negatedDisj)
+        
+        for f in successorFuncs:
+            print f.getSucessors(doubleneg)
+        
+        LookinGood = True
+        
+        assert LookinGood
+            
             
          
          

@@ -1,6 +1,8 @@
 '''
 Created on Sep 13, 2012
-
+These are objects that all have a getSucessors method that checks a given propisition
+to see if a particular law or equivalence applies, and returns the result of that
+application if it can be. These will be the successors in the graph search. 
 @author: colinwinslow
 '''
 
@@ -13,7 +15,8 @@ class Idempotence():
         self.appliesTo = ('Conjunction','Disjunction')
         
     def getSucessors(self,prop):
-        return self.simplify(prop)
+        if isinstance(prop,Conjunction) or isinstance(prop,Disjunction):
+            return self.simplify(prop)
         
     def simplify(self,prop):
         if prop.operands[0]==prop.operands[1]:
@@ -25,8 +28,24 @@ class DoubleNegativity():
         self.appliesTo = ('Negation')
     
     def getSucessors(self,prop):
-        if isinstance(prop.symbol[1],Negation):
-            return prop.symbol[1].symbol[1]
+        if isinstance(prop,Negation):
+            if isinstance(prop.symbol[1],Negation):
+                return prop.symbol[1].symbol[1]
+        
+class DeMorgansSplit():
+    def __init__(self):
+        self.appliesTo = ('Negation')
+    
+    def getSucessors(self,prop):
+        if isinstance(prop.symbol[1], Conjunction):
+            nota = Negation(prop.symbol[1].operands[0])
+            notb = Negation(prop.symbol[1].operands[1])
+            return Disjunction(nota,notb)
+        elif isinstance(prop.symbol[1], Disjunction):
+            nota = Negation(prop.symbol[1].operands[0])
+            notb = Negation(prop.symbol[1].operands[1])
+            return Conjunction(nota,notb)
+        
         
 
 
@@ -49,5 +68,3 @@ class DoubleNegativity():
 #        for p in prop.operands:
 #            if 
 #            return (prop.operands[0],'Associative Law')
-        
-    
