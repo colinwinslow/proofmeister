@@ -68,14 +68,14 @@ class Test(unittest.TestCase):
         
         
         idem = Idempotence()
-        assert idem.getSucessors(pandp)[0].getPlainText() == ('p','implies','q')
+        assert idem.getSuccessors(pandp)[0].getPlainText() == ('p','implies','q')
         
 #    def testDoubleNegative(self):
 #        p = Proposition('p')
 #        notp = Negation(p)
 #        doubleNeg = Negation(notp)
 #        doubleNegativity = DoubleNegativity()
-#        assert doubleNegativity.getSucessors(doubleNeg) == p
+#        assert doubleNegativity.getSuccessors(doubleNeg) == p
         
     def testDeMorganConjunctionSplit(self):
         p = Proposition('p')
@@ -85,7 +85,7 @@ class Test(unittest.TestCase):
         pandq = Conjunction(p,q)
         negatedConj = Negation(pandq)
         dms = DeMorgansSplit()
-        assert dms.getSucessors(negatedConj) == Disjunction(notp,notq)
+        assert dms.getSuccessors(negatedConj) == Disjunction(notp,notq)
         
     def testDeMorganDisjunctionSplit(self):
         p = Proposition('p')
@@ -95,7 +95,7 @@ class Test(unittest.TestCase):
         porq = Disjunction(p,q)
         negatedDisj = Negation(porq)
         dms = DeMorgansSplit()
-        assert dms.getSucessors(negatedDisj) == Conjunction(notp,notq)
+        assert dms.getSuccessors(negatedDisj) == Conjunction(notp,notq)
         
     def testDeMorgansConjunctionJoin(self):
         p = Proposition('p')
@@ -106,7 +106,7 @@ class Test(unittest.TestCase):
         negatedConj = Negation(pandq)
         dms = DeMorgansSplit()
         dmj = DeMorgansJoin()
-        assert dmj.getSuccessors(dms.getSucessors(negatedConj))== negatedConj
+        assert dmj.getSuccessors(dms.getSuccessors(negatedConj))== negatedConj
         
     def testImplicationLaw(self):
         p = Proposition('p')
@@ -128,7 +128,7 @@ class Test(unittest.TestCase):
         assert contra.getSuccessors(pimpliesq) == Implication(notp,notq)
         
     def testSucessorMechanism(self):
-        successorFuncs = [Idempotence(),DoubleNegativity(),DeMorgansSplit()]
+        successorFuncs = [Idempotence(),DoubleNegativity(),DeMorgansSplit(),DeMorgansJoin(),ImplicationLaw(),Contraposition()]
         p = Proposition('p')
         q = Proposition('q')
         notp = Negation(p)
@@ -136,7 +136,10 @@ class Test(unittest.TestCase):
         porq = Disjunction(p,q)
         negatedDisj = Negation(porq)
         
-        
+        for f in successorFuncs:
+            try:
+                print f.getSuccessors(porq).getPlainText()
+            except: print "nothin'"
         LookinGood = True
         
         assert LookinGood
@@ -153,7 +156,7 @@ class Test(unittest.TestCase):
 #        pandqANDr = Conjunction(pandq,r)
 #        
 #        assoc = Associativity()
-#        print assoc.getSucessors(pandqANDr)
+#        print assoc.getSuccessors(pandqANDr)
         
 
 if __name__ == "__main__":
