@@ -68,6 +68,16 @@ class ImplicationLaw():
         if isinstance(prop,Implication):
             return Disjunction(Negation(prop.antecedent),prop.consequent)
         
+class Contraposition():
+    def __init__(self):
+        self.appliesTo = ('Implication')
+        
+    def getSuccessors(self,prop):
+        if isinstance(prop,Implication):
+            return Implication(Negation(prop.antecedent),Negation(prop.consequent))
+        
+    
+        
         
 
 

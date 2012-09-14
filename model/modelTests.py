@@ -108,13 +108,24 @@ class Test(unittest.TestCase):
         dmj = DeMorgansJoin()
         assert dmj.getSuccessors(dms.getSucessors(negatedConj))== negatedConj
         
-    def testImplication(self):
+    def testImplicationLaw(self):
         p = Proposition('p')
         q = Proposition('q')
         pimpliesq = Implication(p,q)
         
         imp = ImplicationLaw()
         assert imp.getSuccessors(pimpliesq) == Disjunction(Negation(p),q)
+        
+    def testContraposition(self):
+        p = Proposition('p')
+        q = Proposition('q')
+        notp = Negation(p)
+        notq = Negation(q)
+        pimpliesq = Implication(p,q)
+        
+        contra = Contraposition()
+        
+        assert contra.getSuccessors(pimpliesq) == Implication(notp,notq)
         
     def testSucessorMechanism(self):
         successorFuncs = [Idempotence(),DoubleNegativity(),DeMorgansSplit()]
