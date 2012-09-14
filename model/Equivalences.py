@@ -29,6 +29,7 @@ class DoubleNegativity():
     
     def getSucessors(self,prop):
         if isinstance(prop,Negation):
+            print prop.symbol.getPlainText()
             if isinstance(prop.symbol[1],Negation):
                 return prop.symbol[1].symbol[1]
         
@@ -50,13 +51,22 @@ class DeMorgansJoin():
     def __init__(self):
         self.appliesTo = ('Conjunction','Disjunction')
     def getSuccessors(self,prop):
-        print prop
         if isinstance(prop,Conjunction):
             output = Negation(Disjunction(Negation(prop.operands[0]),Negation(prop.operands[1])))
         elif isinstance(prop,Disjunction):
             output = Negation(Conjunction(Negation(prop.operands[0]),Negation(prop.operands[1])))
         else: output = []
-        return output        
+        return output 
+    
+class ImplicationLaw(): 
+    def __init__(self):
+        self.appliesTo = ('Implication','Disjunction')
+        
+    def getSuccessors(self,prop):
+        if isinstance(prop,Disjunction):
+            return Implication(Negation(prop.operands[0]),prop.operands[1])
+        if isinstance(prop,Implication):
+            return Disjunction(Negation(prop.antecedent),prop.consequent)
         
         
 

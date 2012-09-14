@@ -11,7 +11,8 @@ in use for the time being.
 '''
 from LogicalOperators import *
 
-class Proposition():
+class Proposition(object):
+    
     
     def __init__(self,symbol,value=None):
         self.symbol = (symbol)
@@ -48,9 +49,15 @@ class Proposition():
             return tuple(output)
                 
         
-    
-        
+          
 class Negation(Proposition):
+    
+    def __new__(cls,prop):
+        '''automatically replaces would-be double negatives with positivies'''
+        if isinstance(prop,Negation):
+            return prop.symbol[1]
+        else:
+            return super(Negation, cls).__new__(cls)
     
     def __init__(self,prop):
         if prop.value==None:
