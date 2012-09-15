@@ -16,9 +16,6 @@ class NegOp():
     def getMathML(self):
         return 'mathml NEGATION'
     
-    def getPlainText(self):
-        return self.getSymbols()
-    
     def __str__(self):
         return "~"
     
@@ -34,9 +31,6 @@ class AndOp():
     def getMathML(self):
         return 'mathml AND'
     
-    def getPlainText(self):
-        return self.getSymbols()
-    
     def __str__(self):
         return "&"
     
@@ -50,9 +44,6 @@ class OrOp():
     
     def getMathML(self):
         return 'mathml OR'
-    
-    def getPlainText(self):
-        return self.getSymbols()
     
     def __str__(self):
         return "v"
@@ -68,9 +59,6 @@ class ImpOp():
     def getMathML(self):
         return 'mathml IMPLIES'
     
-    def getPlainText(self):
-        return self.getSymbols()
-    
     def __str__(self):
         return "->"
     
@@ -84,9 +72,6 @@ class XorOp():
     
     def getMathML(self):
         return 'mathml XOR'
-    
-    def getPlainText(self):
-        return self.getSymbols()
     
     def __str__(self):
         return "XOR"

@@ -137,12 +137,12 @@ class Test(unittest.TestCase):
         notp = Negation(p)
         notq = Negation(q)
         porq = Disjunction(p,q)
-        negatedDisj = Negation(porq)
+        notpornotq = Disjunction(notp,notq)
+        negatedDisj = Negation(notpornotq)
         
         for f in successorFuncs:
-            try:
-                print f.getSuccessors(porq).getPlainText()
-            except: print "nothin'"
+            print str(f.getSuccessors(negatedDisj))
+            
         LookinGood = True
         
         assert LookinGood

@@ -51,11 +51,9 @@ class DeMorgansJoin():
         self.appliesTo = ('Conjunction','Disjunction')
     def getSuccessors(self,prop):
         if isinstance(prop,Conjunction):
-            output = Negation(Disjunction(Negation(prop.a),Negation(prop.b)))
+            return Negation(Disjunction(Negation(prop.a),Negation(prop.b)))
         elif isinstance(prop,Disjunction):
-            output = Negation(Conjunction(Negation(prop.a),Negation(prop.b)))
-        else: output = []
-        return output 
+            return Negation(Conjunction(Negation(prop.a),Negation(prop.b)))
     
 class ImplicationLaw(): 
     def __init__(self):
