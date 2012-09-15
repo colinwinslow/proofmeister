@@ -14,10 +14,10 @@ class Test(unittest.TestCase):
         p = Proposition('p')
         q = Proposition('q')
         p2 = Proposition('p')
-        pT = Proposition('p',True)
-        pF = Proposition('p',False)
-        qT = Proposition('q',True)
-        qF = Proposition('q',False)
+        pT = Proposition('p', True)
+        pF = Proposition('p', False)
+        qT = Proposition('q', True)
+        qF = Proposition('q', False)
         assert p == pT
         assert p == pF
         assert pT == pF
@@ -34,27 +34,27 @@ class Test(unittest.TestCase):
 
 
     def testConjunctionEquivalence(self):
-        p = Proposition('p',True)
-        q = Proposition('q',False)
-        pandq = Conjunction(p,q)
-        qandp = Conjunction(q,p)
+        p = Proposition('p', True)
+        q = Proposition('q', False)
+        pandq = Conjunction(p, q)
+        qandp = Conjunction(q, p)
         assert pandq == qandp
         
     def testDisjunctionEquivalence(self):
-        p = Proposition('p',True)
-        q = Proposition('q',False)
-        p2 = Proposition('p',False)
-        q2 = Proposition('q',True)
-        porq = Disjunction(p,q)
-        qorp = Disjunction(p2,q2)
+        p = Proposition('p', True)
+        q = Proposition('q', False)
+        p2 = Proposition('p', False)
+        q2 = Proposition('q', True)
+        porq = Disjunction(p, q)
+        qorp = Disjunction(p2, q2)
         assert porq == qorp
         
     def testConjunctionNonEquivalence(self):
-        p = Proposition('p',True)
-        q = Proposition('q',False)
-        r = Proposition('r',True)
-        pandq = Conjunction(p,q)
-        randq = Conjunction(r,q)
+        p = Proposition('p', True)
+        q = Proposition('q', False)
+        r = Proposition('r', True)
+        pandq = Conjunction(p, q)
+        randq = Conjunction(r, q)
         assert pandq != randq
         
     def testIdempotence(self):
@@ -63,8 +63,8 @@ class Test(unittest.TestCase):
         p2 = Proposition('p')
         q2 = Proposition('q')
         
-        ifpthenq = Implication(p,q)
-        ifp2thenq2 = Implication(p2,q2)
+        ifpthenq = Implication(p, q)
+        ifp2thenq2 = Implication(p2, q2)
         
         pandp = Conjunction(ifpthenq, ifp2thenq2)
         
@@ -84,27 +84,27 @@ class Test(unittest.TestCase):
         q = Proposition('q')
         notp = Negation(p)
         notq = Negation(q)
-        pandq = Conjunction(p,q)
+        pandq = Conjunction(p, q)
         negatedConj = Negation(pandq)
         dms = DeMorgansSplit()
-        assert dms.getSuccessors(negatedConj) == Disjunction(notp,notq)
+        assert dms.getSuccessors(negatedConj) == Disjunction(notp, notq)
         
     def testDeMorganDisjunctionSplit(self):
         p = Proposition('p')
         q = Proposition('q')
         notp = Negation(p)
         notq = Negation(q)
-        porq = Disjunction(p,q)
+        porq = Disjunction(p, q)
         negatedDisj = Negation(porq)
         dms = DeMorgansSplit()
-        assert dms.getSuccessors(negatedDisj) == Conjunction(notp,notq)
+        assert dms.getSuccessors(negatedDisj) == Conjunction(notp, notq)
         
     def testDeMorgansConjunctionJoin(self):
         p = Proposition('p')
         q = Proposition('q')
         notp = Negation(p)
         notq = Negation(q)
-        pandq = Conjunction(p,q)
+        pandq = Conjunction(p, q)
         negatedConj = Negation(pandq)
         dms = DeMorgansSplit()
         dmj = DeMorgansJoin()
@@ -113,46 +113,46 @@ class Test(unittest.TestCase):
     def testImplicationLaw(self):
         p = Proposition('p')
         q = Proposition('q')
-        pimpliesq = Implication(p,q)
+        pimpliesq = Implication(p, q)
         
         imp = ImplicationLaw()
-        assert imp.getSuccessors(pimpliesq) == Disjunction(Negation(p),q)
+        assert imp.getSuccessors(pimpliesq) == Disjunction(Negation(p), q)
         
     def testContraposition(self):
         p = Proposition('p')
         q = Proposition('q')
         notp = Negation(p)
         notq = Negation(q)
-        pimpliesq = Implication(p,q)
+        pimpliesq = Implication(p, q)
         
         contra = Contraposition()
         
-        assert contra.getSuccessors(pimpliesq) == Implication(notp,notq)
+        assert contra.getSuccessors(pimpliesq) == Implication(notp, notq)
         
     def testAssociativity(self):
         p = Proposition('p')
         q = Proposition('q')
         r = Proposition('r')
         
-        pandq = Conjunction(p,q)
-        qandr = Conjunction(q,r)
-        porq = Disjunction(p,q)
-        qorr = Disjunction(q,r)
+        pandq = Conjunction(p, q)
+        qandr = Conjunction(q, r)
+        porq = Disjunction(p, q)
+        qorr = Disjunction(q, r)
         
         assoc = Associativity()
-        assert assoc.getSuccessors(Conjunction(pandq,r)) == Conjunction(p,qandr)
-        assert assoc.getSuccessors(Disjunction(porq,r)) == Disjunction(p,qorr)
+        assert assoc.getSuccessors(Conjunction(pandq, r)) == Conjunction(p, qandr)
+        assert assoc.getSuccessors(Disjunction(porq, r)) == Disjunction(p, qorr)
 
         
     def testSucessorMechanism(self):
-        successorFuncs = [Idempotence(), DoubleNegativity(), DeMorgansSplit(),
-                          DeMorgansJoin(), ImplicationLaw(), Contraposition(),
+        successorFuncs = [Idempotence(), DoubleNegativity(), DeMorgansSplit(), 
+                          DeMorgansJoin(), ImplicationLaw(), Contraposition(), 
                           Associativity()]
         p = Proposition('p')
         q = Proposition('q')
         r = Proposition('r')
         s = Proposition('s')
-        complex = Disjunction(p,Implication(q,Conjunction(r,s)))
+        complex = Disjunction(p, Implication(q, Conjunction(r, s)))
         
         
         for f in successorFuncs:
@@ -170,20 +170,20 @@ class Test(unittest.TestCase):
         q = Proposition('q')
         r = Proposition('r')
         
-        pandq = Conjunction(p,q)
-        pandqANDr = Conjunction(pandq,r)
+        pandq = Conjunction(p, q)
+        pandqANDr = Conjunction(pandq, r)
         
         assoc = Associativity()
-        assert assoc.getSuccessors(pandqANDr)==Conjunction(p,Conjunction(q,r))
+        assert assoc.getSuccessors(pandqANDr)==Conjunction(p, Conjunction(q, r))
         
     def testDistributive(self):
         p = Proposition('p')
         q = Proposition('q')
         r = Proposition('r')
-        pandqORr = Conjunction(p,Disjunction(q,r))
-        porqANDr = Disjunction(p,Conjunction(q,r))
-        expandedOr = Conjunction(Disjunction(p,q),Disjunction(p,r))
-        expandedAnd = Disjunction(Conjunction(p,q),Conjunction(p,r))
+        pandqORr = Conjunction(p, Disjunction(q, r))
+        porqANDr = Disjunction(p, Conjunction(q, r))
+        expandedOr = Conjunction(Disjunction(p, q), Disjunction(p, r))
+        expandedAnd = Disjunction(Conjunction(p, q), Conjunction(p, r))
         distLaw = Distributivity()
         assert distLaw.getSuccessors(pandqORr) == expandedAnd
         assert distLaw.getSuccessors(porqANDr) == expandedOr

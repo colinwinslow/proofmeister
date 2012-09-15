@@ -14,16 +14,16 @@ from LogicalOperators import *
 class Proposition(object):
     
     
-    def __init__(self,symbol,value=None):
+    def __init__(self, symbol, value=None):
         self.symbol = (symbol)
         self.value = value
         self.operator = None
         
-    def __eq__(self,other):
+    def __eq__(self, other):
         if type(self)!=type(other): return False
         else: return self.symbol==other.symbol
     
-    def __ne__(self,other):
+    def __ne__(self, other):
         if type(self)!=type(other): return True
         return self.symbol!=other.symbol
     
@@ -55,33 +55,33 @@ class Proposition(object):
           
 class Negation(Proposition):
     
-    def __new__(cls,prop):
+    def __new__(cls, prop):
         '''automatically replaces would-be double negatives with positivies'''
-        if isinstance(prop,Negation):
+        if isinstance(prop, Negation):
             return prop.symbol
         else:
             return super(Negation, cls).__new__(cls)
     
-    def __init__(self,prop):
+    def __init__(self, prop):
         if prop.value==None:
             self.value = None
         else: self.value = not prop.value
         self.symbol = prop
         self.operator = NegOp()
     
-    def __eq__(self,other):
+    def __eq__(self, other):
         if type(self)!=type(other): return False
         else: return self.symbol == other.symbol
     
-    def __ne__(self,other):
+    def __ne__(self, other):
         if type(self)!=type(other): return True
         else: return self.symbol != other.symbol
     
     def __hash__(self):
-        return hash((self.symbol,'Negation'))
+        return hash((self.symbol, 'Negation'))
     
     def getSymbols(self):
-        return (NegOp(),self.symbol)
+        return (NegOp(), self.symbol)
     
     def __str__(self):
         return str(self.operator)+str(self.symbol)
@@ -91,8 +91,8 @@ class Negation(Proposition):
     
 class Conjunction(Proposition):
     
-    def __init__(self,prop1,prop2):
-        self.operands = (prop1,prop2)
+    def __init__(self, prop1, prop2):
+        self.operands = (prop1, prop2)
         self.a = prop1
         self.b = prop2
         if prop1.value==None or prop2.value==None:
@@ -101,17 +101,17 @@ class Conjunction(Proposition):
         self.symbol = (prop1, AndOp(), prop2)
         self.operator = AndOp()
     
-    def __eq__(self,other):
+    def __eq__(self, other):
         if type(self)==type(other):
             return frozenset(self.operands) == frozenset(other.operands)
         else: return False
     
-    def __ne__(self,other):
+    def __ne__(self, other):
         if type(self)!=type(other): return True
         else: return frozenset(self.operands) != frozenset(other.operands)
     
     def __hash__(self):
-        return hash((frozenset(self.operands),'Conjunction'))
+        return hash((frozenset(self.operands), 'Conjunction'))
     
     def __str__(self):
         return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
@@ -119,27 +119,27 @@ class Conjunction(Proposition):
     
 class Disjunction(Proposition):
     
-    def __init__(self,prop1,prop2):
+    def __init__(self, prop1, prop2):
         self.a = prop1
         self.b = prop2
-        self.operands = (prop1,prop2)
+        self.operands = (prop1, prop2)
         if prop1.value==None or prop2.value==None:
             self.value = None
         else: self.value = prop1.value or prop2.value
         self.symbol = (prop1, OrOp(), prop2)
         self.operator = OrOp()
         
-    def __eq__(self,other):
+    def __eq__(self, other):
         if type(self)==type(other):
             return frozenset(self.operands) == frozenset(other.operands)
         else: return False
     
-    def __ne__(self,other):
+    def __ne__(self, other):
         if type(self)!=type(other): return True
         else: return frozenset(self.operands) != frozenset(other.operands)
     
     def __hash__(self):
-        return hash((frozenset(self.operands),"Disjunction"))
+        return hash((frozenset(self.operands), "Disjunction"))
     
     def __str__(self):
         return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
@@ -154,17 +154,17 @@ class Implication(Proposition):
         self.symbol = (antecedent, ImpOp(), consequent)
         self.operator = ImpOp()
         
-    def __eq__(self,other):
+    def __eq__(self, other):
         if type(self)==type(other):
             return self.antecedent == other.antecedent and self.consequent == other.consequent
         else: return False
     
-    def __ne__(self,other):
+    def __ne__(self, other):
         if type(self)!=type(other): return True
         else: return self.antecedent != other.antecedent and self.consequent != other.consequent
     
     def __hash__(self):
-        return hash((self.antecedent,self.consequent,"Implication"))
+        return hash((self.antecedent, self.consequent, "Implication"))
     
     def __str__(self):
         return '('+str(self.antecedent)+' '+str(self.operator)+' '+str(self.consequent)+')'
