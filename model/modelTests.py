@@ -70,7 +70,6 @@ class Test(unittest.TestCase):
         
         
         idem = Idempotence()
-        print str(idem.getSuccessors(pandp)[0])
         assert str(idem.getSuccessors(pandp)[0]) == '(p -> q)'
         
 #    def testDoubleNegative(self):
@@ -130,18 +129,34 @@ class Test(unittest.TestCase):
         
         assert contra.getSuccessors(pimpliesq) == Implication(notp,notq)
         
-    def testSucessorMechanism(self):
-        successorFuncs = [Idempotence(),DoubleNegativity(),DeMorgansSplit(),DeMorgansJoin(),ImplicationLaw(),Contraposition()]
+    def testAssociativity(self):
         p = Proposition('p')
         q = Proposition('q')
-        notp = Negation(p)
-        notq = Negation(q)
+        r = Proposition('r')
+        
+        pandq = Conjunction(p,q)
+        qandr = Conjunction(q,r)
         porq = Disjunction(p,q)
-        notpornotq = Disjunction(notp,notq)
-        negatedDisj = Negation(notpornotq)
+        qorr = Disjunction(q,r)
+        
+        assoc = Associativity()
+        assert assoc.getSuccessors(Conjunction(pandq,r)) == Conjunction(p,qandr)
+        assert assoc.getSuccessors(Disjunction(porq,r)) == Disjunction(p,qorr)
+
+        
+    def testSucessorMechanism(self):
+        successorFuncs = [Idempotence(), DoubleNegativity(), DeMorgansSplit(),
+                          DeMorgansJoin(), ImplicationLaw(), Contraposition(),
+                          Associativity()]
+        p = Proposition('p')
+        q = Proposition('q')
+        r = Proposition('r')
+        s = Proposition('s')
+        complex = Disjunction(p,Implication(q,Conjunction(r,s)))
+        
         
         for f in successorFuncs:
-            print str(f.getSuccessors(negatedDisj))
+            print str(f.getSuccessors(complex))
             
         LookinGood = True
         
@@ -150,16 +165,16 @@ class Test(unittest.TestCase):
             
          
          
-#    def testAssociativityConjunction(self):
-#        p = Proposition('p')
-#        q = Proposition('q')
-#        r = Proposition('r')
-#        
-#        pandq = Conjunction(p,q)
-#        pandqANDr = Conjunction(pandq,r)
-#        
-#        assoc = Associativity()
-#        print assoc.getSuccessors(pandqANDr)
+    def testAssociativityConjunction(self):
+        p = Proposition('p')
+        q = Proposition('q')
+        r = Proposition('r')
+        
+        pandq = Conjunction(p,q)
+        pandqANDr = Conjunction(pandq,r)
+        
+        assoc = Associativity()
+        assert assoc.getSuccessors(pandqANDr)==Conjunction(p,Conjunction(q,r))
         
 
 if __name__ == "__main__":

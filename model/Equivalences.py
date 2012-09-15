@@ -78,21 +78,20 @@ class Contraposition():
         
 
 
-#class Associativity():
-#    
-#    def __init__(self):
-#        self.appliesTo = ('Conjunction','Disjunction')
-#        
-#    def getSuccessors(self,prop):
-#        if isinstance(prop.a,Conjunction) or isinstance(prop.b,Conjunction):
-#            conj = self.conjunctionAssociate(prop)
-#        if isinstance(prop.a,Disjunction) or isinstance(prop.b,Disjunction):
-#            disj = self.disjunctionAssociate(prop)
-#        return conj+disj
-#            
-#        
-#    def conjunctionAssociate(self,prop):
-#        output = []
-#        for p in prop.operands:
-#            if 
-#            return (prop.a,'Associative Law')
+class Associativity():
+    
+    def __init__(self):
+        self.appliesTo = ('Conjunction','Disjunction')
+        
+    def getSuccessors(self,prop):
+        if isinstance(prop,Conjunction):
+            if isinstance(prop.a,Conjunction):
+                return Conjunction(prop.a.a,Conjunction(prop.a.b,prop.b))
+            elif isinstance(prop.b,Conjunction):
+                return Conjunction(Conjunction(prop.a,prop.b.a),prop.b.b)
+        if isinstance(prop,Disjunction):
+            if isinstance(prop.a, Disjunction):
+                return Disjunction(prop.a.a,Disjunction(prop.a.b,prop.b))
+            elif isinstance(prop.b,Disjunction):
+                return Disjunction(Disjunction(prop.a,prop.b.a),prop.b.b)
+       

@@ -98,7 +98,9 @@ class Conjunction(Proposition):
         self.operator = AndOp()
     
     def __eq__(self,other):
-        return frozenset(self.operands) == frozenset(other.operands)
+        if type(self)==type(other):
+            return frozenset(self.operands) == frozenset(other.operands)
+        else: return False
     
     def __ne__(self,other):
         return frozenset(self.operands) != frozenset(other.operands)
@@ -123,7 +125,9 @@ class Disjunction(Proposition):
         self.operator = OrOp()
         
     def __eq__(self,other):
-        return frozenset(self.operands) == frozenset(other.operands)
+        if type(self)==type(other):
+            return frozenset(self.operands) == frozenset(other.operands)
+        else: return False
     
     def __ne__(self,other):
         return frozenset(self.operands) != frozenset(other.operands)
@@ -145,7 +149,9 @@ class Implication(Proposition):
         self.operator = ImpOp()
         
     def __eq__(self,other):
-        return self.antecedent == other.antecedent and self.consequent == other.consequent
+        if type(self)==type(other):
+            return self.antecedent == other.antecedent and self.consequent == other.consequent
+        else: return False
     
     def __ne__(self,other):
         return self.antecedent != other.antecedent and self.consequent != other.consequent
