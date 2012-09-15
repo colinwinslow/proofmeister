@@ -176,6 +176,20 @@ class Test(unittest.TestCase):
         assoc = Associativity()
         assert assoc.getSuccessors(pandqANDr)==Conjunction(p,Conjunction(q,r))
         
+    def testDistributive(self):
+        p = Proposition('p')
+        q = Proposition('q')
+        r = Proposition('r')
+        pandqORr = Conjunction(p,Disjunction(q,r))
+        porqANDr = Disjunction(p,Conjunction(q,r))
+        expandedOr = Conjunction(Disjunction(p,q),Disjunction(p,r))
+        expandedAnd = Disjunction(Conjunction(p,q),Conjunction(p,r))
+        distLaw = Distributivity()
+        assert distLaw.getSuccessors(pandqORr) == expandedAnd
+        assert distLaw.getSuccessors(porqANDr) == expandedOr
+        assert distLaw.getSuccessors(expandedAnd) == pandqORr
+        assert distLaw.getSuccessors(expandedOr) == porqANDr
+        
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
