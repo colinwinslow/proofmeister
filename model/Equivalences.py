@@ -1,6 +1,6 @@
 '''
 Created on Sep 13, 2012
-These are objects that all have a getSuccessors method that checks a given propisition
+These are objects that all have a getSuccessors method that checks a given proposition
 to see if a particular law or equivalence applies, and returns the result of that
 application if it can be. These will be the successors in the graph search. 
 @author: colinwinslow
