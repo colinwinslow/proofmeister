@@ -108,7 +108,7 @@ class Test(unittest.TestCase):
         negatedConj = Negation(pandq)
         dms = DeMorgansSplit()
         dmj = DeMorgansJoin()
-        assert dmj.getSuccessors(dms.getSuccessors(negatedConj))== negatedConj
+        assert dmj.getSuccessors(dms.getSuccessors(negatedConj)) == negatedConj
         
     def testImplicationLaw(self):
         p = Proposition('p')
@@ -145,8 +145,8 @@ class Test(unittest.TestCase):
 
         
     def testSucessorMechanism(self):
-        successorFuncs = [Idempotence(), DoubleNegativity(), DeMorgansSplit(), 
-                          DeMorgansJoin(), ImplicationLaw(), Contraposition(), 
+        successorFuncs = [Idempotence(), DoubleNegativity(), DeMorgansSplit(),
+                          DeMorgansJoin(), ImplicationLaw(), Contraposition(),
                           Associativity()]
         p = Proposition('p')
         q = Proposition('q')
@@ -174,7 +174,7 @@ class Test(unittest.TestCase):
         pandqANDr = Conjunction(pandq, r)
         
         assoc = Associativity()
-        assert assoc.getSuccessors(pandqANDr)==Conjunction(p, Conjunction(q, r))
+        assert assoc.getSuccessors(pandqANDr) == Conjunction(p, Conjunction(q, r))
         
     def testDistributive(self):
         p = Proposition('p')
