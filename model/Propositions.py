@@ -20,9 +20,11 @@ class Proposition(object):
         self.operator = None
         
     def __eq__(self,other):
-        return self.symbol==other.symbol
+        if type(self)!=type(other): return False
+        else: return self.symbol==other.symbol
     
     def __ne__(self,other):
+        if type(self)!=type(other): return True
         return self.symbol!=other.symbol
     
     def __hash__(self):
@@ -68,10 +70,12 @@ class Negation(Proposition):
         self.operator = NegOp()
     
     def __eq__(self,other):
-        return self.symbol == other.symbol
+        if type(self)!=type(other): return False
+        else: return self.symbol == other.symbol
     
     def __ne__(self,other):
-        return self.symbol != other.symbol
+        if type(self)!=type(other): return True
+        else: return self.symbol != other.symbol
     
     def __hash__(self):
         return hash((self.symbol,'Negation'))
@@ -103,7 +107,8 @@ class Conjunction(Proposition):
         else: return False
     
     def __ne__(self,other):
-        return frozenset(self.operands) != frozenset(other.operands)
+        if type(self)!=type(other): return True
+        else: return frozenset(self.operands) != frozenset(other.operands)
     
     def __hash__(self):
         return hash((frozenset(self.operands),'Conjunction'))
@@ -130,7 +135,8 @@ class Disjunction(Proposition):
         else: return False
     
     def __ne__(self,other):
-        return frozenset(self.operands) != frozenset(other.operands)
+        if type(self)!=type(other): return True
+        else: return frozenset(self.operands) != frozenset(other.operands)
     
     def __hash__(self):
         return hash((frozenset(self.operands),"Disjunction"))
@@ -154,7 +160,8 @@ class Implication(Proposition):
         else: return False
     
     def __ne__(self,other):
-        return self.antecedent != other.antecedent and self.consequent != other.consequent
+        if type(self)!=type(other): return True
+        else: return self.antecedent != other.antecedent and self.consequent != other.consequent
     
     def __hash__(self):
         return hash((self.antecedent,self.consequent,"Implication"))

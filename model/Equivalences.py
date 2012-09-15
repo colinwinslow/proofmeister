@@ -73,13 +73,15 @@ class Contraposition():
         if isinstance(prop,Implication):
             return Implication(Negation(prop.antecedent),Negation(prop.consequent))
         
+class Distributivity():
+    def __init__(self):
+        self.appliesTo = ('Conjunction','Disjunction')
     
         
         
 
 
 class Associativity():
-    
     def __init__(self):
         self.appliesTo = ('Conjunction','Disjunction')
         
