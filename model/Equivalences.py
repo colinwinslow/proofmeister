@@ -108,8 +108,12 @@ class Distributivity():
             
     
         
+class Absorption():
+    def __init__(self):
+        self.appliesTo = ('Conjunction', 'Disjunction')
         
-
+    def getSuccessors(self, prop):
+        print "nyi"
 
 class Associativity():
     def __init__(self):

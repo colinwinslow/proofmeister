@@ -1,10 +1,7 @@
 '''
 Created on Sep 13, 2012
-These exist not to do actual operations, but to be included in-line with actual
-proposition objects so that it'll be easier to generate LaTeX (or MathML or 
-whatever) of the proof from the graph trace. 
-@author: colinwinslow
-'''
+These exist not to do actual operations, but to store information about representation. The
+idea is that there are several ways to display them, even in plaintext.'''
 
 class NegOp():
     def getLaTeX(self):
@@ -29,7 +26,7 @@ class AndOp():
         return 'and'       
     
     def getMathML(self):
-        return 'mathml AND'
+        return '<mo>&vee;</mo>'
     
     def __str__(self):
         return "&"
@@ -43,7 +40,7 @@ class OrOp():
         return 'or'       
     
     def getMathML(self):
-        return 'mathml OR'
+        return '<mo>&vee;</mo>'
     
     def __str__(self):
         return "v"
@@ -57,7 +54,7 @@ class ImpOp():
         return 'implies'       
     
     def getMathML(self):
-        return 'mathml IMPLIES'
+        return '<mo>&rarr;</mo>'
     
     def __str__(self):
         return "->"
