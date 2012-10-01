@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
         rimpsornotT = Disjunction(rimps,notT)
         qor = Disjunction(q,rimpsornotT)
         
-        print "*",qor.findAlts(rules)
+        print "*",[str(a) for a in qor.findAlts(rules)]
     
     
     
