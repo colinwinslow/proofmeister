@@ -4,11 +4,26 @@ Created on Sep 13, 2012
 @author: colinwinslow
 '''
 import unittest
-from Propositions import *
-from Equivalences import *
+from model.Propositions import *
+from model.Equivalences import *
 
 
 class Test(unittest.TestCase):
+    def testAlts(self):
+        rules = [Idempotence(),DoubleNegativity(),DeMorgansSplit(),DeMorgansJoin(),ImplicationLaw(),Contraposition(),Distributivity(),Absorption(),Associativity()]
+        p = Proposition('p')
+        q = Proposition('q')
+        r = Proposition('r')
+        s = Proposition('s')
+        t = Proposition('t')
+        notT = Negation(t)
+        rimps = Implication(r,s)
+        rimpsornotT = Disjunction(rimps,notT)
+        qor = Disjunction(q,rimpsornotT)
+        
+        print "*",qor.findAlts(rules)
+    
+    
     
     def testPropositionEquivalence(self):
         p = Proposition('p')
@@ -70,14 +85,14 @@ class Test(unittest.TestCase):
         
         
         idem = Idempotence()
-        assert str(idem.getSuccessors(pandp)[0]) == '(p -> q)'
+        assert str(idem.getSuccessorNodes(pandp)) == '(p -> q)'
         
 #    def testDoubleNegative(self):
 #        p = Proposition('p')
 #        notp = Negation(p)
 #        doubleNeg = Negation(notp)
 #        doubleNegativity = DoubleNegativity()
-#        assert doubleNegativity.getSuccessors(doubleNeg) == p
+#        assert doubleNegativity.getSuccessorNodes(doubleNeg) == p
         
     def testDeMorganConjunctionSplit(self):
         p = Proposition('p')
@@ -87,7 +102,7 @@ class Test(unittest.TestCase):
         pandq = Conjunction(p, q)
         negatedConj = Negation(pandq)
         dms = DeMorgansSplit()
-        assert dms.getSuccessors(negatedConj) == Disjunction(notp, notq)
+        assert dms.getSuccessorNodes(negatedConj) == Disjunction(notp, notq)
         
     def testDeMorganDisjunctionSplit(self):
         p = Proposition('p')
@@ -97,7 +112,7 @@ class Test(unittest.TestCase):
         porq = Disjunction(p, q)
         negatedDisj = Negation(porq)
         dms = DeMorgansSplit()
-        assert dms.getSuccessors(negatedDisj) == Conjunction(notp, notq)
+        assert dms.getSuccessorNodes(negatedDisj) == Conjunction(notp, notq)
         
     def testDeMorgansConjunctionJoin(self):
         p = Proposition('p')
@@ -108,7 +123,7 @@ class Test(unittest.TestCase):
         negatedConj = Negation(pandq)
         dms = DeMorgansSplit()
         dmj = DeMorgansJoin()
-        assert dmj.getSuccessors(dms.getSuccessors(negatedConj)) == negatedConj
+        assert dmj.getSuccessorNodes(dms.getSuccessorNodes(negatedConj)) == negatedConj
         
     def testImplicationLaw(self):
         p = Proposition('p')
@@ -116,7 +131,7 @@ class Test(unittest.TestCase):
         pimpliesq = Implication(p, q)
         
         imp = ImplicationLaw()
-        assert imp.getSuccessors(pimpliesq) == Disjunction(Negation(p), q)
+        assert imp.getSuccessorNodes(pimpliesq) == Disjunction(Negation(p), q)
         
     def testContraposition(self):
         p = Proposition('p')
@@ -127,7 +142,7 @@ class Test(unittest.TestCase):
         
         contra = Contraposition()
         
-        assert contra.getSuccessors(pimpliesq) == Implication(notp, notq)
+        assert contra.getSuccessorNodes(pimpliesq) == Implication(notp, notq)
         
     def testAssociativity(self):
         p = Proposition('p')
@@ -140,8 +155,8 @@ class Test(unittest.TestCase):
         qorr = Disjunction(q, r)
         
         assoc = Associativity()
-        assert assoc.getSuccessors(Conjunction(pandq, r)) == Conjunction(p, qandr)
-        assert assoc.getSuccessors(Disjunction(porq, r)) == Disjunction(p, qorr)
+        assert assoc.getSuccessorNodes(Conjunction(pandq, r)) == Conjunction(p, qandr)
+        assert assoc.getSuccessorNodes(Disjunction(porq, r)) == Disjunction(p, qorr)
 
         
     def testSucessorMechanism(self):
@@ -155,8 +170,8 @@ class Test(unittest.TestCase):
         complex = Disjunction(p, Implication(q, Conjunction(r, s)))
         
         
-        for f in successorFuncs:
-            print str(f.getSuccessors(complex))
+#        for f in successorFuncs:
+#            print str(f.getSuccessorNodes(complex))
             
         LookinGood = True
         
@@ -174,7 +189,7 @@ class Test(unittest.TestCase):
         pandqANDr = Conjunction(pandq, r)
         
         assoc = Associativity()
-        assert assoc.getSuccessors(pandqANDr) == Conjunction(p, Conjunction(q, r))
+        assert assoc.getSuccessorNodes(pandqANDr) == Conjunction(p, Conjunction(q, r))
         
     def testDistributive(self):
         p = Proposition('p')
@@ -185,10 +200,10 @@ class Test(unittest.TestCase):
         expandedOr = Conjunction(Disjunction(p, q), Disjunction(p, r))
         expandedAnd = Disjunction(Conjunction(p, q), Conjunction(p, r))
         distLaw = Distributivity()
-        assert distLaw.getSuccessors(pandqORr) == expandedAnd
-        assert distLaw.getSuccessors(porqANDr) == expandedOr
-        assert distLaw.getSuccessors(expandedAnd) == pandqORr
-        assert distLaw.getSuccessors(expandedOr) == porqANDr
+        assert distLaw.getSuccessorNodes(pandqORr) == expandedAnd
+        assert distLaw.getSuccessorNodes(porqANDr) == expandedOr
+        assert distLaw.getSuccessorNodes(expandedAnd) == pandqORr
+        assert distLaw.getSuccessorNodes(expandedOr) == porqANDr
         
 
 if __name__ == "__main__":
