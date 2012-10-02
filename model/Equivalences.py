@@ -41,11 +41,11 @@ class DeMorgansSplit():
         if isinstance(prop.symbol, Conjunction):
             nota = Negation(prop.symbol.a)
             notb = Negation(prop.symbol.b)
-            return Disjunction(nota, notb, type(self))
+            return Disjunction((nota, notb))
         elif isinstance(prop.symbol, Disjunction):
             nota = Negation(prop.symbol.a)
             notb = Negation(prop.symbol.b)
-            return Conjunction(nota, notb, type(self))
+            return Conjunction((nota, notb))
         
 class DeMorgansJoin():
     def __init__(self):
@@ -62,9 +62,9 @@ class ImplicationLaw():
         
     def getSuccessorNodes(self, prop):
         if isinstance(prop, Disjunction):
-            return Implication(Negation(prop.a), prop.b)
+            return Implication((Negation(prop.a), prop.b))
         if isinstance(prop, Implication):
-            return Disjunction(Negation(prop.a), prop.b)
+            return Disjunction((Negation(prop.a), prop.b))
         
 class Contraposition():
     def __init__(self):
@@ -72,7 +72,7 @@ class Contraposition():
         
     def getSuccessorNodes(self, prop):
         if isinstance(prop, Implication):
-            return Implication(Negation(prop.a), Negation(prop.b))
+            return Implication((Negation(prop.b), Negation(prop.a)))
         
 class Distributivity():
     def __init__(self):
@@ -87,11 +87,11 @@ class Distributivity():
                 overlap = aMembers.intersection(bMembers)
                 unique = aMembers.symmetric_difference(bMembers)
                 if len(overlap) == 1:
-                    return Disjunction(overlap.pop(), Conjunction(unique.pop(), unique.pop()))
+                    return Disjunction((overlap.pop(), Conjunction((unique.pop(), unique.pop()))))
             elif isinstance(prop.a, Disjunction):
-                return Disjunction(Conjunction(prop.b, prop.a.a), Conjunction(prop.b, prop.a.b))
+                return Disjunction((Conjunction((prop.b, prop.a.a)), Conjunction((prop.b, prop.a.b))))
             elif isinstance(prop.b, Disjunction):
-                return Disjunction(Conjunction(prop.a, prop.b.a), Conjunction(prop.a, prop.b.b))
+                return Disjunction((Conjunction((prop.a, prop.b.a)), Conjunction((prop.a, prop.b.b))))
             
         if isinstance(prop, Disjunction):
             if isinstance(prop.a, Conjunction) and isinstance(prop.b, Conjunction):
@@ -101,11 +101,11 @@ class Distributivity():
                 overlap = aMembers.intersection(bMembers)
                 unique = aMembers.symmetric_difference(bMembers)
                 if len(overlap) == 1:
-                    return Conjunction(overlap.pop(), Disjunction(unique.pop(), unique.pop()))
+                    return Conjunction((overlap.pop(), Disjunction((unique.pop(), unique.pop()))))
             elif isinstance(prop.a, Conjunction):
-                return Conjunction(Disjunction(prop.b, prop.a.a), Disjunction(prop.b, prop.a.b))
+                return Conjunction((Disjunction((prop.b, prop.a.a)), Disjunction((prop.b, prop.a.b))))
             elif isinstance(prop.b, Conjunction):
-                return Conjunction(Disjunction(prop.a, prop.b.a), Disjunction(prop.a, prop.b.b))
+                return Conjunction((Disjunction((prop.a, prop.b.a)), Disjunction((prop.a, prop.b.b))))
             
     
         

@@ -9,6 +9,7 @@ many cases.
 '''
 from LogicalOperators import *
 
+
 def removeNones(inlist):
     output = []
     for i in inlist:
@@ -92,7 +93,9 @@ class Negation(Proposition):
             return super(Negation, cls).__new__(cls)
     
     def __init__(self, parse):
-        self.arg = parse[0][1]
+        if type(parse).__name__=="ParseResults":
+            self.arg = parse[0][1]
+        else: self.arg = parse
         self.operands = (self.arg)
         self.symbol = self.arg
         self.operator = NegOp()
@@ -122,16 +125,22 @@ class Negation(Proposition):
 class Conjunction(Proposition):
     
     def __init__(self, t):
-        self.args = t[0][0::2]
-        if isinstance(self.args[0],str): self.a=Proposition(self.args[0])
-        elif isinstance(self.args[0],Proposition): self.a = self.args[0]
-        if isinstance(self.args[1],str): self.b=Proposition(self.args[1])
-        elif isinstance(self.args[1],Proposition): self.b = self.args[1]
+        if type(t).__name__=="ParseResults":
+            self.args = t[0][0::2]
+        else: self.args = t
+        if isinstance(self.args[0],str):
+            self.a=Proposition(self.args[0])
+        elif isinstance(self.args[0],Proposition):
+            self.a = self.args[0]
+        if isinstance(self.args[1],str): 
+            self.b=Proposition(self.args[1])
+        elif isinstance(self.args[1],Proposition): 
+            self.b = self.args[1]
         self.b.parent = self
         self.a.parent = self
-        self.operands = (self.args[0], self.args[1])
-        self.symbol = (self.args[0], AndOp(), self.args[1])
-        self.operator = AndOp()
+        self.operands = (self.a, self.b)
+        self.symbol = (self.a, AndOp(), self.b)
+        self.operator = self.symbol[1]
         self.action = None
     
     def __eq__(self, other):
@@ -152,8 +161,10 @@ class Conjunction(Proposition):
     
 class Disjunction(Proposition):
     
-    def __init__(self, parse):
-        self.args = parse[0][0::2]  
+    def __init__(self, t):
+        if type(t).__name__=="ParseResults":
+            self.args = t[0][0::2]
+        else: self.args = t
         if isinstance(self.args[0],str): self.a=Proposition(self.args[0])
         elif isinstance(self.args[0],Proposition): self.a = self.args[0]
         if isinstance(self.args[1],str): self.b=Proposition(self.args[1])
@@ -181,16 +192,18 @@ class Disjunction(Proposition):
     
 class Implication(Proposition):
     def __init__(self, parse, action=None):
-        self.args = parse[0][0::2]
+        if type(parse).__name__=="ParseResults":
+            self.args = parse[0][0::2]
+        else: self.args = parse
         if isinstance(self.args[0],str): self.a=Proposition(self.args[0])
         elif isinstance(self.args[0],Proposition): self.a = self.args[0]
         if isinstance(self.args[1],str): self.b=Proposition(self.args[1])
         elif isinstance(self.args[1],Proposition): self.b = self.args[1]
         self.b.parent = self
         self.a.parent = self
-        self.operands = (self.args[0], self.args[1])
-        self.symbol = (self.args[0], ImpOp(), self.args[1])
-        self.operator = ImpOp()
+        self.operands = (self.a, self.b)
+        self.symbol = (self.a, ImpOp(), self.b)
+        self.operator = self.symbol[1]
         self.action = action
         
     def __eq__(self, other):
