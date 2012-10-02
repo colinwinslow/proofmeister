@@ -6,39 +6,65 @@ Created on Sep 13, 2012
 import unittest
 from model.Propositions import *
 from model.Equivalences import *
+from model.InputReader import logicParse
 
 
 class Test(unittest.TestCase):
+    
+    def testParser(self):
+        test = [
+        "(q or (r | x)) | (s | t)",
+        "((q implies r) -> not(s -> ~t))",
+        "p&(q|((r->s)|~t))",
+        "(q or r) | (s | t)",
+        "(a | b) | (c | d)",
+        "p & ~ q",
+        "not not p",
+        "not(p and q) or r",
+        "q or not p and r",
+        "q or not (p and r)",
+        "p or q"
+        ]
+        correct = [
+        "((q v (r v x)) v (s v t))",
+        "((q -> r) -> ~(s -> ~t))",
+        "(p & (q v ((r -> s) v ~t)))",
+        "((q v r) v (s v t))",
+        "((a v b) v (c v d))",
+        "(p & ~q)",
+        "~~p",
+        "(~(p & q) v r)",
+        "((q v ~p) & r)",
+        "(q v ~(p & r))",
+        "(p v q)"
+        ]
+        for i in range(len(test)):
+            print logicParse(test[i])
+            print correct[i]
+            print str(logicParse(test[i]))==(correct[i])
+            assert str(logicParse(test[i]))==(correct[i])
+        
+            
+            
     def testAlts(self):
         rules = [Idempotence(),DoubleNegativity(),DeMorgansSplit(),DeMorgansJoin(),ImplicationLaw(),Contraposition(),Distributivity(),Absorption(),Associativity()]
-        p = Proposition('p')
-        q = Proposition('q')
-        r = Proposition('r')
-        s = Proposition('s')
-        t = Proposition('t')
-        notT = Negation(t)
-        rimps = Implication(r,s)
-        rimpsornotT = Disjunction(rimps,notT)
-        qor = Disjunction(q,rimpsornotT)
+        qor = logicParse("q | ((r -> s) | ~t)")
+        porq = logicParse("p | q")
         
-        print "*",[str(a) for a in qor.findAlts(rules)]
-    
+        
+        print qor.findAlts(rules)
+        
     
     
     def testPropositionEquivalence(self):
         p = Proposition('p')
         q = Proposition('q')
         p2 = Proposition('p')
-        pT = Proposition('p', True)
-        pF = Proposition('p', False)
-        qT = Proposition('q', True)
-        qF = Proposition('q', False)
-        assert p == pT
-        assert p == pF
-        assert pT == pF
+
+
         assert p == p2
         assert q != p2
-        assert qT != pT
+
         
     def testNegation(self):
         p = Proposition('p')
@@ -149,14 +175,16 @@ class Test(unittest.TestCase):
         q = Proposition('q')
         r = Proposition('r')
         
-        pandq = Conjunction(p, q)
-        qandr = Conjunction(q, r)
-        porq = Disjunction(p, q)
-        qorr = Disjunction(q, r)
+        pandq = logicParse("p and q")
+        qandr = logicParse("q and r")
+        porq = logicParse("p or q")
+        qorr = logicParse("p or r")
         
         assoc = Associativity()
-        assert assoc.getSuccessorNodes(Conjunction(pandq, r)) == Conjunction(p, qandr)
-        assert assoc.getSuccessorNodes(Disjunction(porq, r)) == Disjunction(p, qorr)
+        print logicParse("(p and q) and r)")
+        print assoc.getSuccessorNodes(logicParse("(p and q) and r)"))
+        assert assoc.getSuccessorNodes(logicParse("(p and q) and r)")) == logicParse("p and (q and r)")
+        assert assoc.getSuccessorNodes(logicParse("(p or q) or r)")) == logicParse("p or (q or r)")
 
         
     def testSucessorMechanism(self):

@@ -4,8 +4,6 @@ This is the class heirarchy. Everything inherits from Proposition. Pay close
 attention to __eq__ and __hash__ and such as these need to be equivalent in 
 many cases.
 
-Values are allow propositions to be assigned truth values, but this isn't 
-in use for the time being.
 
 @author: colinwinslow
 '''
@@ -21,14 +19,21 @@ def removeNones(inlist):
 
 class Proposition(object):
     
+    def __getitem__(self,key):
+        if isinstance(self.symbol,str):
+            return self
+        else:
+            return self.symbol[key]
+       
     
-    def __init__(self, symbol, value=None,action=None):
+    def __init__(self, symbol,action=None):
         self.action=action
         self.operands = (None)
         self.symbol = (symbol)
-        self.value = value
+
         self.operator = None
         self.successors = set()
+        self.parent = None
         
     def __eq__(self, other):
         if type(self)!=type(other): return False
@@ -47,14 +52,12 @@ class Proposition(object):
     def getMathML(self):
         return self.symbol
     
-    def getValue(self):
-        return self.value
-    
     def findAlts(self,rules):
         if type(self).__name__=="Proposition":
             return self
         else:
-            return removeNones([r.getSuccessorNodes(self) for r in rules])
+            altz = removeNones([r.getSuccessorNodes(self) for r in rules])
+            return altz
         
     def findMany(self,rules,):
         if type(self).__name__=="Proposition":
@@ -78,6 +81,9 @@ class Proposition(object):
           
 class Negation(Proposition):
     
+    def __getitem__(self,key):
+        return self.symbol
+    
     def __new__(cls, prop, action = None):
         '''automatically replaces would-be double negatives with positivies'''
         if isinstance(prop, Negation):
@@ -85,14 +91,13 @@ class Negation(Proposition):
         else:
             return super(Negation, cls).__new__(cls)
     
-    def __init__(self, prop,action=None):
-        self.operands = (prop)
-        if prop.value==None:
-            self.value = None
-        else: self.value = not prop.value
-        self.symbol = prop
+    def __init__(self, parse):
+        self.arg = parse[0][1]
+        self.operands = (self.arg)
+        self.symbol = self.arg
         self.operator = NegOp()
-        self.action = action
+        self.action=None
+
     
     def __eq__(self, other):
         if type(self)!=type(other): return False
@@ -116,16 +121,18 @@ class Negation(Proposition):
     
 class Conjunction(Proposition):
     
-    def __init__(self, prop1, prop2,action=None):
-        self.operands = (prop1, prop2)
-        self.a = prop1
-        self.b = prop2
-        if prop1.value==None or prop2.value==None:
-            self.value = None
-        else: self.value = prop1.value and prop2.value
-        self.symbol = (prop1, AndOp(), prop2)
+    def __init__(self, t):
+        self.args = t[0][0::2]
+        if isinstance(self.args[0],str): self.a=Proposition(self.args[0])
+        elif isinstance(self.args[0],Proposition): self.a = self.args[0]
+        if isinstance(self.args[1],str): self.b=Proposition(self.args[1])
+        elif isinstance(self.args[1],Proposition): self.b = self.args[1]
+        self.b.parent = self
+        self.a.parent = self
+        self.operands = (self.args[0], self.args[1])
+        self.symbol = (self.args[0], AndOp(), self.args[1])
         self.operator = AndOp()
-        self.action = action
+        self.action = None
     
     def __eq__(self, other):
         if type(self)==type(other):
@@ -145,16 +152,17 @@ class Conjunction(Proposition):
     
 class Disjunction(Proposition):
     
-    def __init__(self, prop1, prop2,action=None):
-        self.a = prop1
-        self.b = prop2
-        self.operands = (prop1, prop2)
-        if prop1.value==None or prop2.value==None:
-            self.value = None
-        else: self.value = prop1.value or prop2.value
-        self.symbol = (prop1, OrOp(), prop2)
+    def __init__(self, parse):
+        self.args = parse[0][0::2]  
+        if isinstance(self.args[0],str): self.a=Proposition(self.args[0])
+        elif isinstance(self.args[0],Proposition): self.a = self.args[0]
+        if isinstance(self.args[1],str): self.b=Proposition(self.args[1])
+        elif isinstance(self.args[1],Proposition): self.b = self.args[1]
+        self.b.parent = self
+        self.a.parent = self
+        self.operands = (self.a, self.b)
+        self.symbol = (self.a, OrOp(), self.b)
         self.operator = OrOp()
-        self.action = action
         
     def __eq__(self, other):
         if type(self)==type(other):
@@ -172,14 +180,16 @@ class Disjunction(Proposition):
         return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
     
 class Implication(Proposition):
-    def __init__(self, antecedent, consequent, action=None):
-        self.a = antecedent
-        self.b = consequent
-        self.operands = (antecedent, consequent)
-        if antecedent.value==None or consequent.value==None:
-            self.value = None
-        else: self.value = not antecedent.value or consequent.value
-        self.symbol = (antecedent, ImpOp(), consequent)
+    def __init__(self, parse, action=None):
+        self.args = parse[0][0::2]
+        if isinstance(self.args[0],str): self.a=Proposition(self.args[0])
+        elif isinstance(self.args[0],Proposition): self.a = self.args[0]
+        if isinstance(self.args[1],str): self.b=Proposition(self.args[1])
+        elif isinstance(self.args[1],Proposition): self.b = self.args[1]
+        self.b.parent = self
+        self.a.parent = self
+        self.operands = (self.args[0], self.args[1])
+        self.symbol = (self.args[0], ImpOp(), self.args[1])
         self.operator = ImpOp()
         self.action = action
         
