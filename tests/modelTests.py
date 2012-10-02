@@ -12,7 +12,7 @@ from model.InputReader import logicParse
 class Test(unittest.TestCase):
     
     def testParser(self):
-        if True:
+        if False:
             test = [
             "(q or (r | x)) | (s | t)",
             "((q implies r) -> not(s -> ~t))",
@@ -49,6 +49,9 @@ class Test(unittest.TestCase):
         qor = logicParse("q | ((r -> s) | ~t)")
         porq = logicParse("p | q")
         
+        alts =qor.findAlts(rules)
+        print map(str,alts)
+        
     
     
     def testPropositionEquivalence(self):
@@ -70,25 +73,25 @@ class Test(unittest.TestCase):
 
 
     def testConjunctionEquivalence(self):
-        p = Proposition('p', True)
-        q = Proposition('q', False)
+        p = Proposition('p')
+        q = Proposition('q')
         pandq = Conjunction((p, q))
         qandp = Conjunction((q, p))
         assert pandq == qandp
         
     def testDisjunctionEquivalence(self):
-        p = Proposition('p', True)
-        q = Proposition('q', False)
-        p2 = Proposition('p', False)
-        q2 = Proposition('q', True)
+        p = Proposition('p')
+        q = Proposition('q')
+        p2 = Proposition('p')
+        q2 = Proposition('q')
         porq = Disjunction((p, q))
         qorp = Disjunction((p2, q2))
         assert porq == qorp
         
     def testConjunctionNonEquivalence(self):
-        p = Proposition('p', True)
-        q = Proposition('q', False)
-        r = Proposition('r', True)
+        p = Proposition('p')
+        q = Proposition('q')
+        r = Proposition('r')
         pandq = Conjunction((p, q))
         randq = Conjunction((r, q))
         assert pandq != randq
