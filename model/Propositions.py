@@ -21,20 +21,34 @@ def removeNones(inlist):
 class Proposition(object):
     
     def __getitem__(self,key):
-        if isinstance(self.symbol,str):
-            return self
-        else:
-            return self.symbol[key]
-       
+        return self.parseSearch(key)
     
-    def __init__(self, symbol):
+    def parseSearch(self,key):
+        if key == self.index: return self
+        else: return None
+                
+            
+            
+        
+    
+       
+    def __init__(self, symbol, parent=None):
+        self.index = None
         self.action=None
         self.operands = (None)
         self.symbol = (symbol)
-
         self.operator = None
         self.successors = set()
-        self.parent = None
+        self.parent = parent
+    
+    def indexTree(self, i=None):
+        if i==None: self.index=0
+        else: self.index=i
+        
+        
+        
+    
+        
         
     def __eq__(self, other):
         if type(self)!=type(other): return False
@@ -58,12 +72,16 @@ class Proposition(object):
             return self
         else:
             altz = removeNones([r.getSuccessorNodes(self) for r in rules])
+            print altz
             return altz
         
     def findMany(self,rules,):
         if type(self).__name__=="Proposition":
             return self
-
+        elif type(self).__name__=="Negation":
+            return self # deal with this unary operation
+        else: 
+            return self
         
         
         
@@ -77,10 +95,57 @@ class Proposition(object):
             return tuple(output)
     def __str__(self):
         return str(self.symbol)
+    
+class BinaryOperation(Proposition):
+    
+    
+    
+    def __init__(self, t, parent = None):
+        super(BinaryOperation,self).__init__(t)
+        
+        if type(t).__name__=="ParseResults": self.args = t[0][0::2]
+        else: self.args = t
+        if isinstance(self.args[0],str):
+            self.a=Proposition(self.args[0],self)
+        elif isinstance(self.args[0],Proposition):
+            self.a = self.args[0]
+            self.a.parent = self
+
+        if isinstance(self.args[1],str):
+            self.b=Proposition(self.args[1],self)
+        elif isinstance(self.args[1],Proposition):
+            self.b = self.args[1]
+            self.b.parent = self
+
+#        
+#        
+        self.operands = (self.a, self.b)
+        self.action = None
+        
+    def indexTree(self, i=None):
+        #must be called on the root node
+        if i==None: self.index=0
+        else: self.index=i
+        self.a.indexTree(2*self.index + 1)
+        self.b.indexTree(2*self.index + 2)
+    
+    def parseSearch(self,key):
+        if key == self.index: return self
+        elif key > self.index:
+            left = self.a.parseSearch(key)
+            if left != None: return left
+            return self.b.parseSearch(key)
+                    
+        
+        
                 
         
           
 class Negation(Proposition):
+    
+    def parseSearch(self,key):
+        if key == self.index: return self
+        else: return self.arg.parseSearch(key)
     
     def __getitem__(self,key):
         return self.symbol
@@ -93,6 +158,7 @@ class Negation(Proposition):
             return super(Negation, cls).__new__(cls)
     
     def __init__(self, parse):
+        super(Negation,self).__init__(parse)
         if type(parse).__name__=="ParseResults":
             self.arg = parse[0][1]
         else: self.arg = parse
@@ -103,6 +169,13 @@ class Negation(Proposition):
         self.symbol = self.arg
         self.operator = NegOp()
         self.action=None
+        
+    def indexTree(self, i=None):
+    #must be called on the root node
+        if i==None: self.index=0
+        else: self.index=i
+        self.arg.indexTree(2*self.index+1)
+        
 
     
     def __eq__(self, other):
@@ -125,21 +198,13 @@ class Negation(Proposition):
             
         
     
-class Conjunction(Proposition):
+class Conjunction(BinaryOperation):
     
     def __init__(self, t):
-        if type(t).__name__=="ParseResults": self.args = t[0][0::2]
-        else: self.args = t
-        if isinstance(self.args[0],str): self.a=Proposition(self.args[0])
-        elif isinstance(self.args[0],Proposition): self.a = self.args[0]
-        if isinstance(self.args[1],str): self.b=Proposition(self.args[1])
-        elif isinstance(self.args[1],Proposition):  self.b = self.args[1]
-        self.b.parent = self
-        self.a.parent = self
-        self.operands = (self.a, self.b)
+        super(Conjunction,self).__init__(t)
         self.symbol = (self.a, AndOp(), self.b)
         self.operator = self.symbol[1]
-        self.action = None
+#        self.action = None
     
     def __eq__(self, other):
         if type(self)==type(other):
@@ -157,18 +222,10 @@ class Conjunction(Proposition):
         return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
         
     
-class Disjunction(Proposition):
+class Disjunction(BinaryOperation):
     
     def __init__(self, t):
-        if type(t).__name__=="ParseResults": self.args = t[0][0::2]
-        else: self.args = t
-        if isinstance(self.args[0],str): self.a=Proposition(self.args[0])
-        elif isinstance(self.args[0],Proposition): self.a = self.args[0]
-        if isinstance(self.args[1],str): self.b=Proposition(self.args[1])
-        elif isinstance(self.args[1],Proposition): self.b = self.args[1]
-        self.b.parent = self
-        self.a.parent = self
-        self.operands = (self.a, self.b)
+        super(Disjunction,self).__init__(t)
         self.symbol = (self.a, OrOp(), self.b)
         self.operator = OrOp()
         
@@ -187,17 +244,10 @@ class Disjunction(Proposition):
     def __str__(self):
         return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
     
-class Implication(Proposition):
+class Implication(BinaryOperation):
     def __init__(self, t, action=None):
-        if type(t).__name__=="ParseResults": self.args = t[0][0::2]
-        else: self.args = t
-        if isinstance(self.args[0],str): self.a=Proposition(self.args[0])
-        elif isinstance(self.args[0],Proposition): self.a = self.args[0]
-        if isinstance(self.args[1],str): self.b=Proposition(self.args[1])
-        elif isinstance(self.args[1],Proposition): self.b = self.args[1]
-        self.b.parent = self
-        self.a.parent = self
-        self.operands = (self.a, self.b)
+        
+        super(Implication,self).__init__(t)
         self.symbol = (self.a, ImpOp(), self.b)
         self.operator = self.symbol[1]
         self.action = action

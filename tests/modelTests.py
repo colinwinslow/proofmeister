@@ -42,7 +42,19 @@ class Test(unittest.TestCase):
             for i in range(len(test)):
                 assert str(logicParse(test[i]))==(correct[i])
         
-            
+    def testTreeIndexing(self):
+        
+        s = logicParse("q & (~(r -> s) | t)")
+        assert s[0] == s
+        assert str(s[1]) == "q"
+        assert str(s[2])== "(~(r -> s) v t)"
+        assert str(s[11]) == "(r -> s)"
+        
+        for i in range(25):
+            print i, s[i]
+
+        
+        
             
     def testAlts(self):
         rules = [Idempotence(),DoubleNegativity(),DeMorgansSplit(),DeMorgansJoin(),ImplicationLaw(),Contraposition(),Distributivity(),Absorption(),Associativity()]

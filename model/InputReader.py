@@ -2,7 +2,7 @@ from pyparsing import *
 import Propositions
 
 
-
+    
 def logicParse(instring):
     variable = oneOf(list(alphas))
     expr = operatorPrecedence( variable,
@@ -13,6 +13,7 @@ def logicParse(instring):
         (oneOf("-> implies"), 2, opAssoc.LEFT,  Propositions.Implication)
         ])
     out = expr.parseString(instring)[0]
+    out.indexTree()
     return out
 
 
