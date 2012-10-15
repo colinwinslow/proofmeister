@@ -7,8 +7,23 @@ application if it can be. These will be the successors in the graph search.
 '''
 
 from Propositions import *
+from copy import deepcopy
 
-
+def negate(prop):
+    print "negatefunction"
+    '''negates without causing double negatives'''
+    if isinstance(prop,Negation):
+        out = deepcopy(prop.arg)
+        out.parent = prop.parent
+        out.index = (out.index-1)//2
+        out.indexTree()
+    else: 
+        pp = prop.parent
+        out = Negation(prop)
+        out.index = out.arg.index
+        out.parent = pp
+        out.indexTree(out.arg.index)
+    return out
 
 class Idempotence():
     
@@ -36,20 +51,22 @@ class DoubleNegativity():
             if isinstance(prop.symbol, Negation):
                 return prop.symbol.symbol
         
+
+
 class DeMorgansSplit():
     def __init__(self):
         self.appliesTo = ('Negation')
     
     def getSuccessorNodes(self, prop):
         if isinstance(prop.symbol, Conjunction):
-            nota = Negation(prop.symbol.a)
-            notb = Negation(prop.symbol.b)
+            nota = negate(prop.symbol.a)
+            notb = negate(prop.symbol.b)
             out = Disjunction((nota, notb))
             out.action = "De Morgan's Law"
             return out
         elif isinstance(prop.symbol, Disjunction):
-            nota = Negation(prop.symbol.a)
-            notb = Negation(prop.symbol.b)
+            nota = negate(prop.symbol.a)
+            notb = negate(prop.symbol.b)
             out = Conjunction((nota, notb))
             out.action = "De Morgan's Law"
             return out
@@ -59,11 +76,11 @@ class DeMorgansJoin():
         self.appliesTo = ('Conjunction', 'Disjunction')
     def getSuccessorNodes(self, prop):
         if isinstance(prop, Conjunction):
-            out = Negation(Disjunction([Negation(prop.a), Negation(prop.b)]))
+            out = negate(Disjunction([negate(prop.a), negate(prop.b)]))
             out.action = "De Morgan's Law"
             return out
         elif isinstance(prop, Disjunction):
-            out = Negation(Conjunction([Negation(prop.a), Negation(prop.b)]))
+            out = negate(Conjunction([negate(prop.a), negate(prop.b)]))
             out.action = "De Morgan's Law"
             return out
     

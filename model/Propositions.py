@@ -83,8 +83,12 @@ class Proposition(object):
     def findMany(self,rules,):
         completeSuccessors = []
         allIndices = self.getAllIndices()
+        print self
         for i in allIndices:
+            
+            print i, self[i]
             alts = self[i].findAlts(rules)
+
             for j in alts:
                 if j!=None: completeSuccessors.append(self.insert(i,j))
         return completeSuccessors
