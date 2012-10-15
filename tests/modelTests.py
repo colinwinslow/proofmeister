@@ -56,18 +56,47 @@ class Test(unittest.TestCase):
         s = logicParse("q & (~(r -> s) | t)")
         equiv = s[11].findAlts(rules)[0]
         t = s.insert(11,equiv)
-        print str(t)
-        print str(s)
+        print "insert", logicParse("q & (~(~r or s) | t)"), t
+        assert t == logicParse("q & (~(~r or s) | t)")
 
         
     def testListAllSuccessors(self):
-        rules = [Idempotence(),DoubleNegativity(),DeMorgansSplit(),DeMorgansJoin(),ImplicationLaw(),Contraposition(),Distributivity(),Absorption(),Associativity()]
-        s = logicParse("q & (~(r -> s) | t)")
+        rules = [ImplicationLaw()]
+        s = logicParse("(q or r) | (~s | t)")
         
         allsucs = s.findMany(rules)
-        print "all successors to q & (~(r -> s) | t)"
-        for s in allsucs:
-            print s
+        print "all successors to (q or r) | (s | t)"
+        for a in allsucs:
+            print a,"\t\t", a.action, a==s
+            
+            
+##something strange is going on with node parentage.  
+
+        
+            
+    def testSccessorSpeed(self):
+        rules = [Idempotence(),DoubleNegativity(),DeMorgansSplit(),DeMorgansJoin(),ImplicationLaw(),Contraposition(),Distributivity(),Absorption(),Associativity()]
+        test = [
+            "(q or (r | x)) | (s | t)",
+            "((q implies r) -> not(s -> ~t))",
+            "p&(q|((r->s)|~t))",
+            "(q or r) | (s | t)",
+            "(a | b) | (c | d)",
+            "p & ~ q",
+            "not not p",
+            "not(p and q) or r",
+            "q or not p and r",
+            "q or not (p and r)",
+            "p or q"
+            ]
+        
+        for t in test:
+            p = logicParse(t)
+            allsucs = p.findMany(rules)
+            print "all successors to ", str(p)
+            for s in allsucs:
+                print s,"\t\t", s.action
+            print ""
 
         
         
@@ -164,6 +193,8 @@ class Test(unittest.TestCase):
         porq = Disjunction((p, q))
         negatedDisj = Negation(porq)
         dms = DeMorgansSplit()
+        print negatedDisj
+        print dms.getSuccessorNodes(negatedDisj), Conjunction((notp, notq))
         assert dms.getSuccessorNodes(negatedDisj) == Conjunction((notp, notq))
         
     def testDeMorgansConjunctionJoin(self):

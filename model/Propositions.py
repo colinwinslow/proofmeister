@@ -95,12 +95,13 @@ class Proposition(object):
         newParse.note="this is the copy"
         newProp.index = index
         newProp.indexTree
+        newParse.action = newProp.action
         
         
         oldProp = self[index]
-        if newParse[index].parent != None: 
-            newProp.parent = newParse[index].parent
-            newParse[index].parent.substitute(newProp,oldProp)
+        if newParse[(index-1)//2] != None: 
+            newProp.parent = newParse[(index-1)//2]
+            newParse[(index-1)//2].substitute(newProp,oldProp)
             return newParse
         else: return newProp
         
@@ -245,17 +246,17 @@ class Negation(Proposition):
     
     def __eq__(self, other):
         if type(self)!=type(other): return False
-        else: return self.symbol == other.symbol
+        else: return self.arg == other.arg
     
     def __ne__(self, other):
         if type(self)!=type(other): return True
-        else: return self.symbol != other.symbol
+        else: return self.arg != other.arg
     
     def __hash__(self):
-        return hash((self.symbol, 'Negation'))
+        return hash((self.arg, 'Negation'))
     
     def getSymbols(self):
-        return (NegOp(), self.symbol)
+        return (NegOp(), self.arg)
     
     def __str__(self):
         return str(self.operator)+str(self.arg)
