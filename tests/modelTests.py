@@ -56,14 +56,18 @@ class Test(unittest.TestCase):
         s = logicParse("q & (~(r -> s) | t)")
         equiv = s[11].findAlts(rules)[0]
         t = s.insert(11,equiv)
-        print str(t[11])
-        print str(s[11])
+        print str(t)
+        print str(s)
 
         
     def testListAllSuccessors(self):
         rules = [Idempotence(),DoubleNegativity(),DeMorgansSplit(),DeMorgansJoin(),ImplicationLaw(),Contraposition(),Distributivity(),Absorption(),Associativity()]
         s = logicParse("q & (~(r -> s) | t)")
-        print s.findMany(rules)
+        
+        allsucs = s.findMany(rules)
+        print "all successors to q & (~(r -> s) | t)"
+        for s in allsucs:
+            print s
 
         
         

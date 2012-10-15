@@ -87,6 +87,7 @@ class Proposition(object):
             alts = self[i].findAlts(rules)
             for j in alts:
                 if j!=None: completeSuccessors.append(self.insert(i,j))
+        return completeSuccessors
                 
     def insert(self,index,newProp):
         '''puts a new proposition in the parse tree at the specified index and connects parent/child relationships appropriately'''
@@ -100,7 +101,6 @@ class Proposition(object):
         if newParse[index].parent != None: 
             newProp.parent = newParse[index].parent
             newParse[index].parent.substitute(newProp,oldProp)
-            print "np at index", newParse[index].parent
             return newParse
         else: return newProp
         
@@ -196,7 +196,6 @@ class BinaryOperation(Proposition):
 class Negation(Proposition):
     
     def substitute(self,newProp,oldProp):
-        print self.note
         self.arg =newProp
         self.arg.parent = self
     
@@ -259,7 +258,7 @@ class Negation(Proposition):
         return (NegOp(), self.symbol)
     
     def __str__(self):
-        return str(self.operator)+str(self.symbol)
+        return str(self.operator)+str(self.arg)
         
             
         
