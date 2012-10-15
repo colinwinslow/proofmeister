@@ -100,6 +100,7 @@ class Proposition(object):
         if newParse[index].parent != None: 
             newProp.parent = newParse[index].parent
             newParse[index].parent.substitute(newProp,oldProp)
+            print "np at index", newParse[index].parent
             return newParse
         else: return newProp
         
@@ -199,10 +200,10 @@ class Negation(Proposition):
         self.arg =newProp
         self.arg.parent = self
     
-    def __deepcopy__(self, memo):
-        return self
-    def __copy__(self, memo):
-        return self
+#    def __deepcopy__(self, memo):
+#        return self
+#    def __copy__(self, memo):
+#        return self
     
     def parseSearch(self,key):
         if key == self.index: return self
@@ -211,12 +212,12 @@ class Negation(Proposition):
     def __getitem__(self,key):
         return self.symbol
     
-    def __new__(cls, prop ):
-        '''automatically replaces would-be double negatives with positivies'''
-        if isinstance(prop, Negation):
-            return prop.symbol
-        else:
-            return super(Negation, cls).__new__(cls)
+#    def __new__(cls, prop ):
+#        '''automatically replaces would-be double negatives with positivies'''
+#        if isinstance(prop, Negation):
+#            return prop.symbol
+#        else:
+#            return super(Negation, cls).__new__(cls)
     
     def __init__(self, parse):
         super(Negation,self).__init__(parse)
