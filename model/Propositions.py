@@ -7,6 +7,8 @@ many cases.
 
 @author: colinwinslow
 '''
+from copy import deepcopy,copy
+
 from LogicalOperators import *
 
 
@@ -19,6 +21,7 @@ def removeNones(inlist):
     
 
 class Proposition(object):
+        
     
     def __getitem__(self,key):
         return self.parseSearch(key)
@@ -27,27 +30,30 @@ class Proposition(object):
         if key == self.index: return self
         else: return None
                 
-            
-            
-        
-    
        
     def __init__(self, symbol, parent=None):
         self.index = None
+        self.note = None
         self.action=None
-        self.operands = (None)
         self.symbol = (symbol)
         self.operator = None
         self.successors = set()
         self.parent = parent
+        self.treeList = []
     
-    def indexTree(self, i=None):
-        if i==None: self.index=0
-        else: self.index=i
-        
-        
-        
-    
+    def indexTree(self, i=None, treeList = None ):
+        if treeList == None: treeList = self.treeList
+        if i==None:
+            self.index=0
+            treeList.append(0)
+        else: 
+            self.index=i
+            treeList.append(i)
+            
+            
+    def getAllIndices(self):
+        self.treeList.sort()
+        return self.treeList
         
         
     def __eq__(self, other):
@@ -69,19 +75,37 @@ class Proposition(object):
     
     def findAlts(self,rules):
         if type(self).__name__=="Proposition":
-            return self
+            return []
         else:
             altz = removeNones([r.getSuccessorNodes(self) for r in rules])
-            print altz
             return altz
         
     def findMany(self,rules,):
-        if type(self).__name__=="Proposition":
-            return self
-        elif type(self).__name__=="Negation":
-            return self # deal with this unary operation
-        else: 
-            return self
+        completeSuccessors = []
+        allIndices = self.getAllIndices()
+        for i in allIndices:
+            alts = self[i].findAlts(rules)
+            for j in alts:
+                if j!=None: completeSuccessors.append(self.insert(i,j))
+                
+    def insert(self,index,newProp):
+        '''puts a new proposition in the parse tree at the specified index and connects parent/child relationships appropriately'''
+        newParse =  deepcopy(self)
+        newParse.note="this is the copy"
+        newProp.index = index
+        newProp.indexTree
+        
+        
+        oldProp = self[index]
+        if newParse[index].parent != None: 
+            newProp.parent = newParse[index].parent
+            newParse[index].parent.substitute(newProp,oldProp)
+            return newParse
+        else: return newProp
+        
+        
+
+            
         
         
         
@@ -116,18 +140,21 @@ class BinaryOperation(Proposition):
         elif isinstance(self.args[1],Proposition):
             self.b = self.args[1]
             self.b.parent = self
-
-#        
-#        
-        self.operands = (self.a, self.b)
+            
         self.action = None
         
-    def indexTree(self, i=None):
+        
+    def indexTree(self, i=None, treeList = None):
         #must be called on the root node
-        if i==None: self.index=0
-        else: self.index=i
-        self.a.indexTree(2*self.index + 1)
-        self.b.indexTree(2*self.index + 2)
+        if treeList == None: treeList = self.treeList
+        if i==None:
+            self.index=0
+            treeList.append(0)
+        else:
+            self.index=i
+            treeList.append(i)
+        self.a.indexTree(2*self.index + 1, treeList)
+        self.b.indexTree(2*self.index + 2, treeList)
     
     def parseSearch(self,key):
         if key == self.index: return self
@@ -135,6 +162,30 @@ class BinaryOperation(Proposition):
             left = self.a.parseSearch(key)
             if left != None: return left
             return self.b.parseSearch(key)
+    
+    def substitute(self,newProp,oldProp):
+        if self.a==oldProp:
+            self.a=newProp
+            self.a.parent = self
+        if self.b==oldProp:
+            self.b=newProp
+            self.b.parent = self
+    
+    def __eq__(self, other):
+        if type(self)==type(other) and self.commutative:
+            return frozenset([self.a,self.b]) == frozenset([other.a,other.b])
+        elif type(self)==type(other) and not self.commutative:
+            return self.a == other.a and self.b == other.b
+        else: return False
+    
+    def __ne__(self, other):
+        if type(self)!=type(other): return True
+        else:
+            if self.commutative: return frozenset([self.a,self.b]) != frozenset([other.a,other.b])
+            else: return self.a != other.a or self.b != other.b
+        
+    def __str__(self):
+        return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
                     
         
         
@@ -143,6 +194,16 @@ class BinaryOperation(Proposition):
           
 class Negation(Proposition):
     
+    def substitute(self,newProp,oldProp):
+        print self.note
+        self.arg =newProp
+        self.arg.parent = self
+    
+    def __deepcopy__(self, memo):
+        return self
+    def __copy__(self, memo):
+        return self
+    
     def parseSearch(self,key):
         if key == self.index: return self
         else: return self.arg.parseSearch(key)
@@ -150,7 +211,7 @@ class Negation(Proposition):
     def __getitem__(self,key):
         return self.symbol
     
-    def __new__(cls, prop, action = None):
+    def __new__(cls, prop ):
         '''automatically replaces would-be double negatives with positivies'''
         if isinstance(prop, Negation):
             return prop.symbol
@@ -165,16 +226,20 @@ class Negation(Proposition):
         if isinstance(self.arg,str):
             self.arg=Proposition(self.arg)
         self.arg.parent = self
-        self.operands = (self.arg)
         self.symbol = self.arg
         self.operator = NegOp()
         self.action=None
         
-    def indexTree(self, i=None):
+    def indexTree(self, i=None, treeList = None):
     #must be called on the root node
-        if i==None: self.index=0
-        else: self.index=i
-        self.arg.indexTree(2*self.index+1)
+        if treeList == None: treeList = self.treeList
+        if i==None: 
+            treeList.append(0)
+            self.index=0
+        else: 
+            treeList.append(i)
+            self.index=i
+        self.arg.indexTree(2*self.index+1, treeList)
         
 
     
@@ -204,22 +269,13 @@ class Conjunction(BinaryOperation):
         super(Conjunction,self).__init__(t)
         self.symbol = (self.a, AndOp(), self.b)
         self.operator = self.symbol[1]
+        self.commutative=True
 #        self.action = None
     
-    def __eq__(self, other):
-        if type(self)==type(other):
-            return frozenset(self.operands) == frozenset(other.operands)
-        else: return False
-    
-    def __ne__(self, other):
-        if type(self)!=type(other): return True
-        else: return frozenset(self.operands) != frozenset(other.operands)
-    
+ 
     def __hash__(self):
-        return hash((frozenset(self.operands), 'Conjunction'))
+        return hash((frozenset([self.a,self.b]), 'Conjunction'))
     
-    def __str__(self):
-        return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
         
     
 class Disjunction(BinaryOperation):
@@ -228,21 +284,12 @@ class Disjunction(BinaryOperation):
         super(Disjunction,self).__init__(t)
         self.symbol = (self.a, OrOp(), self.b)
         self.operator = OrOp()
+        self.commutative=True
         
-    def __eq__(self, other):
-        if type(self)==type(other):
-            return frozenset(self.operands) == frozenset(other.operands)
-        else: return False
-    
-    def __ne__(self, other):
-        if type(self)!=type(other): return True
-        else: return frozenset(self.operands) != frozenset(other.operands)
-    
     def __hash__(self):
-        return hash((frozenset(self.operands), "Disjunction"))
+        return hash((frozenset([self.a,self.b]), "Disjunction"))
     
-    def __str__(self):
-        return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
+    
     
 class Implication(BinaryOperation):
     def __init__(self, t, action=None):
@@ -251,21 +298,13 @@ class Implication(BinaryOperation):
         self.symbol = (self.a, ImpOp(), self.b)
         self.operator = self.symbol[1]
         self.action = action
+        self.commutative=False
         
-    def __eq__(self, other):
-        if type(self)==type(other):
-            return self.a == other.a and self.b == other.b
-        else: return False
-    
-    def __ne__(self, other):
-        if type(self)!=type(other): return True
-        else: return self.a != other.a and self.b != other.b
     
     def __hash__(self):
         return hash((self.a, self.b, "Implication"))
     
-    def __str__(self):
-        return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
+
 
 #class Biimplication(Proposition):
 #

@@ -49,9 +49,21 @@ class Test(unittest.TestCase):
         assert str(s[1]) == "q"
         assert str(s[2])== "(~(r -> s) v t)"
         assert str(s[11]) == "(r -> s)"
+        assert s.getAllIndices()==[0,1,2,5,6,11,23,24]
         
-        for i in range(25):
-            print i, s[i]
+    def testInsert(self):
+        rules = [Idempotence(),DoubleNegativity(),DeMorgansSplit(),DeMorgansJoin(),ImplicationLaw(),Contraposition(),Distributivity(),Absorption(),Associativity()]
+        s = logicParse("q & (~(r -> s) | t)")
+        equiv = s[11].findAlts(rules)[0]
+        t = s.insert(11,equiv)
+        print str(t[11])
+        print str(s[11])
+
+        
+    def testListAllSuccessors(self):
+        rules = [Idempotence(),DoubleNegativity(),DeMorgansSplit(),DeMorgansJoin(),ImplicationLaw(),Contraposition(),Distributivity(),Absorption(),Associativity()]
+        s = logicParse("q & (~(r -> s) | t)")
+        print s.findMany(rules)
 
         
         
@@ -159,6 +171,7 @@ class Test(unittest.TestCase):
         negatedConj = Negation(pandq)
         dms = DeMorgansSplit()
         dmj = DeMorgansJoin()
+        print dmj.getSuccessorNodes(dms.getSuccessorNodes(negatedConj)), negatedConj
         assert dmj.getSuccessorNodes(dms.getSuccessorNodes(negatedConj)) == negatedConj
         
     def testImplicationLaw(self):
