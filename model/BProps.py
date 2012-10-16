@@ -10,6 +10,7 @@ class Proposition():
     def __str__(self):
         return self.val
     
+    
 class UnaryOperation(Proposition):
     def __init__(self):
         super(UnaryOperation,self).__init__()
