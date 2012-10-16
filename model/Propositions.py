@@ -72,42 +72,7 @@ class Proposition(object):
     
     def getMathML(self):
         return self.symbol
-    
-    def findAlts(self,rules):
-        if type(self).__name__=="Proposition":
-            return []
-        else:
-            altz = removeNones([r.getSuccessorNodes(self) for r in rules])
-            return altz
-        
-    def findMany(self,rules,):
-        completeSuccessors = []
-        allIndices = self.getAllIndices()
-        print self
-        for i in allIndices:
-            
-            print i, self[i]
-            alts = self[i].findAlts(rules)
 
-            for j in alts:
-                if j!=None: completeSuccessors.append(self.insert(i,j))
-        return completeSuccessors
-                
-    def insert(self,index,newProp):
-        '''puts a new proposition in the parse tree at the specified index and connects parent/child relationships appropriately'''
-        newParse =  deepcopy(self)
-        newParse.note="this is the copy"
-        newProp.index = index
-        newProp.indexTree
-        newParse.action = newProp.action
-        
-        
-        oldProp = self[index]
-        if newParse[(index-1)//2] != None: 
-            newProp.parent = newParse[(index-1)//2]
-            newParse[(index-1)//2].substitute(newProp,oldProp)
-            return newParse
-        else: return newProp
         
         
 
@@ -133,7 +98,8 @@ class BinaryOperation(Proposition):
     def __init__(self, t, parent = None):
         super(BinaryOperation,self).__init__(t)
         
-        if type(t).__name__=="ParseResults": self.args = t[0][0::2]
+        if type(t).__name__=="ParseResults":
+             self.args = t[0][0::2]
         else: self.args = t
         if isinstance(self.args[0],str):
             self.a=Proposition(self.args[0],self)
