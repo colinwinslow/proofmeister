@@ -41,6 +41,20 @@ class Statement(object):
         if newIndex < i: print "I wasn't designed to reindex downward!"
         self.d.get(i).reIndex(i,newIndex,self.d)
         
+    def childTree(self,i):
+        newDict = dict()
+        self.d.get(i).childTree(i,0,self.d,newDict)
+        return Statement(newDict)
+    
+    def __hash__(self):
+        return self.d.get(0).hash(0,self.d)
+    
+    def __eq__(self,other):
+        return hash(self)==hash(other)
+    
+    def __ne__(self,other):
+        return hash(self)!=hash(other)
+        
         
         
         
