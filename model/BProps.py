@@ -31,13 +31,13 @@ class UnaryOperation(Proposition):
     
 class Negation(UnaryOperation):
     def __init__(self):
-        print "neg"
+        pass
     def hash(self,i,d):
         return hash((d.get(i*2+1).hash(i*2+1,d),"negation"))
     
 class BinaryOperation(Proposition):
     def __init__(self):
-        super(UnaryOperation,self).__init__()
+        super(BinaryOperation,self).__init__()
     def reIndex(self,i,newIndex,d):
         d.get(2*i+1).reIndex(2*i+1, 2*newIndex+1, d)
         d.get(2*i+2).reIndex(2*i+2, 2*newIndex+2, d)
@@ -54,7 +54,7 @@ class BinaryOperation(Proposition):
     
 class Conjunction(BinaryOperation):
     def __init__(self):
-        print "conj"
+        pass
     def getOperator(self):
         return "&"
     def hash(self,i,d):
@@ -65,7 +65,7 @@ class Conjunction(BinaryOperation):
         
 class Disjunction(BinaryOperation):
     def __init__(self):
-        print "disj"
+        pass
     def getOperator(self):
         return "v"
     def hash(self,i,d):
@@ -73,7 +73,7 @@ class Disjunction(BinaryOperation):
     
 class Implication(BinaryOperation):
     def __init__(self):
-        print "imp"
+        pass
     def getOperator(self):
         return "->"
     def hash(self,i,d):

@@ -12,11 +12,6 @@ from Propositions import *
 class Test(unittest.TestCase):
 
 
-    def testStatementIndexing(self):
-        s = logicParse("q & (~(r -> s) | t)")
-        print s
-        subs = s.childTree(2)
-        print subs
     
     def testReIndex(self):
         s = logicParse("q & (~(r -> s) | t)")
@@ -38,6 +33,29 @@ class Test(unittest.TestCase):
         assert aib != bia
         
         
+        
+    def testTreeIndexing(self):
+        
+        s = logicParse("q & (~(r -> s) | t)")
+        assert s[0] == s
+        assert str(s[1]) == "q"
+        assert str(s[2])== "(~(r -> s) v t)"
+        assert str(s[11]) == "(r -> s)"
+    
+    def testPropositionEquivalence(self):
+        p = logicParse('p')
+        q = logicParse('q')
+        p2 = logicParse('p')
+
+
+        assert p == p2
+        assert q != p2
+        
+    def testNegation(self):
+
+        notp = logicParse("~p")
+        pt = str(notp)
+        assert str(notp) == "~p"
         
         
         

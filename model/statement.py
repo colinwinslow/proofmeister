@@ -14,7 +14,7 @@ class Statement(object):
         self.d = inDict
         
     def __getitem__(self,key):
-        return self.d.get(key)
+        return self.childTree(key)
         
     def getParent(self,i):
         if i==0: return None

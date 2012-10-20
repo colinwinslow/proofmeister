@@ -75,12 +75,7 @@ class Test(unittest.TestCase):
         
 
 
-    def testConjunctionEquivalence(self):
-        p = Proposition('p')
-        q = Proposition('q')
-        pandq = Conjunction((p, q))
-        qandp = Conjunction((q, p))
-        assert pandq == qandp
+
         
     def testDisjunctionEquivalence(self):
         p = Proposition('p')
