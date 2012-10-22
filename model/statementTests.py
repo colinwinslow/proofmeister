@@ -7,6 +7,7 @@ import unittest
 from statement import Statement
 from pyparseplayground import logicParse
 from Propositions import *
+from BEquivalences import *
 
 
 class Test(unittest.TestCase):
@@ -31,6 +32,17 @@ class Test(unittest.TestCase):
         aib = logicParse("a implies b")
         bia = logicParse("b implies a")
         assert aib != bia
+        c1 = logicParse("(a & b) -> c")
+        c2 = logicParse("(b & a) -> c")
+        assert c1 == c2
+        
+    def testGraft(self):
+        graftee = logicParse("a implies (b implies c)")
+        graft = logicParse("~b or c")
+        target = logicParse("a -> (~b or c)")
+        new = graftee.graft(2, graft)
+        assert new == target
+        
         
         
         
@@ -56,6 +68,27 @@ class Test(unittest.TestCase):
         notp = logicParse("~p")
         pt = str(notp)
         assert str(notp) == "~p"
+        
+    def testIdempotence(self):
+        s = logicParse("a & (b or b)")
+        idem = Idempotence()
+        assert logicParse("a & b") == idem.getSuccessors(s,2)
+        assert idem.getSuccessors(s,1) == None
+        assert idem.getSuccessors(s,0) == None
+        
+    def testAssoc(self):
+        # single successor cases
+        s = logicParse("(a & b) & c")
+        t = logicParse("a or (b or c)")
+        assoc = Associativity()
+        assert assoc.getSuccessors(s, 0) == logicParse("a & (b &c)")
+        assert assoc.getSuccessors(t, 0) == logicParse("(a or b) or c)")
+        #multi successor
+        u = logicParse("(a or b) or (c or d)")
+        us1 = logicParse("a or (b or (c or d))")
+        us2 = logicParse("((a or b) or c) or d")
+        assert assoc.getSuccessors(u, 0) == [us1, us2]
+        
         
         
         
