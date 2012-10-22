@@ -65,6 +65,50 @@ class Associativity(object):
                 return successors
             else: return None
             
+class Exportation(object):
+    ''' 
+    ((p & q) & r) = (p & (q & r))
+    ((p or q) or r) = (p or (q or r))
+    '''
+    def __init__(self):
+        self.name = "Exportation Law"
+        
+    def getSuccessors(self, statement, i):
+        if statement.type(i) == "implication":
+            thisType = statement.type(i)
+            successors = []
+            if statement.type(i * 2 + 1) == thisType:
+                a = statement.childTree(i * 4 + 3)
+                b = statement.childTree(i * 4 + 4)
+                c = statement.childTree(i * 2 + 2)
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i, thisType)
+                successor.insertProp(2 * i + 2, thisType)
+                successor.graftInPlace(2 * i + 1, a)
+                successor.graftInPlace(4 * i + 5, b)
+                successor.graftInPlace(4 * i + 6, c)
+                successor.action = self.name
+                successors.append(successor)
+            if statement.type(i * 2 + 2) == thisType:
+                a = statement.childTree(i * 2 + 1)
+                b = statement.childTree(i * 4 + 5)
+                c = statement.childTree(i * 4 + 6)
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i, thisType)
+                successor.insertProp(2 * i + 1, thisType)
+                successor.graftInPlace(4 * i + 3, a)
+                successor.graftInPlace(4 * i + 4, b)
+                successor.graftInPlace(2 * i + 2, c)
+                successor.action = self.name
+                successors.append(successor)
+            if len(successors) == 1:
+                return successors[0]
+            elif len(successors) > 1:
+                return successors
+            else: return None
+            
 class Distributivity(object):
     ''' 
     p & (q v r) = (p & q) v (p & r)
@@ -195,6 +239,54 @@ class DeMorgans(object):
             output = statement.graft(i,ns)
             output.action = self.name
             return output
+        
+class ImplicationLaw(object):
+    ''' 
+    (p -> q) = (~p v q)
+    '''
+    def __init__(self):
+        self.name = "Law of Implication"
+    
+    def getSuccessors(self, statement, i):
+        if statement.type(i) == "implication":
+            np = statement.negatedChildTree(i*2+1)
+            q = statement.childTree(i*2+2)
+            ns = Statement(dict())
+            ns.insertProp(0, "disjunction")
+            ns.graftInPlace(1,np)
+            ns.graftInPlace(2,q)
+            output = statement.graft(i,ns)
+            output.action = self.name
+            return output
+        elif statement.type(i) == "disjunction":
+            successors = []
+            if statement.type(i*2+1) == "negation":
+                np = statement.negatedChildTree(2*i+1)
+                q = statement.childTree(i*2+2)
+                ns = Statement(dict())
+                ns.insertProp(0, "implication")
+                ns.graftInPlace(1,np)
+                ns.graftInPlace(2,q)
+                output = statement.graft(i,ns)
+                output.action = self.name
+                successors.append(output)
+            if statement.type(i*2+2) == "negation":
+                np = statement.negatedChildTree(2*i+2)
+                q = statement.childTree(i*2+1)
+                ns = Statement(dict())
+                ns.insertProp(0, "implication")
+                ns.graftInPlace(1,np)
+                ns.graftInPlace(2,q)
+                output = statement.graft(i,ns)
+                output.action = self.name
+                successors.append(output)
+            if len(successors) == 1:
+                return successors[0]
+            elif len(successors) > 1:
+                return successors
+            else: return None
+        
+        
                 
             
     

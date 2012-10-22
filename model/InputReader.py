@@ -1,4 +1,4 @@
-from pyparsing import oneOf, operatorPrecedence, opAssoc, alphas
+from pyparsing import oneOf, operatorPrecedence, opAssoc
 from statement import Statement
 import Propositions
 
@@ -15,7 +15,7 @@ xorOps = "xor"
 ## might be smart to preprocess the string and see which ops are needed,
 ## and then only parse with those. 
 
-def logicParse(input):
+def logicParse(inStr):
     variable = oneOf('a b c d e f g h i j k l m n o p q r s t u w x y z A B C D E F G H I J K L M N O P Q R S T U W X Y Z')
     expr = operatorPrecedence(variable,
             [
@@ -27,7 +27,7 @@ def logicParse(input):
 #            (oneOf(xorOps), 2, opAssoc.LEFT)
             ])
 
-    parse = expr.parseString(input)[0]
+    parse = expr.parseString(inStr)[0]
     return parseToStatement(parse)
 
 

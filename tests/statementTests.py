@@ -4,7 +4,6 @@ Created on Oct 15, 2012
 @author: colinwinslow
 '''
 import unittest
-from model.statement import Statement
 from model.InputReader import logicParse
 from model.Propositions import *
 from model.Equivalences import *
@@ -23,6 +22,7 @@ class Test(unittest.TestCase):
     def testNegationEquality(self):
         notp = logicParse("!p")
         othernotp = logicParse("~p")
+        assert notp == othernotp
         
         
     def testEquality(self):
@@ -73,7 +73,6 @@ class Test(unittest.TestCase):
     def testNegation(self):
 
         notp = logicParse("~p")
-        pt = str(notp)
         assert str(notp) == "~p"
         
     def testIdempotence(self):
@@ -132,6 +131,20 @@ class Test(unittest.TestCase):
         assert dm.getSuccessors(s, 1) == logicParse('(~(~p v ~q) & m)')
         assert dm.getSuccessors(t, 1) == logicParse('(~(p & q) & m)')
         
+    def testImplicationLaw(self):
+        il = ImplicationLaw()
+        s = logicParse('p -> q')
+        t = logicParse('p v ~q')
+        assert il.getSuccessors(s, 0) == logicParse('(~p v q)')
+        assert il.getSuccessors(t, 0) == logicParse('q -> p')
+        
+    def testExportation(self):
+        s = logicParse("(a -> b) -> c")
+        t = logicParse("a -> (b -> c)")
+        ex = Exportation()
+        assert ex.getSuccessors(s, 0) == t
+        assert ex.getSuccessors(t, 0) == s
+       
         
         
         
