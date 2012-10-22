@@ -9,6 +9,8 @@ andOps = "and & &&"
 impOps = "implies -> => --> ==>"
 bimpOps = "<-> <--> <=> <==> iff"
 xorOps = "xor"
+trueConstants = " T 1 TRUE True true "
+falseConstants = " F 0 FALSE False false "
 
 
 ## parser seems to get slower quickly the more operations are in play
@@ -16,7 +18,7 @@ xorOps = "xor"
 ## and then only parse with those. 
 
 def logicParse(inStr):
-    variable = oneOf('a b c d e f g h i j k l m n o p q r s t u w x y z A B C D E F G H I J K L M N O P Q R S T U W X Y Z')
+    variable = oneOf('a b c d e f g h i j k l m n o p q r s t u w x y z ' + trueConstants + falseConstants)
     expr = operatorPrecedence(variable,
             [
             (oneOf(notOps), 1, opAssoc.RIGHT),
@@ -36,8 +38,14 @@ def parseToStatement(parse, index=0, d=None):
     
     if d == None: d = dict()
     
+    if parse == oneOf(trueConstants):
+        d[index] = Propositions.Constant(True)
+        
+    elif parse == oneOf(falseConstants):
+        d[index] = Propositions.Constant(False)
+    
     #proposition
-    if len(parse) == 1:
+    elif len(parse) == 1:
         d[index] = Propositions.Proposition(parse)
     
     #negation

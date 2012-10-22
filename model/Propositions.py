@@ -26,6 +26,14 @@ class Proposition():
         
     def prune(self, i, d):
         d.pop(i)
+        
+class Constant(Proposition):
+    def __init__(self,val):
+        self.symbol = val
+        self.val = val
+    
+    def type(self):
+        return "constant"
     
 class UnaryOperation(Proposition):
     def __init__(self):
