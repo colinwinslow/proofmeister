@@ -212,7 +212,7 @@ class DoubleNegation(object):
     def getSuccessors(self, statement, i):
         if statement.type(i) == "negation" and statement.type(i*2+1) == "negation":
             successor = statement.graft(i,statement.childTree(i*4+3))
-            successor.name = self.name
+            successor.action = self.name
             return successor
         
 class DeMorgans(object):

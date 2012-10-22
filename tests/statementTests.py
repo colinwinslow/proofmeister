@@ -144,7 +144,13 @@ class Test(unittest.TestCase):
         ex = Exportation()
         assert ex.getSuccessors(s, 0) == t
         assert ex.getSuccessors(t, 0) == s
-       
+        
+    def testGetSucs(self):
+        rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
+        s = logicParse("q & (~(r -> s) | t)")
+        sucs = s.getAllSuccessors(rules)
+        for p in sucs:
+            print p, "\t", p.action
         
         
         

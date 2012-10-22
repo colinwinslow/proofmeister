@@ -14,9 +14,25 @@ class Statement(object):
     def __init__(self, inDict):
         self.d = inDict
         self.action = None
+        self.cost = 0
         
     def __getitem__(self, key):
         return self.childTree(key)
+    
+    def getAllSuccessors(self,rules):
+        allSucs = []
+        for i in self.d.keys():
+            allSucs = allSucs + self.getSuccessors(i, rules)
+        return allSucs
+            
+    
+    def getSuccessors(self,i,rules):
+        successors = []
+        for r in rules:
+            sucs = r.getSuccessors(self,i)
+            if type(sucs) == list: successors = successors + sucs
+            elif sucs != None: successors.append(sucs)
+        return successors
         
     def getParent(self, i):
         if i == 0: return None
