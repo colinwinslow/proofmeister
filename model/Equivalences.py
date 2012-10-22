@@ -96,7 +96,9 @@ class Distributivity(object):
                 successor.graftInPlace(i*4+6,r)         # (p & q) v (p2 & r)
                 successor.action = self.name
                 successors.append(successor)
-            if statement.type(i*2+1)==otherType: # ie p & (q v r); thisType=="conjunction", otherType = "disjunction"
+                
+                
+            if statement.type(i*2+1)==otherType:
                 p = statement.childTree(i*2+2)
                 p2 = statement.childTree(i*2+2)
                 q = statement.childTree(i*4+3)
@@ -119,7 +121,55 @@ class Distributivity(object):
                 return successors
             else: return None
                 
-        
+class Absorption(object):
+    ''' 
+    p & (p v r) = p
+    p v (p & r) = p
+    '''
+    def __init__(self):
+        self.name = "Absorption Laws"
+    
+    def getSuccessors(self, statement, i):
+        if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
+            thisType = statement.type(i)
+            if thisType == "conjunction": otherType = "disjunction"
+            else: otherType = "conjunction"
+            successors = []
+            if statement.type(i*2+2)==otherType: # ie p & (q v r); thisType=="conjunction", otherType = "disjunction"
+                p = statement.childTree(i*2+1)
+                q = statement.childTree(i*4+5)
+                r = statement.childTree(i*4+6)
+                if p==q or p==r:
+                    successor = statement.graft(i,p)
+                    successor.action = self.name
+                    successors.append(successor)
+                    
+            if statement.type(i*2+1)==otherType: # ie (q v r) & p; thisType=="conjunction", otherType = "disjunction"
+                p = statement.childTree(i*2+2)
+                q = statement.childTree(i*4+3)
+                r = statement.childTree(i*4+4)
+                if p==q or p==r:
+                    successor = statement.graft(i,p)
+                    successor.action = self.name
+                    successors.append(successor)
+            if len(successors) == 1:
+                return successors[0]
+            elif len(successors) > 1:
+                return successors
+            else: return None
+    
+class DoubleNegation(object):
+    ''' 
+    ~(~p) = p
+    '''
+    def __init__(self):
+        self.name = "Double Negation"
+    
+    def getSuccessors(self, statement, i):
+        if statement.type(i) == "negation" and statement.type(i*2+1) == "negation":
+            successor = statement.graft(i,statement.childTree(i*4+3))
+            successor.name = self.name
+            return successor
     
                 
             

@@ -97,6 +97,24 @@ class Test(unittest.TestCase):
         assert dist.getSuccessors(s, 0) == logicParse('(p & q) v (p & r)')
         assert dist.getSuccessors(t, 0) == logicParse('(p v q) & (p v r)')
         
+    def testAbsorption(self):
+        answer = logicParse("p")
+        s = logicParse('p & (p v q)')
+        t = logicParse('(p v q) & p')
+        u = logicParse('p v (p & q)')
+        v = logicParse('(p & q) v p')
+        absorb = Absorption()
+        assert absorb.getSuccessors(s, 0) == answer
+        assert absorb.getSuccessors(t, 0) == answer
+        assert absorb.getSuccessors(u, 0) == answer
+        assert absorb.getSuccessors(v, 0) == answer
+        
+    def testDN(self):
+        s = logicParse('~~p')
+        answer = logicParse("p")
+        dn = DoubleNegation()
+        print dn.getSuccessors(s, 0)
+        assert dn.getSuccessors(s, 0)==answer
         
         
         

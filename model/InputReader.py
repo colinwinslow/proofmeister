@@ -11,6 +11,10 @@ bimpOps = "<-> <--> <=> <==> iff"
 xorOps = "xor"
 
 
+## parser seems to get slower quickly the more operations are in play
+## might be smart to preprocess the string and see which ops are needed,
+## and then only parse with those. 
+
 def logicParse(input):
     variable = oneOf('a b c d e f g h i j k l m n o p q r s t u w x y z A B C D E F G H I J K L M N O P Q R S T U W X Y Z')
     expr = operatorPrecedence(variable,
@@ -20,7 +24,7 @@ def logicParse(input):
             (oneOf(andOps), 2, opAssoc.LEFT),
             (oneOf(impOps), 2, opAssoc.LEFT)#,
 #            (oneOf(bimpOps),2,opAssoc.LEFT),
-#            (oneOf(xorOps), 1, opAssoc.LEFT)
+#            (oneOf(xorOps), 2, opAssoc.LEFT)
             ])
 
     parse = expr.parseString(input)[0]
