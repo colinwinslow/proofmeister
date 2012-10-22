@@ -89,6 +89,16 @@ class Statement(object):
         self.prune(i)
         self.d.update(other.d)
         
+    def negatedChildTree(self,i):
+        '''returns a new negated statement with the given index as its root, without creating double negatives.'''
+        if self.type(i)=="negation":
+            return self.childTree(i*2+1)
+        else:
+            out = Statement(dict())
+            out.insertProp(0, "negation")
+            out.graftInPlace(1, self.childTree(i))
+            return out
+        
     
     def __hash__(self):
         return self.d.get(0).hash(0, self.d)

@@ -170,7 +170,31 @@ class DoubleNegation(object):
             successor = statement.graft(i,statement.childTree(i*4+3))
             successor.name = self.name
             return successor
+        
+class DeMorgans(object):
+    ''' 
+    ~(p & q) = ~p v ~q
+    '''
+    def __init__(self):
+        self.name = "De Morgan's Laws"
     
+    def getSuccessors(self, statement, i):
+        if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
+            thisType = statement.type(i)
+            if thisType == "conjunction": otherType = "disjunction"
+            else: otherType = "conjunction"
+            
+            np = statement.negatedChildTree(i*2+1)
+            nq = statement.negatedChildTree(i*2+2)
+            
+            ns = Statement(dict())
+            ns.insertProp(0, "negation")
+            ns.insertProp(1, otherType)
+            ns.graftInPlace(3,np)
+            ns.graftInPlace(4,nq)
+            output = statement.graft(i,ns)
+            output.action = self.name
+            return output
                 
             
     

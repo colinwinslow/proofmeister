@@ -43,6 +43,13 @@ class Test(unittest.TestCase):
         new = graftee.graft(2, graft)
         assert new == target
         
+    def testNegatedChildTree(self):
+        s = logicParse("(a & b) -> ~(a & b)")
+        n1 = s.negatedChildTree(1)
+        n2 = s.negatedChildTree(2)
+        assert n1 == s.childTree(2)
+        assert n2 == s.childTree(1)
+        
         
         
         
@@ -96,6 +103,9 @@ class Test(unittest.TestCase):
         dist = Distributivity()
         assert dist.getSuccessors(s, 0) == logicParse('(p & q) v (p & r)')
         assert dist.getSuccessors(t, 0) == logicParse('(p v q) & (p v r)')
+        m = logicParse("(p & (q or r)) & m")
+        mtarget = logicParse("((p & q) v (p & r)) & m")
+        assert dist.getSuccessors(m, 1) == mtarget
         
     def testAbsorption(self):
         answer = logicParse("p")
@@ -113,8 +123,14 @@ class Test(unittest.TestCase):
         s = logicParse('~~p')
         answer = logicParse("p")
         dn = DoubleNegation()
-        print dn.getSuccessors(s, 0)
         assert dn.getSuccessors(s, 0)==answer
+        
+    def testDeMorgan(self):
+        s = logicParse('(p&q)&m')
+        t = logicParse('(~pv~q)&m')
+        dm= DeMorgans()
+        assert dm.getSuccessors(s, 1) == logicParse('(~(~p v ~q) & m)')
+        assert dm.getSuccessors(t, 1) == logicParse('(~(p & q) & m)')
         
         
         
