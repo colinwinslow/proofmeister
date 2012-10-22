@@ -1,188 +1,69 @@
 '''
-Created on Sep 13, 2012
-These are objects that all have a getSuccessorNodes method that checks a given proposition
-to see if a particular law or equivalence applies, and returns the result of that
-application if it can be. These will be the successors in the graph search. 
+Created on Oct 21, 2012
+
 @author: colinwinslow
 '''
+from statement import Statement
 
-from Propositions import *
-from copy import deepcopy
-
-def negate(prop):
-    print "negatefunction"
-    '''negates without causing double negatives'''
-    if isinstance(prop,Negation):
-        out = deepcopy(prop.arg)
-        out.parent = prop.parent
-        out.index = (out.index-1)//2
-        out.indexTree()
-    else: 
-        pp = prop.parent
-        out = Negation(prop)
-        out.index = out.arg.index
-        out.parent = pp
-        out.indexTree(out.arg.index)
-    return out
-
-class Idempotence():
-    
+class Idempotence(object):
+    ''' 
+    (p & p) = p
+    (p or p) = p
+    '''
     def __init__(self):
-        self.appliesTo = ('Conjunction', 'Disjunction')
+        self.name = "Idempotent Laws"
         
-    def getSuccessorNodes(self, prop):
-        if isinstance(prop, Conjunction) or isinstance(prop, Disjunction):
-            out = self.simplify(prop)
-            try: out.action = "Idempotence"
-            except: pass
-            return out
-        
-    def simplify(self, prop):
-        if prop.a==prop.b:
-            return prop.a
-        
-class DoubleNegativity():
-    
-    def __init__(self):
-        self.appliesTo = ('Negation')
-    
-    def getSuccessorNodes(self, prop):
-        if isinstance(prop, Negation):
-            if isinstance(prop.symbol, Negation):
-                return prop.symbol.symbol
-        
-
-
-class DeMorgansSplit():
-    def __init__(self):
-        self.appliesTo = ('Negation')
-    
-    def getSuccessorNodes(self, prop):
-        if isinstance(prop.symbol, Conjunction):
-            nota = negate(prop.symbol.a)
-            notb = negate(prop.symbol.b)
-            out = Disjunction((nota, notb))
-            out.action = "De Morgan's Law"
-            return out
-        elif isinstance(prop.symbol, Disjunction):
-            nota = negate(prop.symbol.a)
-            notb = negate(prop.symbol.b)
-            out = Conjunction((nota, notb))
-            out.action = "De Morgan's Law"
-            return out
-        
-class DeMorgansJoin():
-    def __init__(self):
-        self.appliesTo = ('Conjunction', 'Disjunction')
-    def getSuccessorNodes(self, prop):
-        if isinstance(prop, Conjunction):
-            out = negate(Disjunction([negate(prop.a), negate(prop.b)]))
-            out.action = "De Morgan's Law"
-            return out
-        elif isinstance(prop, Disjunction):
-            out = negate(Conjunction([negate(prop.a), negate(prop.b)]))
-            out.action = "De Morgan's Law"
-            return out
-    
-class ImplicationLaw(): 
-    def __init__(self):
-        self.appliesTo = ('Implication', 'Disjunction')
-        
-    def getSuccessorNodes(self, prop):
-        if isinstance(prop, Disjunction):
-            out = Implication((Negation(prop.a), prop.b))
-            out.action = "Implication Law"
-            return out
-        if isinstance(prop, Implication):
-            out = Disjunction((Negation(prop.a), prop.b))
-            out.action= "Implication Law"
-            return out
-        
-class Contraposition():
-    def __init__(self):
-        self.appliesTo = ('Implication')
-        
-    def getSuccessorNodes(self, prop):
-        if isinstance(prop, Implication):
-            out = Implication((Negation(prop.b), Negation(prop.a)))
-            out.action = "Contraposition"
-            return out
-        
-class Distributivity():
-    def __init__(self):
-        self.appliesTo = ('Conjunction', 'Disjunction')
-    
-    def getSuccessorNodes(self, prop):
-        if isinstance(prop, Conjunction):
-            if isinstance(prop.a, Disjunction) and isinstance(prop.b, Disjunction):
-            # this checks to see if we can "undistribute"
-                aMembers = set((prop.a.a, prop.a.b))
-                bMembers = set((prop.b.a, prop.b.b))
-                overlap = aMembers.intersection(bMembers)
-                unique = aMembers.symmetric_difference(bMembers)
-                if len(overlap) == 1:
-                    out = Disjunction((overlap.pop(), Conjunction((unique.pop(), unique.pop()))))
-                    out.action="Distributive Law"
-                    return out
-            elif isinstance(prop.a, Disjunction):
-                out = Disjunction((Conjunction((prop.b, prop.a.a)), Conjunction((prop.b, prop.a.b))))
-                out.action="Distributive Law"
-                return out
-            elif isinstance(prop.b, Disjunction):
-                out = Disjunction((Conjunction((prop.a, prop.b.a)), Conjunction((prop.a, prop.b.b))))
-                out.action="Distributive Law"
-                return out
+    def getSuccessors(self,statement,i):
+        if statement.type(i)=="conjunction" or statement.type(i)=="disjunction":
+            left = statement[i*2+1]
+            if left == statement[i*2+2]:
+                successor = statement.graft(i,left)
+                successor.action = self.name
+                return successor
             
-        if isinstance(prop, Disjunction):
-            if isinstance(prop.a, Conjunction) and isinstance(prop.b, Conjunction):
-            # this checks to see if we can "undistribute"
-                aMembers = set((prop.a.a, prop.a.b))
-                bMembers = set((prop.b.a, prop.b.b))
-                overlap = aMembers.intersection(bMembers)
-                unique = aMembers.symmetric_difference(bMembers)
-                if len(overlap) == 1:
-                    out = Conjunction((overlap.pop(), Disjunction((unique.pop(), unique.pop()))))
-                    out.action="Distributive Law"
-                    return out
-            elif isinstance(prop.a, Conjunction):
-                out = Conjunction((Disjunction((prop.b, prop.a.a)), Disjunction((prop.b, prop.a.b))))
-                out.action="Distributive Law"
-                return out
-            elif isinstance(prop.b, Conjunction):
-                out = Conjunction((Disjunction((prop.a, prop.b.a)), Disjunction((prop.a, prop.b.b))))
-                out.action = "Distributive Law"
-                return out
+class Associativity(object):
+    ''' 
+    ((p & q) & r) = (p & (q & r))
+    ((p or q) or r) = (p or (q or r))
+    '''
+    def __init__(self):
+        self.name = "Associative Laws"
+        
+    def getSuccessors(self,statement,i):
+        if statement.type(i)=="conjunction" or statement.type(i)=="disjunction":
+            thisType = statement.type(i)
+            successors = []
+            if statement.type(i*2+1)==thisType:
+                a = statement.childTree(i*4+3)
+                b = statement.childTree(i*4+4)
+                c= statement.childTree(i*2+2)
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i,thisType)
+                successor.insertProp(2*i+2,thisType)
+                successor.graftInPlace(2*i+1,a)
+                successor.graftInPlace(4*i+5,b)
+                successor.graftInPlace(4*i+6,c)
+                successors.append(successor)
+            if statement.type(i*2+2)==thisType:
+                a = statement.childTree(i*2+1)
+                b = statement.childTree(i*4+5)
+                c= statement.childTree(i*4+6)
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i,thisType)
+                successor.insertProp(2*i+1,thisType)
+                successor.graftInPlace(4*i+3,a)
+                successor.graftInPlace(4*i+4,b)
+                successor.graftInPlace(2*i+2,c)
+                successors.append(successor)
+            if len(successors)==1:
+                return successors[0]
+            elif len(successors)>1:
+                return successors
+            else: return None
+                
             
     
+            
         
-class Absorption():
-    def __init__(self):
-        self.appliesTo = ('Conjunction', 'Disjunction')
-        
-    def getSuccessorNodes(self, prop):
-        return None
-
-class Associativity():
-    def __init__(self):
-        self.appliesTo = ('Conjunction', 'Disjunction')
-        
-    def getSuccessorNodes(self, prop):
-        if isinstance(prop, Conjunction):
-            if isinstance(prop.a, Conjunction):
-                out = Conjunction([prop.a.a, Conjunction([prop.a.b, prop.b])])
-                out.action="Associative Law"
-                return out
-            elif isinstance(prop.b, Conjunction):
-                out = Conjunction([Conjunction([prop.a, prop.b.a]), prop.b.b])
-                out.action="Associative Law"
-                return out 
-        if isinstance(prop, Disjunction):
-            if isinstance(prop.a, Disjunction):
-                out = Disjunction([prop.a.a, Disjunction([prop.a.b, prop.b])])
-                out.action="Associative Law"
-                return out 
-            elif isinstance(prop.b, Disjunction):
-                out = Disjunction([Disjunction([prop.a, prop.b.a]), prop.b.b])
-                out.action="Associative Law"
-                return out
-       

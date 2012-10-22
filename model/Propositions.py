@@ -1,283 +1,122 @@
 '''
-Created on Sep 12, 2012
-This is the class heirarchy. Everything inherits from Proposition. Pay close
-attention to __eq__ and __hash__ and such as these need to be equivalent in 
-many cases.
-
+Created on Oct 15, 2012
 
 @author: colinwinslow
 '''
-from copy import deepcopy,copy
-
-from LogicalOperators import *
-
-
-def removeNones(inlist):
-    output = []
-    for i in inlist:
-        if i!=None: output.append(i)
-    return output
-
-    
-
-class Proposition(object):
-        
-    
-    def __getitem__(self,key):
-        return self.parseSearch(key)
-    
-    def parseSearch(self,key):
-        if key == self.index: return self
-        else: return None
-                
-       
-    def __init__(self, symbol, parent=None):
-        self.index = None
-        self.note = None
-        self.action=None
-        self.symbol = (symbol)
-        self.operator = None
-        self.successors = set()
-        self.parent = parent
-        self.treeList = []
-    
-    def indexTree(self, i=None, treeList = None ):
-        if treeList == None: treeList = self.treeList
-        if i==None:
-            self.index=0
-            treeList.append(0)
-        else: 
-            self.index=i
-            treeList.append(i)
-            
-            
-    def getAllIndices(self):
-        self.treeList.sort()
-        return self.treeList
-        
-        
-    def __eq__(self, other):
-        if type(self)!=type(other): return False
-        else: return self.symbol==other.symbol
-    
-    def __ne__(self, other):
-        if type(self)!=type(other): return True
-        return self.symbol!=other.symbol
-    
-    def __hash__(self):
-        return hash(self.symbol)
-
-    def getLaTeX(self):
-        return self.symbol
-    
-    def getMathML(self):
-        return self.symbol
 
         
         
-
-            
+class Proposition():
+    def __init__(self,val):
+        self.symbol = val
+    def reIndex(self,i,newIndex,d):
+        d[newIndex]=d.pop(i)
         
-        
-        
-    def getSymbols(self):
-        if self.operator==None:
-            return self.symbol
-        else:
-            output = []
-            for i in self.symbol:
-                output.append(i.getSymbols())
-            return tuple(output)
     def __str__(self):
-        return str(self.symbol)
+        return self.symbol
+    
+    def hash(self,i,d):
+        return hash(self.symbol)
+    
+    def type(self):
+        return "proposition"
+    
+    def childTree(self, oldIndex, newIndex, oldD, newD):
+        newD[newIndex]=oldD.get(oldIndex)
+        
+    def prune(self,i,d):
+        d.pop(i)
+    
+class UnaryOperation(Proposition):
+    def __init__(self):
+        super(UnaryOperation,self).__init__()
+    def reIndex(self,i,newIndex,d):
+        d.get(2*i+1).reIndex(2*i+1, 2*newIndex+1, d)
+        d[newIndex]=d.pop(i)
+    
+    def childTree(self, oldIndex, newIndex, oldD, newD):
+        newD[newIndex]=oldD.get(oldIndex)
+        oldD.get(oldIndex*2+1).childTree(oldIndex*2+1,newIndex*2+1,oldD,newD)
+        
+    def prune(self,i,d):
+        d.get(i*2+1).prune(i*2+1,d)
+        d.pop(i)
+    
+class Negation(UnaryOperation):
+    def __init__(self):
+        pass
+    def hash(self,i,d):
+        return hash((d.get(i*2+1).hash(i*2+1,d),"negation"))
+    def type(self):
+        return "negation"
     
 class BinaryOperation(Proposition):
-    
-    
-    
-    def __init__(self, t, parent = None):
-        super(BinaryOperation,self).__init__(t)
+    def __init__(self):
+        super(BinaryOperation,self).__init__()
+    def reIndex(self,i,newIndex,d):
+        d.get(2*i+1).reIndex(2*i+1, 2*newIndex+1, d)
+        d.get(2*i+2).reIndex(2*i+2, 2*newIndex+2, d)
+        d[newIndex]=d.pop(i)
+    def childTree(self, oldIndex, newIndex, oldD, newD):
+        newD[newIndex]=oldD.get(oldIndex)
         
-        if type(t).__name__=="ParseResults":
-             self.args = t[0][0::2]
-        else: self.args = t
-        if isinstance(self.args[0],str):
-            self.a=Proposition(self.args[0],self)
-        elif isinstance(self.args[0],Proposition):
-            self.a = self.args[0]
-            self.a.parent = self
-
-        if isinstance(self.args[1],str):
-            self.b=Proposition(self.args[1],self)
-        elif isinstance(self.args[1],Proposition):
-            self.b = self.args[1]
-            self.b.parent = self
-            
-        self.action = None
+        oldleft = oldD.get(oldIndex*2+1)
+        oldleft.childTree(oldIndex*2+1,newIndex*2+1,oldD,newD)
         
+        oldright = oldD.get(oldIndex*2+2)
+        oldright.childTree(oldIndex*2+2,newIndex*2+2,oldD,newD)
         
-    def indexTree(self, i=None, treeList = None):
-        #must be called on the root node
-        if treeList == None: treeList = self.treeList
-        if i==None:
-            self.index=0
-            treeList.append(0)
-        else:
-            self.index=i
-            treeList.append(i)
-        self.a.indexTree(2*self.index + 1, treeList)
-        self.b.indexTree(2*self.index + 2, treeList)
-    
-    def parseSearch(self,key):
-        if key == self.index: return self
-        elif key > self.index:
-            left = self.a.parseSearch(key)
-            if left != None: return left
-            return self.b.parseSearch(key)
-    
-    def substitute(self,newProp,oldProp):
-        if self.a==oldProp:
-            self.a=newProp
-            self.a.parent = self
-        if self.b==oldProp:
-            self.b=newProp
-            self.b.parent = self
-    
-    def __eq__(self, other):
-        if type(self)==type(other) and self.commutative:
-            return frozenset([self.a,self.b]) == frozenset([other.a,other.b])
-        elif type(self)==type(other) and not self.commutative:
-            return self.a == other.a and self.b == other.b
-        else: return False
-    
-    def __ne__(self, other):
-        if type(self)!=type(other): return True
-        else:
-            if self.commutative: return frozenset([self.a,self.b]) != frozenset([other.a,other.b])
-            else: return self.a != other.a or self.b != other.b
-        
-    def __str__(self):
-        return '('+str(self.a)+' '+str(self.operator)+' '+str(self.b)+')'
-                    
-        
-        
-                
-        
-          
-class Negation(Proposition):
-    
-    def substitute(self,newProp,oldProp):
-        self.arg =newProp
-        self.arg.parent = self
-    
-#    def __deepcopy__(self, memo):
-#        return self
-#    def __copy__(self, memo):
-#        return self
-    
-    def parseSearch(self,key):
-        if key == self.index: return self
-        else: return self.arg.parseSearch(key)
-    
-    def __getitem__(self,key):
-        return self.symbol
-    
-#    def __new__(cls, prop ):
-#        '''automatically replaces would-be double negatives with positivies'''
-#        if isinstance(prop, Negation):
-#            return prop.symbol
-#        else:
-#            return super(Negation, cls).__new__(cls)
-    
-    def __init__(self, parse):
-        super(Negation,self).__init__(parse)
-        if type(parse).__name__=="ParseResults":
-            self.arg = parse[0][1]
-        else: self.arg = parse
-        if isinstance(self.arg,str):
-            self.arg=Proposition(self.arg)
-        self.arg.parent = self
-        self.symbol = self.arg
-        self.operator = NegOp()
-        self.action=None
-        
-    def indexTree(self, i=None, treeList = None):
-    #must be called on the root node
-        if treeList == None: treeList = self.treeList
-        if i==None: 
-            treeList.append(0)
-            self.index=0
-        else: 
-            treeList.append(i)
-            self.index=i
-        self.arg.indexTree(2*self.index+1, treeList)
-        
-
-    
-    def __eq__(self, other):
-        if type(self)!=type(other): return False
-        else: return self.arg == other.arg
-    
-    def __ne__(self, other):
-        if type(self)!=type(other): return True
-        else: return self.arg != other.arg
-    
-    def __hash__(self):
-        return hash((self.arg, 'Negation'))
-    
-    def getSymbols(self):
-        return (NegOp(), self.arg)
-    
-    def __str__(self):
-        return str(self.operator)+str(self.arg)
-        
-            
+    def prune(self,i,d):
+        d.get(i*2+1).prune(i*2+1,d)
+        d.get(i*2+2).prune(i*2+2,d)
+        d.pop(i)
         
     
 class Conjunction(BinaryOperation):
-    
-    def __init__(self, t):
-        super(Conjunction,self).__init__(t)
-        self.symbol = (self.a, AndOp(), self.b)
-        self.operator = self.symbol[1]
-        self.commutative=True
-#        self.action = None
-    
- 
-    def __hash__(self):
-        return hash((frozenset([self.a,self.b]), 'Conjunction'))
-    
+    def __init__(self):
+        self.commutative = True
+    def getOperator(self):
+        return "&"
+    def type(self):
+        return "conjunction"
+    def hash(self,i,d):
+        leftHash = d.get(i*2+1).hash(i*2+1,d)
+        rightHash = d.get(i*2+2).hash(i*2+2,d)
+        childrenHash = (frozenset([leftHash, rightHash]), "conjunction")
+        return hash(childrenHash)
         
-    
 class Disjunction(BinaryOperation):
-    
-    def __init__(self, t):
-        super(Disjunction,self).__init__(t)
-        self.symbol = (self.a, OrOp(), self.b)
-        self.operator = OrOp()
-        self.commutative=True
-        
-    def __hash__(self):
-        return hash((frozenset([self.a,self.b]), "Disjunction"))
-    
-    
+    def __init__(self):
+        self.commutative = True
+    def getOperator(self):
+        return "v"
+    def type(self):
+        return "disjunction"
+    def hash(self,i,d):
+        return hash((frozenset([d.get(i*2+1).hash(i*2+1,d), d.get(i*2+2).hash(i*2+2,d)]), "disjunction"))
     
 class Implication(BinaryOperation):
-    def __init__(self, t, action=None):
-        
-        super(Implication,self).__init__(t)
-        self.symbol = (self.a, ImpOp(), self.b)
-        self.operator = self.symbol[1]
-        self.action = action
-        self.commutative=False
-        
+    def __init__(self):
+        self.commutative = False
+    def getOperator(self):
+        return "->"
+    def type(self):
+        return "implication"
+    def hash(self,i,d):
+        return hash(((d.get(i*2+1).hash(i*2+1,d), d.get(i*2+2).hash(i*2+2,d)), "implication"))
     
-    def __hash__(self):
-        return hash((self.a, self.b, "Implication"))
+class BiImplication(BinaryOperation):
+    def __init__(self):
+        self.commutative = True
+    def type(self):
+        return "biimplication"
+    def hash(self,i,d):
+        return hash((frozenset([d.get(i*2+1).hash(i*2+1,d), d.get(i*2+2).hash(i*2+2,d)]), "biimplication"))
     
-
-
-#class Biimplication(Proposition):
-#
-#class ExclusiveOr(Proposition):
-        
+class ExclusiveOr(BinaryOperation):
+    def __init__(self):
+        self.commutative = True
+    def type(self):
+        return "xor"
+    def hash(self,i,d):
+        return hash((frozenset([d.get(i*2+1).hash(i*2+1,d), d.get(i*2+2).hash(i*2+2,d)]), "xor"))

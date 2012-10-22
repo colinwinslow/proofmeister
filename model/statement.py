@@ -4,7 +4,7 @@ Created on Oct 15, 2012
 @author: colinwinslow
 '''
 
-from BProps import *
+from Propositions import *
 class Statement(object):
     '''
     represents a parse tree as a dictionary

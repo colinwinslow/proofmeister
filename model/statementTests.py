@@ -5,9 +5,9 @@ Created on Oct 15, 2012
 '''
 import unittest
 from statement import Statement
-from pyparseplayground import logicParse
+from InputReader import logicParse
 from Propositions import *
-from BEquivalences import *
+from Equivalences import *
 
 
 class Test(unittest.TestCase):
