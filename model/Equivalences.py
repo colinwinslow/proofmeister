@@ -13,11 +13,11 @@ class Idempotence(object):
     def __init__(self):
         self.name = "Idempotent Laws"
         
-    def getSuccessors(self,statement,i):
-        if statement.type(i)=="conjunction" or statement.type(i)=="disjunction":
-            left = statement[i*2+1]
-            if left == statement[i*2+2]:
-                successor = statement.graft(i,left)
+    def getSuccessors(self, statement, i):
+        if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
+            left = statement[i * 2 + 1]
+            if left == statement[i * 2 + 2]:
+                successor = statement.graft(i, left)
                 successor.action = self.name
                 return successor
             
@@ -29,39 +29,98 @@ class Associativity(object):
     def __init__(self):
         self.name = "Associative Laws"
         
-    def getSuccessors(self,statement,i):
-        if statement.type(i)=="conjunction" or statement.type(i)=="disjunction":
+    def getSuccessors(self, statement, i):
+        if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
             thisType = statement.type(i)
             successors = []
-            if statement.type(i*2+1)==thisType:
-                a = statement.childTree(i*4+3)
-                b = statement.childTree(i*4+4)
-                c= statement.childTree(i*2+2)
+            if statement.type(i * 2 + 1) == thisType:
+                a = statement.childTree(i * 4 + 3)
+                b = statement.childTree(i * 4 + 4)
+                c = statement.childTree(i * 2 + 2)
                 successor = statement.childTree(0)
                 successor.prune(i)
-                successor.insertProp(i,thisType)
-                successor.insertProp(2*i+2,thisType)
-                successor.graftInPlace(2*i+1,a)
-                successor.graftInPlace(4*i+5,b)
-                successor.graftInPlace(4*i+6,c)
+                successor.insertProp(i, thisType)
+                successor.insertProp(2 * i + 2, thisType)
+                successor.graftInPlace(2 * i + 1, a)
+                successor.graftInPlace(4 * i + 5, b)
+                successor.graftInPlace(4 * i + 6, c)
+                successor.action = self.name
                 successors.append(successor)
-            if statement.type(i*2+2)==thisType:
-                a = statement.childTree(i*2+1)
-                b = statement.childTree(i*4+5)
-                c= statement.childTree(i*4+6)
+            if statement.type(i * 2 + 2) == thisType:
+                a = statement.childTree(i * 2 + 1)
+                b = statement.childTree(i * 4 + 5)
+                c = statement.childTree(i * 4 + 6)
                 successor = statement.childTree(0)
                 successor.prune(i)
-                successor.insertProp(i,thisType)
-                successor.insertProp(2*i+1,thisType)
-                successor.graftInPlace(4*i+3,a)
-                successor.graftInPlace(4*i+4,b)
-                successor.graftInPlace(2*i+2,c)
+                successor.insertProp(i, thisType)
+                successor.insertProp(2 * i + 1, thisType)
+                successor.graftInPlace(4 * i + 3, a)
+                successor.graftInPlace(4 * i + 4, b)
+                successor.graftInPlace(2 * i + 2, c)
+                successor.action = self.name
                 successors.append(successor)
-            if len(successors)==1:
+            if len(successors) == 1:
                 return successors[0]
-            elif len(successors)>1:
+            elif len(successors) > 1:
                 return successors
             else: return None
+            
+class Distributivity(object):
+    ''' 
+    p & (q v r) = (p & q) v (p & r)
+    p v (q & r) = (p v q) & (p v r)
+    '''
+    def __init__(self):
+        self.name = "Distributive Laws"
+    
+    def getSuccessors(self, statement, i):
+        if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
+            thisType = statement.type(i)
+            if thisType == "conjunction": otherType = "disjunction"
+            else: otherType = "conjunction"
+            successors = []
+            if statement.type(i*2+2)==otherType: # ie p & (q v r); thisType=="conjunction", otherType = "disjunction"
+                p = statement.childTree(i*2+1)
+                p2 = statement.childTree(i*2+1)
+                q = statement.childTree(i*4+5)
+                r = statement.childTree(i*4+6)
+                
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i,otherType)       # _ v _
+                successor.insertProp(i*2+1,thisType)    # (_ & _) v _
+                successor.insertProp(i*2+2,thisType)    # (_ & _) v (_ & _)
+                successor.graftInPlace(i*4+3,p)         # (p & _) v (_ & _)
+                successor.graftInPlace(i*4+4,q)         # (p & q) v (_ & _)
+                successor.graftInPlace(i*4+5,p2)        # (p & q) v (p2 & _)
+                successor.graftInPlace(i*4+6,r)         # (p & q) v (p2 & r)
+                successor.action = self.name
+                successors.append(successor)
+            if statement.type(i*2+1)==otherType: # ie p & (q v r); thisType=="conjunction", otherType = "disjunction"
+                p = statement.childTree(i*2+2)
+                p2 = statement.childTree(i*2+2)
+                q = statement.childTree(i*4+3)
+                r = statement.childTree(i*4+4)
+                
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i,otherType)       
+                successor.insertProp(i*2+1,thisType)    
+                successor.insertProp(i*2+2,thisType)    
+                successor.graftInPlace(i*4+3,p)    
+                successor.graftInPlace(i*4+4,q)     
+                successor.graftInPlace(i*4+5,p2)    
+                successor.graftInPlace(i*4+6,r)    
+                successor.action = self.name
+                successors.append(successor)
+            if len(successors) == 1:
+                return successors[0]
+            elif len(successors) > 1:
+                return successors
+            else: return None
+                
+        
+    
                 
             
     
