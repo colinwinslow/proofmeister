@@ -4,10 +4,10 @@ Created on Oct 15, 2012
 @author: colinwinslow
 '''
 import unittest
-from statement import Statement
-from InputReader import logicParse
-from Propositions import *
-from Equivalences import *
+from model.statement import Statement
+from model.InputReader import logicParse
+from model.Propositions import *
+from model.Equivalences import *
 
 
 class Test(unittest.TestCase):

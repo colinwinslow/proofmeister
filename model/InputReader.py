@@ -4,7 +4,7 @@ from statement import Statement
 
 
 notOps = "~ not !"
-orOps = "| or"
+orOps = "| v or"
 andOps = "and & &&"
 impOps = "implies -> => --> ==>"
 bimpOps = "<-> <--> <=> <==> iff"
@@ -12,7 +12,7 @@ xorOps = "xor"
 
 
 def logicParse(input):
-    variable = oneOf(list(alphas))
+    variable = oneOf('a b c d e f g h i j k l m n o p q r s t u w x y z A B C D E F G H I J K L M N O P Q R S T U W X Y Z')
     expr = operatorPrecedence( variable,
             [
             (oneOf(notOps), 1, opAssoc.RIGHT),
