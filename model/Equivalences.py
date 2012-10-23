@@ -10,8 +10,9 @@ class Idempotence(object):
     (p & p) = p
     (p or p) = p
     '''
-    def __init__(self):
+    def __init__(self, cost = 1):
         self.name = "Idempotent Laws"
+        self.cost = cost
         
     def getSuccessors(self, statement, i):
         if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
@@ -19,6 +20,7 @@ class Idempotence(object):
             if left == statement[i * 2 + 2]:
                 successor = statement.graft(i, left)
                 successor.action = self.name
+                successor.cost = self.cost
                 return successor
             
 class Associativity(object):
@@ -26,8 +28,9 @@ class Associativity(object):
     ((p & q) & r) = (p & (q & r))
     ((p or q) or r) = (p or (q or r))
     '''
-    def __init__(self):
+    def __init__(self, cost = 1):
         self.name = "Associative Laws"
+        self.cost = cost
         
     def getSuccessors(self, statement, i):
         if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
@@ -45,6 +48,7 @@ class Associativity(object):
                 successor.graftInPlace(4 * i + 5, b)
                 successor.graftInPlace(4 * i + 6, c)
                 successor.action = self.name
+                successor.cost = self.cost
                 successors.append(successor)
             if statement.type(i * 2 + 2) == thisType:
                 a = statement.childTree(i * 2 + 1)
@@ -58,6 +62,7 @@ class Associativity(object):
                 successor.graftInPlace(4 * i + 4, b)
                 successor.graftInPlace(2 * i + 2, c)
                 successor.action = self.name
+                successor.cost = self.cost
                 successors.append(successor)
             if len(successors) == 1:
                 return successors[0]
@@ -70,8 +75,9 @@ class Exportation(object):
     ((p & q) & r) = (p & (q & r))
     ((p or q) or r) = (p or (q or r))
     '''
-    def __init__(self):
+    def __init__(self, cost = 1):
         self.name = "Exportation Law"
+        self.cost = cost
         
     def getSuccessors(self, statement, i):
         if statement.type(i) == "implication":
@@ -89,6 +95,7 @@ class Exportation(object):
                 successor.graftInPlace(4 * i + 5, b)
                 successor.graftInPlace(4 * i + 6, c)
                 successor.action = self.name
+                successor.cost = self.cost
                 successors.append(successor)
             if statement.type(i * 2 + 2) == thisType:
                 a = statement.childTree(i * 2 + 1)
@@ -102,6 +109,7 @@ class Exportation(object):
                 successor.graftInPlace(4 * i + 4, b)
                 successor.graftInPlace(2 * i + 2, c)
                 successor.action = self.name
+                successor.cost = self.cost
                 successors.append(successor)
             if len(successors) == 1:
                 return successors[0]
@@ -114,8 +122,9 @@ class Distributivity(object):
     p & (q v r) = (p & q) v (p & r)
     p v (q & r) = (p v q) & (p v r)
     '''
-    def __init__(self):
+    def __init__(self, cost = 1):
         self.name = "Distributive Laws"
+        self.cost = cost
     
     def getSuccessors(self, statement, i):
         if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
@@ -139,6 +148,7 @@ class Distributivity(object):
                 successor.graftInPlace(i*4+5,p2)        # (p & q) v (p2 & _)
                 successor.graftInPlace(i*4+6,r)         # (p & q) v (p2 & r)
                 successor.action = self.name
+                successor.cost = self.cost
                 successors.append(successor)
                 
                 
@@ -158,6 +168,7 @@ class Distributivity(object):
                 successor.graftInPlace(i*4+5,p2)    
                 successor.graftInPlace(i*4+6,r)    
                 successor.action = self.name
+                successor.cost = self.cost
                 successors.append(successor)
             if len(successors) == 1:
                 return successors[0]
@@ -170,8 +181,9 @@ class Absorption(object):
     p & (p v r) = p
     p v (p & r) = p
     '''
-    def __init__(self):
+    def __init__(self, cost = 1):
         self.name = "Absorption Laws"
+        self.cost = cost
     
     def getSuccessors(self, statement, i):
         if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
@@ -186,6 +198,7 @@ class Absorption(object):
                 if p==q or p==r:
                     successor = statement.graft(i,p)
                     successor.action = self.name
+                    successor.cost = self.cost
                     successors.append(successor)
                     
             if statement.type(i*2+1)==otherType: # ie (q v r) & p; thisType=="conjunction", otherType = "disjunction"
@@ -195,6 +208,7 @@ class Absorption(object):
                 if p==q or p==r:
                     successor = statement.graft(i,p)
                     successor.action = self.name
+                    successor.cost = self.cost
                     successors.append(successor)
             if len(successors) == 1:
                 return successors[0]
@@ -206,21 +220,24 @@ class DoubleNegation(object):
     ''' 
     ~(~p) = p
     '''
-    def __init__(self):
+    def __init__(self, cost = 1):
         self.name = "Double Negation"
+        self.cost = cost
     
     def getSuccessors(self, statement, i):
         if statement.type(i) == "negation" and statement.type(i*2+1) == "negation":
             successor = statement.graft(i,statement.childTree(i*4+3))
             successor.action = self.name
+            successor.cost = self.cost
             return successor
         
 class DeMorgans(object):
     ''' 
     ~(p & q) = ~p v ~q
     '''
-    def __init__(self):
+    def __init__(self, cost = 1):
         self.name = "De Morgan's Laws"
+        self.cost = cost
     
     def getSuccessors(self, statement, i):
         if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
@@ -238,14 +255,16 @@ class DeMorgans(object):
             ns.graftInPlace(4,nq)
             output = statement.graft(i,ns)
             output.action = self.name
+            output.cost = self.cost
             return output
         
 class ImplicationLaw(object):
     ''' 
     (p -> q) = (~p v q)
     '''
-    def __init__(self):
+    def __init__(self, cost = 1):
         self.name = "Law of Implication"
+        self.cost = cost
     
     def getSuccessors(self, statement, i):
         if statement.type(i) == "implication":
@@ -257,6 +276,8 @@ class ImplicationLaw(object):
             ns.graftInPlace(2,q)
             output = statement.graft(i,ns)
             output.action = self.name
+            output.cost = self.cost
+            
             return output
         elif statement.type(i) == "disjunction":
             successors = []
@@ -269,6 +290,7 @@ class ImplicationLaw(object):
                 ns.graftInPlace(2,q)
                 output = statement.graft(i,ns)
                 output.action = self.name
+                output.cost = self.cost
                 successors.append(output)
             if statement.type(i*2+2) == "negation":
                 np = statement.negatedChildTree(2*i+2)
@@ -279,6 +301,7 @@ class ImplicationLaw(object):
                 ns.graftInPlace(2,q)
                 output = statement.graft(i,ns)
                 output.action = self.name
+                output.cost = self.cost
                 successors.append(output)
             if len(successors) == 1:
                 return successors[0]
