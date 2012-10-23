@@ -31,7 +31,9 @@ class Node():
         
         
 
-def search(start,goal,rules):
+def search(start,goal,rules,verbose = False):
+    nodesExpanded = 0
+    shortcuts = 0
     node = Node(start, None)
     node.cost = 1
     frontier = PriorityQueue()
@@ -39,18 +41,22 @@ def search(start,goal,rules):
     explored = set()
     while not frontier.isEmpty():
         node = frontier.pop()
-        if node.state == goal: return node.traceback()
+        nodesExpanded += 1
+        if node.state == goal:
+            print "\n\n*********************"
+            print "expanded: ", nodesExpanded, " shortcuts: ", shortcuts
+            return node.traceback()   
         explored.add(node.state)
         for child in node.successors(rules):
             if child.state not in explored:
                 if frontier.getCheapestCost(child) == -1:
-                    print "first case"
                     frontier.push(child)
+                    if verbose: print child.cost, "\t", child.action,"\t", child.state
             elif frontier.getCheapestCost(child) > child.cost:
-                print "second case"
+                shortcuts += 1
+                print "shortcut!"
                 frontier.push(child)
-            else: print ":( ", frontier.getCheapestCost(child), child.cost
-        print len(frontier.heap)
+        
                     
             
 class PriorityQueue():

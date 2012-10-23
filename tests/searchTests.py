@@ -35,22 +35,71 @@ class Test(unittest.TestCase):
         goal = logicParse('p & ~q')
         
         steps = search(start,goal,rules)
-        print"Cost:\tRule:\t\t\t\tStatement:"
+        print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:
             print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nTherefor, ",start," = ", goal,"."
             
-#    def testSearch2(self):
+    def testSearch2(self):
+        rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
+        
+        start = logicParse('~(b v c) & (~b & ~c)')
+        start.action = "Beginning Premise"
+        start.cost = 0
+        goal = logicParse('~(b v c)')
+        
+        steps = search(start,goal,rules)
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nTherefor, ",start," = ", goal,"."
+        
+    def testSearch3(self):
+        print "\n\n******************"
+        rules = [Idempotence(),Associativity(),Exportation(),Distributivity(2),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
+        
+        start = logicParse('(~(b -> c) v d) & a')
+        start.action = "Beginning Premise"
+        start.cost = 0
+        goal = logicParse('a & (b -> (~c v d))')
+        
+        steps = search(start,goal,rules,True)
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nTherefor, ",start," = ", goal,"."
+        
+#    def testSearch4(self):
+#        # this one needs truth constants to work. 
+#        
 #        rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
 #        
-#        start = logicParse('~(b v c) & (~b & ~c)')
-#        start.action = "starting point"
+#        start = logicParse('~(p v (~p & q))')
+#        start.action = "Beginning Premise"
 #        start.cost = 0
-#        goal = logicParse('(~b v c)')
+#        goal = logicParse('~p & ~q')
 #        
 #        steps = search(start,goal,rules)
-#        print steps
+#        print"\nCost:\tRule:\t\t\t\tStatement:"
 #        for s in steps:
-#            print s, "\t", s.action
+#            print s.cost, "\t", s.action,"\t\t", s.state
+#        print "\nTherefor, ",start," = ", goal,"."
+        
+#    def testNotEquivalentSearch(self):
+#        # this one will get stuck forever until we figure out how to know when to quit
+#        
+#        rules = [DoubleNegation(1),DeMorgans(1),ImplicationLaw(1)]
+#        
+#        start = logicParse('p -> q')
+#        start.action = "Beginning Premise"
+#        start.cost = 0
+#        goal = logicParse('q -> p')
+#        
+#        steps = search(start,goal,rules,True)
+#        print"\nCost:\tRule:\t\t\t\tStatement:"
+#        for s in steps:
+#            print s.cost, "\t", s.action,"\t\t", s.state
+#        print "\nTherefor, ",start," = ", goal,"."
     
 
 
