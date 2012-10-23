@@ -135,6 +135,7 @@ class Test(unittest.TestCase):
         il = ImplicationLaw()
         s = logicParse('p -> q')
         t = logicParse('p v ~q')
+        u = logicParse("a&(~p v ~q)")
         assert il.getSuccessors(s, 0) == logicParse('(~p v q)')
         assert il.getSuccessors(t, 0) == logicParse('q -> p')
         

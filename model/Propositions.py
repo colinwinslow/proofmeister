@@ -9,8 +9,8 @@ Created on Oct 15, 2012
 class Proposition():
     def __init__(self, val):
         self.symbol = val
-    def reIndex(self, i, newIndex, d):
-        d[newIndex] = d.pop(i)
+    def reIndex(self, i, newIndex, d, temp):
+        temp[newIndex] = d.get(i)
         
     def __str__(self):
         return self.symbol
@@ -38,9 +38,9 @@ class Constant(Proposition):
 class UnaryOperation(Proposition):
     def __init__(self):
         super(UnaryOperation, self).__init__()
-    def reIndex(self, i, newIndex, d):
-        d.get(2 * i + 1).reIndex(2 * i + 1, 2 * newIndex + 1, d)
-        d[newIndex] = d.pop(i)
+    def reIndex(self, i, newIndex, d, temp):
+        d.get(2 * i + 1).reIndex(2 * i + 1, 2 * newIndex + 1, d, temp)
+        temp[newIndex] = d.get(i)
     
     def childTree(self, oldIndex, newIndex, oldD, newD):
         newD[newIndex] = oldD.get(oldIndex)
@@ -61,10 +61,10 @@ class Negation(UnaryOperation):
 class BinaryOperation(Proposition):
     def __init__(self):
         super(BinaryOperation, self).__init__()
-    def reIndex(self, i, newIndex, d):
-        d.get(2 * i + 1).reIndex(2 * i + 1, 2 * newIndex + 1, d)
-        d.get(2 * i + 2).reIndex(2 * i + 2, 2 * newIndex + 2, d)
-        d[newIndex] = d.pop(i)
+    def reIndex(self, i, newIndex, d,temp):
+        d.get(2 * i + 1).reIndex(2 * i + 1, 2 * newIndex + 1, d, temp)
+        d.get(2 * i + 2).reIndex(2 * i + 2, 2 * newIndex + 2, d, temp)
+        temp[newIndex] = d.get(i)
     def childTree(self, oldIndex, newIndex, oldD, newD):
         newD[newIndex] = oldD.get(oldIndex)
         

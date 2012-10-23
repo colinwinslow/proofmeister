@@ -21,10 +21,10 @@ class Statement(object):
     
     def getAllSuccessors(self,rules):
         allSucs = []
-        for i in self.d.keys():
+        keys = self.d.keys()
+        for i in keys:
             isucs = self.getSuccessors(i, rules)
             if len(isucs)>0: allSucs = allSucs + isucs
-        print "allsucs", allSucs
         if len(allSucs)>0: return allSucs
         else: return "poop"
             
@@ -81,7 +81,9 @@ class Statement(object):
     def reIndex(self, i, newIndex):
         '''reindexes a node and all it's descendents'''
         if newIndex < i: print "I wasn't designed to reindex downward!"
-        self.d.get(i).reIndex(i, newIndex, self.d)
+        temp = dict()
+        self.d.get(i).reIndex(i, newIndex, self.d, temp)
+        self.d = temp
         
     def childTree(self, i):
         '''returns a new statement with the given index as its root'''

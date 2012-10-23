@@ -14,7 +14,7 @@ class Test(unittest.TestCase):
     def testNode(self):
         rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
         
-        start = logicParse('~(p -> q)')
+        start = logicParse('~((p -> q)')
         start.action = None
         start.cost = 0
         goal = logicParse('p & ~q')
@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
     def testSearch(self):
         rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
         
-        start = logicParse(' (~(p -> q))')
+        start = logicParse(' (~((p & p) -> q))')
         start.action = "starting point"
         start.cost = 0
         goal = logicParse('p & ~q')
@@ -39,19 +39,19 @@ class Test(unittest.TestCase):
         for s in steps:
             print s, "\t", s.action
             
-    def testAllSucs(self):
+    def testSearch2(self):
         rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
         
-        start = logicParse('q -> (~r v ~s)')
-        steps = start.getAllSuccessors(rules)
+        start = logicParse('~(b v c) & (~b & ~c)')
         start.action = "starting point"
         start.cost = 0
-        goal = logicParse('q -> ~(r & s)')
+        goal = logicParse('(~b v c)')
         
-        #steps = search(start,goal,rules)
+        steps = search(start,goal,rules)
         print steps
         for s in steps:
             print s, "\t", s.action
+    
 
 
 if __name__ == "__main__":

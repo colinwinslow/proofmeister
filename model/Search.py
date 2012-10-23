@@ -15,7 +15,8 @@ class Node():
         else: self.cost = parent.cost + 1 # + state.cost
         
     def successors(self,rules):
-        return [Node(i,self) for i in self.state.getAllSuccessors(rules)]
+        successorNodes = [Node(i,self) for i in self.state.getAllSuccessors(rules)]
+        return successorNodes
     
     def traceback(self):
         stack = []
