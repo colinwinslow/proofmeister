@@ -22,8 +22,11 @@ class Statement(object):
     def getAllSuccessors(self,rules):
         allSucs = []
         for i in self.d.keys():
-            allSucs = allSucs + self.getSuccessors(i, rules)
-        return allSucs
+            isucs = self.getSuccessors(i, rules)
+            if len(isucs)>0: allSucs = allSucs + isucs
+        print "allsucs", allSucs
+        if len(allSucs)>0: return allSucs
+        else: return "poop"
             
     
     def getSuccessors(self,i,rules):

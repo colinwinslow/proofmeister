@@ -38,6 +38,20 @@ class Test(unittest.TestCase):
         print steps
         for s in steps:
             print s, "\t", s.action
+            
+    def testAllSucs(self):
+        rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
+        
+        start = logicParse('q -> (~r v ~s)')
+        steps = start.getAllSuccessors(rules)
+        start.action = "starting point"
+        start.cost = 0
+        goal = logicParse('q -> ~(r & s)')
+        
+        #steps = search(start,goal,rules)
+        print steps
+        for s in steps:
+            print s, "\t", s.action
 
 
 if __name__ == "__main__":
