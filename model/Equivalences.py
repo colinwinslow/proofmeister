@@ -308,6 +308,44 @@ class ImplicationLaw(object):
             elif len(successors) > 1:
                 return successors
             else: return None
+            
+class Domination():
+    def __init__(self, cost = 1):
+        self.name = "Domination Laws"
+        self.cost = cost
+        
+    def getSuccessors(self, statement, i):
+        print "domination successors"
+        if statement.type(i) == "conjunction":
+            if statement.type(i*2+1)=="false_constant":
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i, "false_constant")
+                successor.action = self.name
+                successor.cost = self.cost
+                return successor
+            elif statement.type(i*2+2)=="false_constant":
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i, "false_constant")
+                successor.action = self.name
+                successor.cost = self.cost
+                return successor
+        elif statement.type(i) == "disjunction":
+            if statement.type(i*2+1)=="true_constant":
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i, "true_constant")
+                successor.action = self.name
+                successor.cost = self.cost
+                return successor
+            elif statement.type(i*2+2)=="true_constant":
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i, "true_constant")
+                successor.action = self.name
+                successor.cost = self.cost
+                return successor
         
         
                 

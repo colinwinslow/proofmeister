@@ -63,7 +63,7 @@ class Test(unittest.TestCase):
         start.cost = 0
         goal = logicParse('a & (b -> (~c v d))')
         
-        steps = search(start,goal,rules,True)
+        steps = search(start,goal,rules,verbose=True)
         print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:
             print s.cost, "\t", s.action,"\t\t", s.state

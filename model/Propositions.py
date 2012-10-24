@@ -33,7 +33,11 @@ class Constant(Proposition):
         self.val = val
     
     def type(self):
-        return "constant"
+        if self.symbol: return "true_constant"
+        else: return "false_constant"
+    
+    def __str__(self):
+        return str(self.val)
     
 class UnaryOperation(Proposition):
     def __init__(self):

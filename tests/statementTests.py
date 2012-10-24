@@ -10,6 +10,22 @@ from model.Equivalences import *
 
 
 class Test(unittest.TestCase):
+    
+    def testDomination(self):
+        dom = Domination()
+        
+        s = logicParse('a -> (p & F)')
+        t = logicParse('a -> (F & T)')
+        u = logicParse('True v p')
+        v = logicParse('T v F')
+        w = logicParse('F v F')
+        
+        
+        print dom.getSuccessors(s, 2)
+        print dom.getSuccessors(t, 2)
+        print dom.getSuccessors(u, 0)
+        print dom.getSuccessors(v, 0)
+        print dom.getSuccessors(w, 0)
 
 
     
@@ -148,7 +164,7 @@ class Test(unittest.TestCase):
         
     def testGetSucs(self):
         rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
-        s = logicParse("q & (~(r -> s) | t)")
+        s = logicParse("True & (~(r -> s) | t)")
         sucs = s.getAllSuccessors(rules)
         for p in sucs:
             print p, "\t", p.action

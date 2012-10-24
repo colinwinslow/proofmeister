@@ -66,6 +66,10 @@ class Statement(object):
             self.d[i] = BiImplication()
         elif typeString == 'xor':
             self.d[i] = ExclusiveOr()
+        elif typeString == 'true_constant':
+            self.d[i] = Constant(True)
+        elif typeString == 'false_constant':
+            self.d[i] = Constant(False)
     
     def __str__(self):
         return self.getSymbol(0)
