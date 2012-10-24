@@ -11,6 +11,15 @@ from model.Equivalences import *
 
 class Test(unittest.TestCase):
     
+    def testNegLaw(self):
+
+        neg = Negation()
+        s = logicParse('p & ~p') #contradiction
+        t = logicParse('p v ~p') #tautology
+        
+        assert neg.getSuccessors(s, 0) == logicParse('False')
+        assert neg.getSuccessors(t, 0) == logicParse('True')
+    
     def testDomination(self):
         dom = Domination()
         
@@ -18,29 +27,26 @@ class Test(unittest.TestCase):
         t = logicParse('a -> (F & T)')
         u = logicParse('True v p')
         v = logicParse('T v F')
-        w = logicParse('F v F')
         
         
-        print dom.getSuccessors(s, 2)
-        print dom.getSuccessors(t, 2)
-        print dom.getSuccessors(u, 0)
-        print dom.getSuccessors(v, 0)
-        print dom.getSuccessors(w, 0)
+        assert dom.getSuccessors(s, 2) == logicParse('a -> False')
+        assert dom.getSuccessors(t, 2) == logicParse('a -> False')
+        assert dom.getSuccessors(u, 0) == logicParse('True')
+        assert dom.getSuccessors(v, 0) == logicParse('True')
     
     def testIdentity(self):
-        id = Identity()
+        ident = Identity()
         
         s = logicParse('a -> (p v F)')
         t = logicParse('a -> (F v T)')
         u = logicParse('True & p')
         v = logicParse('p & T')
         
-        print  "id"
-        print id.getSuccessors(s, 2)
-        print id.getSuccessors(t, 2)
-        print id.getSuccessors(u, 0)
-        print id.getSuccessors(v, 0)
-
+        assert ident.getSuccessors(s, 2) == logicParse('a -> p')
+        assert ident.getSuccessors(t, 2) == logicParse('a -> True')
+        assert ident.getSuccessors(u, 0) == logicParse('p')
+        assert ident.getSuccessors(v, 0) == logicParse('p')
+        
 
 
     
@@ -177,12 +183,7 @@ class Test(unittest.TestCase):
         assert ex.getSuccessors(s, 0) == t
         assert ex.getSuccessors(t, 0) == s
         
-    def testGetSucs(self):
-        rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
-        s = logicParse("True & (~(r -> s) | t)")
-        sucs = s.getAllSuccessors(rules)
-        for p in sucs:
-            print p, "\t", p.action
+
         
         
         

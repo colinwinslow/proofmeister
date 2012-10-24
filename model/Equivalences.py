@@ -375,6 +375,28 @@ class Identity():
                 successor.cost = self.cost
                 return successor
 
+class Negation():
+    def __init__(self, cost = 1):
+        self.name = "Negation Laws"
+        self.cost = cost      
+    
+    def getSuccessors(self,statement,i):
+        if statement.type(i) == "conjunction":
+            if statement.childTree(i*2+1)==statement.negatedChildTree(i*2+2):
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i, "false_constant")
+                successor.action = self.name
+                successor.cost = self.cost
+                return successor
+        elif statement.type(i) == "disjunction":
+            if statement.childTree(i*2+1)==statement.negatedChildTree(i*2+2):
+                successor = statement.childTree(0)
+                successor.prune(i)
+                successor.insertProp(i, "true_constant")
+                successor.action = self.name
+                successor.cost = self.cost
+                return successor
             
     
             
