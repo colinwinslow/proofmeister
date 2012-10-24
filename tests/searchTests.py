@@ -90,12 +90,28 @@ class Test(unittest.TestCase):
     
     def testSearch5(self):
         print "\n\n******************"
-        rules = [Domination(),Idempotence(),Associativity(0.9),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
+        rules = [Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
         
         start = logicParse('(p & F) v (q v T)')
         start.action = "Beginning Premise"
         start.cost = 0
         goal = logicParse('T')
+        
+        steps = search(start,goal,rules)
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nTherefor, ",start," = ", goal,"."
+        
+    def testSearch3H(self):
+        print "\n\n******************"
+        rules = [Domination(),Identity(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
+        
+        start = logicParse('~(p -> q)')
+        start.action = "Beginning Premise"
+        start.cost = 0
+        goal = logicParse('p & ~q')
         
         steps = search(start,goal,rules)
         print "\nDemonstrate that", start, "is logically equivalent to", goal
