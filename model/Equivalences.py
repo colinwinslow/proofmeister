@@ -220,7 +220,7 @@ class DoubleNegation(object):
     ''' 
     ~(~p) = p
     '''
-    def __init__(self, cost = 1):
+    def __init__(self, cost = 0.5):
         self.name = "Double Negation"
         self.cost = cost
     
@@ -348,7 +348,7 @@ class Domination():
 
 class Identity():
     def __init__(self, cost = 1):
-        self.name = "Identity Laws"
+        self.name = "Identity Laws   "
         self.cost = cost      
     
     def getSuccessors(self,statement,i):
@@ -377,7 +377,7 @@ class Identity():
 
 class Negation():
     def __init__(self, cost = 1):
-        self.name = "Negation Laws"
+        self.name = "Negation Laws   "
         self.cost = cost      
     
     def getSuccessors(self,statement,i):

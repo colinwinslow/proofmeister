@@ -9,10 +9,13 @@ from model.Propositions import *
 from model.Equivalences import *
 from model.Search import Node, search
 
-class Test(unittest.TestCase):
 
+rules = [Negation(0.5),Identity(0.5),Domination(0.5),Idempotence(0.5),Associativity(),Exportation(),Distributivity(),Absorption(0.5),DoubleNegation(),DeMorgans(),ImplicationLaw()]
+
+
+class Test(unittest.TestCase):
+    
     def testNode(self):
-        rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
         
         start = logicParse('~((p -> q))')
         start.action = None
@@ -26,56 +29,52 @@ class Test(unittest.TestCase):
         
         #should be solvable by implication law, demorgans, and double negation. 
         
-#    def testSearch(self):
-#        rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
-#        
-#        start = logicParse(' (~((p & p) -> q))')
-#        start.action = "Beginning Premise"
-#        start.cost = 0
-#        goal = logicParse('p & ~q')
-#        
-#        steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
-#        print "\nTherefor, ",start," = ", goal,"."
-#            
-#    def testSearch2(self):
-#        rules = [Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
-#        
-#        start = logicParse('~(b v c) & (~b & ~c)')
-#        start.action = "Beginning Premise"
-#        start.cost = 0
-#        goal = logicParse('~(b v c)')
-#        
-#        steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
-#        print "\nTherefor, ",start," = ", goal,"."
-#        
-#    def testSearch3(self):
-#        print "\n\n******************"
-#        rules = [Idempotence(),Associativity(),Exportation(),Distributivity(2),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
-#        
-#        start = logicParse('(~(b -> c) v d) & a')
-#        start.action = "Beginning Premise"
-#        start.cost = 0
-#        goal = logicParse('a & (b -> (~c v d))')
-#        
-#        steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
-#        print "\nTherefor, ",start," = ", goal,"."
+    def testSearch(self):
+        
+        start = logicParse(' (~((p & p) -> q))')
+        start.action = "Beginning Premise"
+        start.cost = 0
+        goal = logicParse('p & ~q')
+        
+        steps = search(start,goal,rules)
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nTherefor, ",start," = ", goal,"."
+            
+    def testSearch2(self):
+        
+        start = logicParse('~(b v c) & (~b & ~c)')
+        start.action = "Beginning Premise"
+        start.cost = 0
+        goal = logicParse('~(b v c)')
+        
+        steps = search(start,goal,rules)
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nTherefor, ",start," = ", goal,"."
+        
+    def testSearch3(self):
+        print "\n\n******************"
+        
+        start = logicParse('(~(b -> c) v d) & a')
+        start.action = "Beginning Premise"
+        start.cost = 0
+        goal = logicParse('a & (b -> (~c v d))')
+        
+        steps = search(start,goal,rules)
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nTherefor, ",start," = ", goal,"."
         
     def testSearch4(self):
         # this one needs truth constants to work. 
         
-        rules = [Negation(),Identity(),Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
         
         start = logicParse('~(p v (~p & q))')
         start.action = "Beginning Premise"
@@ -89,37 +88,35 @@ class Test(unittest.TestCase):
             print s.cost, "\t", s.action,"\t\t", s.state
         print "\nTherefor, ",start," = ", goal,"."
     
-#    def testSearch5(self):
-#        print "\n\n******************"
-#        rules = [Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
-#        
-#        start = logicParse('(p & F) v (q v T)')
-#        start.action = "Beginning Premise"
-#        start.cost = 0
-#        goal = logicParse('T')
-#        
-#        steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
-#        print "\nTherefor, ",start," = ", goal,"."
-#        
-#    def testSearch3H(self):
-#        print "\n\n******************"
-#        rules = [Domination(),Identity(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
-#        
-#        start = logicParse('~(p -> q)')
-#        start.action = "Beginning Premise"
-#        start.cost = 0
-#        goal = logicParse('p & ~q')
-#        
-#        steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
-#        print "\nTherefor, ",start," = ", goal,"."
+    def testSearch5(self):
+        print "\n\n******************"
+        
+        start = logicParse('(p & F) v (q v T)')
+        start.action = "Beginning Premise"
+        start.cost = 0
+        goal = logicParse('T')
+        
+        steps = search(start,goal,rules)
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nTherefor, ",start," = ", goal,"."
+        
+    def testSearch3H(self):
+        print "\n\n******************"
+        
+        start = logicParse('~(p -> q)')
+        start.action = "Beginning Premise"
+        start.cost = 0
+        goal = logicParse('p & ~q')
+        
+        steps = search(start,goal,rules)
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nTherefor, ",start," = ", goal,"."
 #    def testNotEquivalentSearch(self):
 #        # this one will get stuck forever until we figure out how to know when to quit
 #        
