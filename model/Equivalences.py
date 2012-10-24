@@ -315,7 +315,6 @@ class Domination():
         self.cost = cost
         
     def getSuccessors(self, statement, i):
-        print "domination successors"
         if statement.type(i) == "conjunction":
             if statement.type(i*2+1)=="false_constant":
                 successor = statement.childTree(0)
@@ -346,9 +345,36 @@ class Domination():
                 successor.action = self.name
                 successor.cost = self.cost
                 return successor
-        
-        
-                
+
+class Identity():
+    def __init__(self, cost = 1):
+        self.name = "Identity Laws"
+        self.cost = cost      
+    
+    def getSuccessors(self,statement,i):
+        if statement.type(i) == "conjunction":
+            if statement.type(i*2+1)=="true_constant":
+                successor = statement.graft(i,statement.childTree(i*2+2))
+                successor.action = self.name
+                successor.cost = self.cost
+                return successor
+            elif statement.type(i*2+2)=="true_constant":
+                successor = statement.graft(i,statement.childTree(i*2+1))
+                successor.action = self.name
+                successor.cost = self.cost
+                return successor
+        elif statement.type(i) == "disjunction":
+            if statement.type(i*2+1)=="false_constant":
+                successor = statement.graft(i,statement.childTree(i*2+2))
+                successor.action = self.name
+                successor.cost = self.cost
+                return successor
+            elif statement.type(i*2+2)=="false_constant":
+                successor = statement.graft(i,statement.childTree(i*2+1))
+                successor.action = self.name
+                successor.cost = self.cost
+                return successor
+
             
     
             

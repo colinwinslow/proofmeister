@@ -26,6 +26,21 @@ class Test(unittest.TestCase):
         print dom.getSuccessors(u, 0)
         print dom.getSuccessors(v, 0)
         print dom.getSuccessors(w, 0)
+    
+    def testIdentity(self):
+        id = Identity()
+        
+        s = logicParse('a -> (p v F)')
+        t = logicParse('a -> (F v T)')
+        u = logicParse('True & p')
+        v = logicParse('p & T')
+        
+        print  "id"
+        print id.getSuccessors(s, 2)
+        print id.getSuccessors(t, 2)
+        print id.getSuccessors(u, 0)
+        print id.getSuccessors(v, 0)
+
 
 
     
