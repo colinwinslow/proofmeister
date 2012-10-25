@@ -133,10 +133,12 @@ class Test(unittest.TestCase):
         assert assoc.getSuccessors(u, 0) == [us1, us2]
         
     def testDist(self):
-        
+        print "dist"
         s = logicParse("p & (q or r)")
         t = logicParse("(q & r) v p")
+        u = logicParse('(~p v q) & (~q v p)')
         dist = Distributivity()
+        print [str(i) for i in dist.getSuccessors(u, 0)]
         assert dist.getSuccessors(s, 0) == logicParse('(p & q) v (p & r)')
         assert dist.getSuccessors(t, 0) == logicParse('(p v q) & (p v r)')
         m = logicParse("(p & (q or r)) & m")

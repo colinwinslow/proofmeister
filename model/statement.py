@@ -12,6 +12,8 @@ class Statement(object):
     '''
 
 
+    
+    
     def __init__(self, inDict):
         self.d = inDict
         self.action = None
@@ -73,7 +75,7 @@ class Statement(object):
     
     def __str__(self):
         return self.getSymbol(0)
-        
+    
     def getSymbol(self, i):
         '''used for toString'''
         if isinstance(self.d.get(i), BinaryOperation): 

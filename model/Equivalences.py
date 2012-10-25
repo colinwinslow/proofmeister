@@ -262,9 +262,10 @@ class ImplicationLaw(object):
     ''' 
     (p -> q) = (~p v q)
     '''
-    def __init__(self, cost = 1):
+    def __init__(self, cost = 1, multiplier = 1):
         self.name = "Law of Implication"
         self.cost = cost
+        self.multiplier = multiplier #increses cost when moving away from DNF
     
     def getSuccessors(self, statement, i):
         if statement.type(i) == "implication":
@@ -290,7 +291,7 @@ class ImplicationLaw(object):
                 ns.graftInPlace(2,q)
                 output = statement.graft(i,ns)
                 output.action = self.name
-                output.cost = self.cost
+                output.cost = self.cost * self.multiplier
                 successors.append(output)
             if statement.type(i*2+2) == "negation":
                 np = statement.negatedChildTree(2*i+2)
@@ -301,7 +302,7 @@ class ImplicationLaw(object):
                 ns.graftInPlace(2,q)
                 output = statement.graft(i,ns)
                 output.action = self.name
-                output.cost = self.cost
+                output.cost = self.cost * self.multiplier
                 successors.append(output)
             if len(successors) == 1:
                 return successors[0]
