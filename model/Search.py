@@ -19,15 +19,20 @@ class Node():
         successorNodes = [Node(i,self) for i in self.state.getAllSuccessors(rules)]
         return successorNodes
     
-    def traceback(self, biDirectional = False):
-        if biDirectional:
-            print "bi"
+    def traceback(self):
         stack = []
         n = self
         while n != None:
             stack.append(n)
             n = n.parent
-        if not biDirectional: stack.reverse()
+        stack.reverse()
+        return stack
+    def bitraceback(self):
+        stack = []
+        n = self
+        while n != None:
+            stack.append(n)
+            n = n.parent
         return stack
     
 
@@ -66,7 +71,9 @@ def bisearch(start,goal,rules,verbose = False):
             print "expanded: ", fnodesExpanded+bnodesExpanded, " shortcuts: ", shortcuts
             forward = frontier.ndir.get(meetingPoint)
             backward = bfrontier.ndir.get(meetingPoint)
-            return forward.traceback() + backward.traceback(biDirectional=True )
+            marker = Node(fnode,None)
+            marker.action = "SPLITMARKER"
+            return forward.traceback() + [marker] + backward.bitraceback()
         
         fexplored.add(fnode.state)
         

@@ -10,15 +10,15 @@ from model.Equivalences import *
 from model.Search import Node, search, bisearch
 
 
-rules = [Negation(0.5),Identity(0.5),Domination(0.5),Idempotence(0.5),Associativity(),Exportation(),Distributivity(0.3),Absorption(0.5),DoubleNegation(),DeMorgans(),ImplicationLaw(multiplier=2)]
+rules = [Negation(0.5),Identity(0.5),Domination(0.5),Idempotence(0.5),Associativity(),Exportation(),Distributivity(1),Absorption(0.5),DoubleNegation(),DeMorgans(),ImplicationLaw(multiplier=2)]
 ##rules = [Negation(),Identity(),Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
-#rules = [Negation(0.5),Identity(0.5),Distributivity(),ImplicationLaw(multiplier=2)]
+rules = [Negation(0.5),Identity(0.5),Distributivity(),ImplicationLaw(multiplier=2)]
 
 
 class Test(unittest.TestCase):
 
 
-    def testSearchHW1a(self):
+    def testSearchHW1(self):
         
         
         print "\n\nHW1a***************"
