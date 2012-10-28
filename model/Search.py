@@ -1,5 +1,6 @@
 import heapq
-from Queue import Queue
+from Queue import Queue, LifoQueue
+
 
 # read up for possible heuristics. 
 # http://grfia.dlsi.ua.es/ml/algorithms/references/editsurvey_bille.pdf
@@ -27,79 +28,8 @@ class Node():
             n = n.parent
         stack.reverse()
         return stack
-    def bitraceback(self):
-        stack = []
-        n = self
-        while n != None:
-            stack.append(n)
-            n = n.parent
-        return stack
     
 
-            
-        
-        
-        
-def bisearch(start,goal,rules,verbose = False):
-    l = len(str(start))+len(str(goal))
-    fnodesExpanded = 0
-    bnodesExpanded = 0
-    shortcuts = 0
-    fnode = Node(start, None)
-    bnode = Node(goal, None)
-    fnode.cost = 1
-    bnode.cost = 1
-    frontier = PriorityQueue()
-    bfrontier = PriorityQueue()
-    frontier.push(fnode)
-    bfrontier.push(bnode)
-    fexplored = set()
-    bexplored = set()
-    cycles = 0
-    intersection = set()
-    while not frontier.isEmpty():
-        cycles += 1
-        if cycles%100==0: print fnodesExpanded,bnodesExpanded
-        fnode = frontier.pop()
-        
-        fnodesExpanded += 1
-        
-        if cycles%100==0: intersection = frontier.ndir.viewkeys() & bfrontier.ndir.viewkeys()
-        if len(intersection) >= 1:
-            meetingPoint = intersection.pop()
-            print "Intersection!", meetingPoint
-            print "expanded: ", fnodesExpanded+bnodesExpanded, " shortcuts: ", shortcuts
-            forward = frontier.ndir.get(meetingPoint)
-            backward = bfrontier.ndir.get(meetingPoint)
-            marker = Node(fnode,None)
-            marker.action = "SPLITMARKER"
-            return forward.traceback() + [marker] + backward.bitraceback()
-        
-        fexplored.add(fnode.state)
-        
-        for child in fnode.successors(rules):
-            if child.state not in fexplored and len(str(child.state))<2*l:
-                if frontier.getCheapestCost(child) == -1:
-                    frontier.push(child)
-                    if verbose: print child.cost, max(child.state.d.keys()), "\t", child.action,"\t", child.state
-            elif frontier.getCheapestCost(child) > child.cost:
-                shortcuts += 1
-                print "shortcut!"
-                frontier.push(child)
-        try:
-            bnode = bfrontier.pop()
-            bexplored.add(bnode.state)
-            bnodesExpanded += 1
-            for child in bnode.successors(rules):
-                if child.state not in bexplored and len(str(child.state))<2*l:
-                    if bfrontier.getCheapestCost(child) == -1:
-                        bfrontier.push(child)
-                        if verbose: print child.cost, max(child.state.d.keys()), "\t", child.action,"\t", child.state
-                elif bfrontier.getCheapestCost(child) > child.cost:
-                    shortcuts += 1
-                    print "shortcut!"
-                    bfrontier.push(child)
-        except: pass
 
 def search(start,goal,rules,verbose = False):
     l = len(str(start))+len(str(goal))
@@ -147,8 +77,12 @@ def bfsearch(start,goal,rules,verbose = False):
             if child.state not in explored:
                 if child not in frontier:
                     frontier.push(child)
+                    
+
         
                     
+
+
 class FIFOQueue():
     def __init__(self):
         self.q = Queue()

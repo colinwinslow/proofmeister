@@ -14,10 +14,11 @@ class Statement(object):
 
     
     
-    def __init__(self, inDict):
+    def __init__(self, inDict, propMap):
         self.d = inDict
         self.action = None
         self.cost = 0
+        self.propMap = propMap
         
     def __getitem__(self, key):
         return self.childTree(key)
@@ -83,7 +84,7 @@ class Statement(object):
         elif isinstance(self.d.get(i), UnaryOperation): 
             return "~" + self.getSymbol(i * 2 + 1)
         elif isinstance(self.d.get(i), Proposition): 
-            return str(self.d.get(i))
+            return self.propMap.unconvert(str(self.d.get(i)))
         
     def reIndex(self, i, newIndex):
         '''reindexes a node and all it's descendents'''
@@ -96,7 +97,7 @@ class Statement(object):
         '''returns a new statement with the given index as its root'''
         newDict = dict()
         self.d.get(i).childTree(i, 0, self.d, newDict)
-        return Statement(newDict)
+        return Statement(newDict,self.propMap)
     
     def prune(self, i):
         '''removes a node and all its children'''
@@ -106,7 +107,7 @@ class Statement(object):
     def graft(self, i, other):
         '''returns a new statement with other grafted in at index i'''
         other.reIndex(0, i)
-        new = Statement(self.d.copy())
+        new = Statement(self.d.copy(),self.propMap)
         new.prune(i)
         new.d.update(other.d)
         return new
@@ -122,7 +123,7 @@ class Statement(object):
         if self.type(i)=="negation":
             return self.childTree(i*2+1)
         else:
-            out = Statement(dict())
+            out = Statement(dict(),self.propMap)
             out.insertProp(0, "negation")
             out.graftInPlace(1, self.childTree(i))
             return out

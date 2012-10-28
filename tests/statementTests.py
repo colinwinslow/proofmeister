@@ -64,19 +64,19 @@ class Test(unittest.TestCase):
         
     def testEquality(self):
         ab = logicParse("a and b")
-        ba = logicParse("b and a")
+        ba = logicParse("b and a", ab.propMap)
         assert ab == ba
         aib = logicParse("a implies b")
-        bia = logicParse("b implies a")
+        bia = logicParse("b implies a", aib.propMap)
         assert aib != bia
         c1 = logicParse("(a & b) -> c")
-        c2 = logicParse("(b & a) -> c")
+        c2 = logicParse("(b & a) -> c",c1.propMap)
         assert c1 == c2
         
     def testGraft(self):
         graftee = logicParse("a implies (b implies c)")
-        graft = logicParse("~b or c")
-        target = logicParse("a -> (~b or c)")
+        graft = logicParse("~b or c",graftee.propMap)
+        target = logicParse("a -> (~b or c)",graftee.propMap)
         new = graftee.graft(2, graft)
         assert new == target
         
@@ -100,8 +100,8 @@ class Test(unittest.TestCase):
     
     def testPropositionEquivalence(self):
         p = logicParse('p')
-        q = logicParse('q')
-        p2 = logicParse('p')
+        q = logicParse('q',p.propMap)
+        p2 = logicParse('p',q.propMap)
 
 
         assert p == p2
@@ -138,9 +138,11 @@ class Test(unittest.TestCase):
         t = logicParse("(q & r) v p")
         u = logicParse('(~p v q) & (~q v p)')
         dist = Distributivity()
+        ssucs = logicParse('(p & q) v (p & r)',s.propMap)
+        tsucs = logicParse('(p v q) & (p v r)',t.propMap)
         print [str(i) for i in dist.getSuccessors(u, 0)]
-        assert dist.getSuccessors(s, 0) == logicParse('(p & q) v (p & r)')
-        assert dist.getSuccessors(t, 0) == logicParse('(p v q) & (p v r)')
+        assert dist.getSuccessors(s, 0) == ssucs
+        assert dist.getSuccessors(t, 0) == tsucs
         m = logicParse("(p & (q or r)) & m")
         mtarget = logicParse("((p & q) v (p & r)) & m")
         assert dist.getSuccessors(m, 1) == mtarget
@@ -173,10 +175,10 @@ class Test(unittest.TestCase):
     def testImplicationLaw(self):
         il = ImplicationLaw()
         s = logicParse('p -> q')
-        t = logicParse('p v ~q')
-        u = logicParse("a&(~p v ~q)")
-        assert il.getSuccessors(s, 0) == logicParse('(~p v q)')
-        assert il.getSuccessors(t, 0) == logicParse('q -> p')
+        t = logicParse('p v ~q', s.propMap)
+        u = logicParse("a&(~p v ~q)", t.propMap)
+        assert il.getSuccessors(s, 0) == logicParse('(~p v q)',u.propMap)
+        assert il.getSuccessors(t, 0) == logicParse('q -> p',u.propMap)
         
     def testExportation(self):
         s = logicParse("(a -> b) -> c")

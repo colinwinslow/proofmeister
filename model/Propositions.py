@@ -3,10 +3,21 @@ Created on Oct 15, 2012
 
 @author: colinwinslow
 '''
-
+import weakref
         
         
 class Proposition():
+    
+    _PropFlyWeight = weakref.WeakValueDictionary()
+
+    def __new__(cls, val):
+        obj = Proposition._PropFlyWeight.get(val, None)
+        if not obj:
+            obj = object.__new__(cls)
+            Proposition._PropFlyWeight[val] = obj
+            obj.symbol = val
+
+        return obj
     def __init__(self, val):
         self.symbol = val
     def reIndex(self, i, newIndex, d, temp):

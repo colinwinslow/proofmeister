@@ -248,7 +248,7 @@ class DeMorgans(object):
             np = statement.negatedChildTree(i*2+1)
             nq = statement.negatedChildTree(i*2+2)
             
-            ns = Statement(dict())
+            ns = Statement(dict(),statement.propMap)
             ns.insertProp(0, "negation")
             ns.insertProp(1, otherType)
             ns.graftInPlace(3,np)
@@ -271,7 +271,7 @@ class ImplicationLaw(object):
         if statement.type(i) == "implication":
             np = statement.negatedChildTree(i*2+1)
             q = statement.childTree(i*2+2)
-            ns = Statement(dict())
+            ns = Statement(dict(),statement.propMap)
             ns.insertProp(0, "disjunction")
             ns.graftInPlace(1,np)
             ns.graftInPlace(2,q)
@@ -285,7 +285,7 @@ class ImplicationLaw(object):
             if statement.type(i*2+1) == "negation":
                 np = statement.negatedChildTree(2*i+1)
                 q = statement.childTree(i*2+2)
-                ns = Statement(dict())
+                ns = Statement(dict(),statement.propMap)
                 ns.insertProp(0, "implication")
                 ns.graftInPlace(1,np)
                 ns.graftInPlace(2,q)
@@ -296,7 +296,7 @@ class ImplicationLaw(object):
             if statement.type(i*2+2) == "negation":
                 np = statement.negatedChildTree(2*i+2)
                 q = statement.childTree(i*2+1)
-                ns = Statement(dict())
+                ns = Statement(dict(),statement.propMap)
                 ns.insertProp(0, "implication")
                 ns.graftInPlace(1,np)
                 ns.graftInPlace(2,q)
