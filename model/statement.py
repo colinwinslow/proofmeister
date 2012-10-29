@@ -132,6 +132,34 @@ class Statement(object):
     def __hash__(self):
         return self.d.get(0).hash(0, self.d)
     
+    def simHash(self):
+        simdict = {}
+        for p in self.d.items():
+            if p[1].type() == "proposition":
+                try: simdict[str(p[1])].append(p[0])
+                except KeyError:
+                    simdict[str(p[1])]=[]
+                    simdict[str(p[1])].append(p[0])   
+            else: 
+                thisType = p[1].type()
+                try: simdict[thisType].append(p[0])
+                except KeyError:
+                    simdict[thisType]=[thisType]
+                    simdict[thisType].append(p[0])   
+        vals = frozenset([frozenset(v) for v in simdict.values()])
+        return hash(vals)
+    
+    def getMapping(self):
+        simdict = {}
+        for p in self.d.items():
+            if p[1].type() == "proposition":
+                try: simdict[str(p[1])].append(p[0])
+                except KeyError:
+                    simdict[str(p[1])]=[]
+                    simdict[str(p[1])].append(p[0])   
+        return simdict
+        
+    
     def __eq__(self, other):
         '''eq does not evaluate logical equivalence per se, but it does evaluate different orderings of commutative statements as equal.
         for example, (a & b) == (b & a), but (a -> b) != (~a or b).'''

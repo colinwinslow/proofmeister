@@ -1,11 +1,14 @@
 import heapq
 from Queue import Queue, LifoQueue
+from Derivation import Derivation
 
 
 # read up for possible heuristics. 
 # http://grfia.dlsi.ua.es/ml/algorithms/references/editsurvey_bille.pdf
 # https://github.com/timtadh/PyGram#readme
 # https://github.com/timtadh/zhang-shasha
+
+
 
 class Node():
     def __init__(self, state, parent):
@@ -45,7 +48,7 @@ def search(start,goal,rules,verbose = False):
         nodesExpanded += 1
         if node.state == goal:
             print "expanded: ", nodesExpanded, " shortcuts: ", shortcuts
-            return node.traceback()   
+            return Derivation(start,goal,node.traceback(),rules)
         explored.add(node.state)
         for child in node.successors(rules):
             if child.state not in explored and len(str(child.state))<2*l:

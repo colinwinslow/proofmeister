@@ -16,8 +16,8 @@ class Proposition():
             obj = object.__new__(cls)
             Proposition._PropFlyWeight[val] = obj
             obj.symbol = val
-
         return obj
+    
     def __init__(self, val):
         self.symbol = val
     def reIndex(self, i, newIndex, d, temp):
@@ -26,8 +26,9 @@ class Proposition():
     def __str__(self):
         return self.symbol
     
-    def hash(self, i, d):
-        return hash(self.symbol)
+    def hash(self, i, d, simHashStatement = None):
+        if simHashStatement == None:
+            return hash(self.symbol)
     
     def type(self):
         return "proposition"
@@ -68,6 +69,8 @@ class UnaryOperation(Proposition):
 class Negation(UnaryOperation):
     def __init__(self):
         pass
+    def getOperator(self):
+        return "~"
     def hash(self, i, d):
         return hash((d.get(i * 2 + 1).hash(i * 2 + 1, d), "negation"))
     def type(self):
@@ -96,6 +99,7 @@ class BinaryOperation(Proposition):
         
     
 class Conjunction(BinaryOperation):
+    
     def __init__(self):
         self.commutative = True
     def getOperator(self):

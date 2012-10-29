@@ -257,6 +257,23 @@ class DeMorgans(object):
             output.action = self.name
             output.cost = self.cost
             return output
+        if statement.type(i) == "negation":
+            if statement.type(i*2+1) == "conjunction" or statement.type(i*2+1) == "disjunction":
+                thisType = statement.type(i*2+1)
+                if thisType == "conjunction": otherType = "disjunction"
+                else: otherType = "conjunction"
+                
+                np = statement.negatedChildTree(i*4+3)
+                nq = statement.negatedChildTree(i*4+4)
+                
+                ns = Statement(dict(),statement.propMap)
+                ns.insertProp(0, otherType)
+                ns.graftInPlace(1,np)
+                ns.graftInPlace(2,nq)
+                output = statement.graft(i,ns)
+                output.action = self.name
+                output.cost = self.cost
+                return output
         
 class ImplicationLaw(object):
     ''' 

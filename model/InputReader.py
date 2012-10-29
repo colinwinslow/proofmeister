@@ -27,7 +27,8 @@ class propMap():
     
     def __init__(self):
         self.originals = []
-        self.standins = ('a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'j', 'k')
+        self.standins = ('a', 'b', 'c', 'd', 'e', 'g', 'h', 'i')
+        
         
     def convert(self, char):
         if len(char)==1:
@@ -37,7 +38,9 @@ class propMap():
             except ValueError:
                 self.originals.append(char)
                 i = len(self.originals)-1
-                return self.standins[i]
+                try: return self.standins[i]
+                except IndexError: 
+                    print "Proofmeister supports a maximum of 8 atomic propositions."
         else: return char
         
     def unconvert(self, char):
@@ -49,6 +52,8 @@ class propMap():
             
         
 
+    
+    
 
 def logicParse(inStr,pm = None):
     variable = oneOf('a b c d e f g h i j k l m n o p q r s t u w x y z ' + trueConstants + falseConstants)

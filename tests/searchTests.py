@@ -17,6 +17,10 @@ rules = [Negation(0.5),Identity(0.5),Domination(0.5),Idempotence(0.5),Associativ
 
 class Test(unittest.TestCase):
     
+#    def testPropMapFreakOut(self):
+#        start = logicParse('(((a & b) v (c & d)) -> ((e & g) v (h & i))) -> j')
+#        print start
+    
     def testPropMap(self):
         pm = propMap()
         assert pm.convert('p') == 'a'
