@@ -79,6 +79,8 @@ class Negation(UnaryOperation):
 class BinaryOperation(Proposition):
     def __init__(self):
         super(BinaryOperation, self).__init__()
+    def hash(self, i, d):
+        return hash(((d.get(i * 2 + 1).hash(i * 2 + 1, d), d.get(i * 2 + 2).hash(i * 2 + 2, d)), self.type()))
     def reIndex(self, i, newIndex, d,temp):
         d.get(2 * i + 1).reIndex(2 * i + 1, 2 * newIndex + 1, d, temp)
         d.get(2 * i + 2).reIndex(2 * i + 2, 2 * newIndex + 2, d, temp)
@@ -106,11 +108,11 @@ class Conjunction(BinaryOperation):
         return "&"
     def type(self):
         return "conjunction"
-    def hash(self, i, d):
-        leftHash = d.get(i * 2 + 1).hash(i * 2 + 1, d)
-        rightHash = d.get(i * 2 + 2).hash(i * 2 + 2, d)
-        childrenHash = (frozenset([leftHash, rightHash]), "conjunction")
-        return hash(childrenHash)
+#    def hash(self, i, d):
+#        leftHash = d.get(i * 2 + 1).hash(i * 2 + 1, d)
+#        rightHash = d.get(i * 2 + 2).hash(i * 2 + 2, d)
+#        childrenHash = (frozenset([leftHash, rightHash]), "conjunction")
+#        return hash(childrenHash)
         
 class Disjunction(BinaryOperation):
     def __init__(self):
@@ -119,8 +121,8 @@ class Disjunction(BinaryOperation):
         return "v"
     def type(self):
         return "disjunction"
-    def hash(self, i, d):
-        return hash((frozenset([d.get(i * 2 + 1).hash(i * 2 + 1, d), d.get(i * 2 + 2).hash(i * 2 + 2, d)]), "disjunction"))
+#    def hash(self, i, d):
+#        return hash((frozenset([d.get(i * 2 + 1).hash(i * 2 + 1, d), d.get(i * 2 + 2).hash(i * 2 + 2, d)]), "disjunction"))
     
 class Implication(BinaryOperation):
     def __init__(self):
@@ -129,8 +131,8 @@ class Implication(BinaryOperation):
         return "->"
     def type(self):
         return "implication"
-    def hash(self, i, d):
-        return hash(((d.get(i * 2 + 1).hash(i * 2 + 1, d), d.get(i * 2 + 2).hash(i * 2 + 2, d)), "implication"))
+#    def hash(self, i, d):
+#        return hash(((d.get(i * 2 + 1).hash(i * 2 + 1, d), d.get(i * 2 + 2).hash(i * 2 + 2, d)), self.type()))
     
 class BiImplication(BinaryOperation):
     def __init__(self):

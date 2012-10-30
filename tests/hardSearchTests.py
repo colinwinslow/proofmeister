@@ -7,12 +7,12 @@ import unittest
 from model.InputReader import logicParse
 from model.Propositions import *
 from model.Equivalences import *
-from model.Search import Node, search, bisearch
+from model.Search import Node, search
 
 
-rules = [Negation(0.5),Identity(0.5),Domination(0.5),Idempotence(0.5),Associativity(),Exportation(),Distributivity(1),Absorption(0.5),DoubleNegation(),DeMorgans(),ImplicationLaw(multiplier=2)]
-##rules = [Negation(),Identity(),Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
-rules = [Negation(0.5),Identity(0.5),Distributivity(),ImplicationLaw(multiplier=2)]
+
+rules = [Negation(),Commutativity(),Identity(),Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
+rules = [Negation(),Identity(),Distributivity(),ImplicationLaw()]
 
 
 class Test(unittest.TestCase):
@@ -32,7 +32,7 @@ class Test(unittest.TestCase):
         start.cost = 0
         goal = logicParse('(~p & ~q) v (q & p)')
         
-        steps = bisearch(start,goal,rules)
+        steps = search(start,goal,rules)
         print "\nDemonstrate that", start, "is logically equivalent to", goal
         print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:

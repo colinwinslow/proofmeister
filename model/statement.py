@@ -149,20 +149,20 @@ class Statement(object):
         vals = frozenset([frozenset(v) for v in simdict.values()])
         return hash(vals)
     
-    def getMapping(self):
-        simdict = {}
-        for p in self.d.items():
-            if p[1].type() == "proposition":
-                try: simdict[str(p[1])].append(p[0])
-                except KeyError:
-                    simdict[str(p[1])]=[]
-                    simdict[str(p[1])].append(p[0])   
-        return simdict
+# This is probably not needed
+#    def getMapping(self):
+#        simdict = {}
+#        for p in self.d.items():
+#            if p[1].type() == "proposition":
+#                try: simdict[str(p[1])].append(p[0])
+#                except KeyError:
+#                    simdict[str(p[1])]=[]
+#                    simdict[str(p[1])].append(p[0])   
+#        return simdict
         
     
     def __eq__(self, other):
-        '''eq does not evaluate logical equivalence per se, but it does evaluate different orderings of commutative statements as equal.
-        for example, (a & b) == (b & a), but (a -> b) != (~a or b).'''
+        '''evaluates whether two *statements* are the same. Not logically equivalent, but literally the same statement'''
         return hash(self) == hash(other)
     
     def __ne__(self, other):

@@ -4,7 +4,27 @@ Created on Oct 21, 2012
 @author: colinwinslow
 '''
 from statement import Statement
+from nltk.metrics import distance
 
+class Commutativity(object):
+    '''
+    a & b == b & a
+    '''
+    def __init__(self, cost = 1):
+        self.name = "Commutative Laws"
+        self.cost = cost
+        
+    def getSuccessors(self, statement, i):
+        if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
+            left = statement[i*2+1]
+            right = statement[i*2+2]
+            successor = statement.graft(i*2+1,right)
+            successor.graftInPlace(i*2+2,left)
+            successor.action = self.name
+            successor.cost = self.cost 
+            return successor
+            
+            
 class Idempotence(object):
     ''' 
     (p & p) = p

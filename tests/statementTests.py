@@ -11,6 +11,13 @@ from model.Equivalences import *
 
 class Test(unittest.TestCase):
     
+    def testCommute(self):
+        com = Commutativity()
+        s = logicParse('p v (q v r)')
+        assert com.getSuccessors(s, 2) == logicParse('p v (r v q)',s.propMap)
+        suc = com.getSuccessors(s, 0)
+        assert suc == logicParse('(q v r) v p', s.propMap)
+    
     def testNegLaw(self):
 
         neg = Negation()
@@ -64,14 +71,14 @@ class Test(unittest.TestCase):
         
     def testEquality(self):
         ab = logicParse("a and b")
-        ba = logicParse("b and a", ab.propMap)
+        ba = logicParse("a and b", ab.propMap)
         assert ab == ba
         aib = logicParse("a implies b")
         bia = logicParse("b implies a", aib.propMap)
         assert aib != bia
         c1 = logicParse("(a & b) -> c")
         c2 = logicParse("(b & a) -> c",c1.propMap)
-        assert c1 == c2
+        assert c1 != c2
         
     def testGraft(self):
         graftee = logicParse("a implies (b implies c)")
@@ -133,14 +140,12 @@ class Test(unittest.TestCase):
         assert assoc.getSuccessors(u, 0) == [us1, us2]
         
     def testDist(self):
-        print "dist"
         s = logicParse("p & (q or r)")
         t = logicParse("(q & r) v p")
         u = logicParse('(~p v q) & (~q v p)')
         dist = Distributivity()
         ssucs = logicParse('(p & q) v (p & r)',s.propMap)
         tsucs = logicParse('(p v q) & (p v r)',t.propMap)
-        print [str(i) for i in dist.getSuccessors(u, 0)]
         assert dist.getSuccessors(s, 0) == ssucs
         assert dist.getSuccessors(t, 0) == tsucs
         m = logicParse("(p & (q or r)) & m")

@@ -1,6 +1,7 @@
 import heapq
 from Queue import Queue, LifoQueue
 from Derivation import Derivation
+from nltk.metrics import distance
 
 
 # read up for possible heuristics. 
@@ -11,13 +12,13 @@ from Derivation import Derivation
 
 
 class Node():
-    def __init__(self, state, parent):
+    def __init__(self, state, parent, premium = 0):
         self.state = state
         self.parent = parent
         self.action = state.action
 
-        if self.parent == None: self.cost = 1
-        else: self.cost = parent.cost + self.state.cost
+        if self.parent == None: self.cost = 1 + premium
+        else: self.cost = parent.cost + self.state.cost + premium
         
     def successors(self,rules):
         successorNodes = [Node(i,self) for i in self.state.getAllSuccessors(rules)]
@@ -35,6 +36,7 @@ class Node():
 
 
 def search(start,goal,rules,verbose = False):
+    goalStr = str(goal)
     l = len(str(start))+len(str(goal))
     nodesExpanded = 0
     shortcuts = 0
@@ -51,10 +53,12 @@ def search(start,goal,rules,verbose = False):
             return Derivation(start,goal,node.traceback(),rules)
         explored.add(node.state)
         for child in node.successors(rules):
-            if child.state not in explored and len(str(child.state))<2*l:
+            child.cost += distance.edit_distance(str(child.state), goalStr)
+            if child.state not in explored:
                 if frontier.getCheapestCost(child) == -1:
                     frontier.push(child)
-                    if verbose: print child.cost, max(child.state.d.keys()), "\t", child.action,"\t", child.state
+                    if verbose: 
+                        print child.cost, child.state, distance.edit_distance(str(child.state), goalStr)
             elif frontier.getCheapestCost(child) > child.cost:
                 shortcuts += 1
                 print "shortcut!"
@@ -71,6 +75,7 @@ def bfsearch(start,goal,rules,verbose = False):
     explored = set()
     while not frontier.isEmpty():
         node = frontier.pop()
+        if verbose: print node.state
         nodesExpanded += 1
         if node.state == goal:
             print "expanded: ", nodesExpanded
