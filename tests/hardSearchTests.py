@@ -13,6 +13,7 @@ from model.Search import Node, search
 
 rules = [Negation(),Commutativity(),Identity(),Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
 rules = [Negation(),Identity(),Distributivity(),ImplicationLaw()]
+rules = [Negation(),Identity(),Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
 
 
 class Test(unittest.TestCase):

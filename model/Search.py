@@ -12,13 +12,14 @@ from nltk.metrics import distance
 
 
 class Node():
-    def __init__(self, state, parent, premium = 0):
+    def __init__(self, state, parent):
         self.state = state
         self.parent = parent
         self.action = state.action
 
-        if self.parent == None: self.cost = 1 + premium
-        else: self.cost = parent.cost + self.state.cost + premium
+
+        if self.parent == None: self.cost = 1
+        else: self.cost = parent.cost + self.state.cost
         
     def successors(self,rules):
         successorNodes = [Node(i,self) for i in self.state.getAllSuccessors(rules)]
@@ -43,7 +44,7 @@ def search(start,goal,rules,verbose = False):
     node = Node(start, None)
     node.cost = 1
     frontier = PriorityQueue()
-    frontier.push(node)
+    frontier.push(node,node.cost)
     explored = set()
     while not frontier.isEmpty():
         node = frontier.pop()
@@ -56,13 +57,13 @@ def search(start,goal,rules,verbose = False):
             child.cost += distance.edit_distance(str(child.state), goalStr)
             if child.state not in explored:
                 if frontier.getCheapestCost(child) == -1:
-                    frontier.push(child)
+                    frontier.push(child, child.cost + distance.edit_distance(str(child.state), goalStr))
                     if verbose: 
                         print child.cost, child.state, distance.edit_distance(str(child.state), goalStr)
             elif frontier.getCheapestCost(child) > child.cost:
                 shortcuts += 1
                 print "shortcut!"
-                frontier.push(child)
+                frontier.push(child, child.cost + distance.edit_distance(str(child.state), goalStr))
                 
 def bfsearch(start,goal,rules,verbose = False):
     l = len(str(start))+len(str(goal))
@@ -119,10 +120,10 @@ class PriorityQueue():
         self.dir = {}
         self.ndir = {}
         
-    def push(self, item):
+    def push(self, item, cost):
         self.dir[item.state]=item.cost
         self.ndir[item.state]=item
-        pair = (item.cost, item)
+        pair = (cost, item)
         heapq.heappush(self.heap, pair)
 
     def pop(self):

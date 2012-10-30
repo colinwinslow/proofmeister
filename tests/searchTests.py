@@ -48,10 +48,10 @@ class Test(unittest.TestCase):
         goal = logicParse('~q & p',start.propMap)
         
         steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
         print "\nTherefor, ",start," = ", goal,"."
     
     def testSearch(self):
@@ -62,10 +62,10 @@ class Test(unittest.TestCase):
         goal = logicParse('p & ~q',start.propMap)
         
         steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
         print "\nTherefor, ",start," = ", goal,"."
 #            
     def testSearch2(self):
@@ -76,10 +76,10 @@ class Test(unittest.TestCase):
         goal = logicParse('~(b v c)',start.propMap)
         
         steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
         print "\nTherefor, ",start," = ", goal,"."
         
     def testSearch3(self):
@@ -91,10 +91,10 @@ class Test(unittest.TestCase):
         goal = logicParse('a & (b -> (~c v d))',start.propMap)
         
         steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
         print "\nTherefor, ",start," = ", goal,"."
         
     def testSearch4(self):
@@ -108,10 +108,10 @@ class Test(unittest.TestCase):
         goal.action = "Goal"
         
         steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
         print "\nTherefor, ",start," = ", goal,"."
     
     def testSearch5(self):
@@ -123,10 +123,10 @@ class Test(unittest.TestCase):
         goal = logicParse('T',start.propMap)
         
         steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
         print "\nTherefor, ",start," = ", goal,"."
         
         
@@ -181,10 +181,10 @@ class Test(unittest.TestCase):
         goal = logicParse('p & ~q',start.propMap)
         
         steps = search(start,goal,rules)
-#        print "\nDemonstrate that", start, "is logically equivalent to", goal
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
+        print "\nDemonstrate that", start, "is logically equivalent to", goal
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        for s in steps:
+            print s.cost, "\t", s.action,"\t\t", s.state
         print "\nTherefor, ",start," = ", goal,"."
 #    def testNotEquivalentSearch(self):
 #        # this one will get stuck forever until we figure out how to know when to quit
