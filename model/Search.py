@@ -54,7 +54,7 @@ def search(start,goal,rules,verbose = False):
             return Derivation(start,goal,node.traceback(),rules)
         explored.add(node.state)
         for child in node.successors(rules):
-            child.cost += distance.edit_distance(str(child.state), goalStr)# does this need to be here?
+            child.cost += distance.edit_distance(str(child.state), goalStr) # does this need to be here?
             if child.state not in explored:
                 if frontier.getCheapestCost(child) == -1:
                     frontier.push(child, child.cost + distance.edit_distance(str(child.state), goalStr))
