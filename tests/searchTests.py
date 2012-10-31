@@ -7,7 +7,7 @@ import unittest
 from model.InputReader import logicParse, propMap
 from model.Propositions import *
 from model.Equivalences import *
-from model.Search import Node, search
+from model.Search import Node, search,bfsearch
 
 
 rules = [Negation(),Commutativity(),Identity(),Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
@@ -83,7 +83,7 @@ class Test(unittest.TestCase):
         print "\nTherefor, ",start," = ", goal,"."
         
     def testSearch3(self):
-        print "\n\n******************"
+        print "\n\n********3**********"
         
         start = logicParse('(~(b -> c) v d) & a')
         start.action = "Beginning Premise"

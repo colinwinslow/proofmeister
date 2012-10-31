@@ -49,7 +49,9 @@ class Constant(Proposition):
         else: return "false_constant"
     
     def __str__(self):
-        return str(self.val)
+        if self.symbol:return "TT"
+        else: return "FF"
+#        return str(self.val)
     
 class UnaryOperation(Proposition):
     def __init__(self):
@@ -128,7 +130,7 @@ class Implication(BinaryOperation):
     def __init__(self):
         self.commutative = False
     def getOperator(self):
-        return "->"
+        return ">"
     def type(self):
         return "implication"
 #    def hash(self, i, d):

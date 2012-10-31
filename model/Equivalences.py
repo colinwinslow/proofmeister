@@ -4,7 +4,7 @@ Created on Oct 21, 2012
 @author: colinwinslow
 '''
 from statement import Statement
-from nltk.metrics import distance
+from Levenshtein import distance
 
 class Commutativity(object):
     '''
@@ -21,7 +21,7 @@ class Commutativity(object):
             successor = statement.graft(i*2+1,right)
             successor.graftInPlace(i*2+2,left)
             successor.action = self.name
-            successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+            successor.cost = self.cost + distance(str(statement), str(successor))
             return successor
             
             
@@ -40,7 +40,7 @@ class Idempotence(object):
             if left == statement[i * 2 + 2]:
                 successor = statement.graft(i, left)
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
             
 class Associativity(object):
@@ -68,7 +68,7 @@ class Associativity(object):
                 successor.graftInPlace(4 * i + 5, b)
                 successor.graftInPlace(4 * i + 6, c)
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 successors.append(successor)
             if statement.type(i * 2 + 2) == thisType:
                 a = statement.childTree(i * 2 + 1)
@@ -82,7 +82,7 @@ class Associativity(object):
                 successor.graftInPlace(4 * i + 4, b)
                 successor.graftInPlace(2 * i + 2, c)
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 successors.append(successor)
             if len(successors) == 1:
                 return successors[0]
@@ -115,7 +115,7 @@ class Exportation(object):
                 successor.graftInPlace(4 * i + 5, b)
                 successor.graftInPlace(4 * i + 6, c)
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 successors.append(successor)
             if statement.type(i * 2 + 2) == thisType:
                 a = statement.childTree(i * 2 + 1)
@@ -129,7 +129,7 @@ class Exportation(object):
                 successor.graftInPlace(4 * i + 4, b)
                 successor.graftInPlace(2 * i + 2, c)
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 successors.append(successor)
             if len(successors) == 1:
                 return successors[0]
@@ -168,7 +168,7 @@ class Distributivity(object):
                 successor.graftInPlace(i*4+5,p2)        # (p & q) v (p2 & _)
                 successor.graftInPlace(i*4+6,r)         # (p & q) v (p2 & r)
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 successors.append(successor)
                 
                 
@@ -188,7 +188,7 @@ class Distributivity(object):
                 successor.graftInPlace(i*4+5,p2)    
                 successor.graftInPlace(i*4+6,r)    
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 successors.append(successor)
             if len(successors) == 1:
                 return successors[0]
@@ -218,7 +218,7 @@ class Absorption(object):
                 if p==q or p==r:
                     successor = statement.graft(i,p)
                     successor.action = self.name
-                    successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                    successor.cost = self.cost + distance(str(statement), str(successor))
                     successors.append(successor)
                     
             if statement.type(i*2+1)==otherType: # ie (q v r) & p; thisType=="conjunction", otherType = "disjunction"
@@ -228,7 +228,7 @@ class Absorption(object):
                 if p==q or p==r:
                     successor = statement.graft(i,p)
                     successor.action = self.name
-                    successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                    successor.cost = self.cost + distance(str(statement), str(successor))
                     successors.append(successor)
             if len(successors) == 1:
                 return successors[0]
@@ -248,7 +248,7 @@ class DoubleNegation(object):
         if statement.type(i) == "negation" and statement.type(i*2+1) == "negation":
             successor = statement.graft(i,statement.childTree(i*4+3))
             successor.action = self.name
-            successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+            successor.cost = self.cost + distance(str(statement), str(successor))
             return successor
         
 class DeMorgans(object):
@@ -275,7 +275,7 @@ class DeMorgans(object):
             ns.graftInPlace(4,nq)
             successor = statement.graft(i,ns)
             successor.action = self.name
-            successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+            successor.cost = self.cost + distance(str(statement), str(successor))
             return successor
         if statement.type(i) == "negation":
             if statement.type(i*2+1) == "conjunction" or statement.type(i*2+1) == "disjunction":
@@ -292,7 +292,7 @@ class DeMorgans(object):
                 ns.graftInPlace(2,nq)
                 successor = statement.graft(i,ns)
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
         
 class ImplicationLaw(object):
@@ -314,7 +314,7 @@ class ImplicationLaw(object):
             ns.graftInPlace(2,q)
             successor = statement.graft(i,ns)
             successor.action = self.name
-            successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+            successor.cost = self.cost + distance(str(statement), str(successor))
             
             return successor
         elif statement.type(i) == "disjunction":
@@ -328,7 +328,7 @@ class ImplicationLaw(object):
                 ns.graftInPlace(2,q)
                 successor = statement.graft(i,ns)
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 successors.append(successor)
             if statement.type(i*2+2) == "negation":
                 np = statement.negatedChildTree(2*i+2)
@@ -339,7 +339,7 @@ class ImplicationLaw(object):
                 ns.graftInPlace(2,q)
                 successor = statement.graft(i,ns)
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 successors.append(successor)
             if len(successors) == 1:
                 return successors[0]
@@ -359,14 +359,14 @@ class Domination():
                 successor.prune(i)
                 successor.insertProp(i, "false_constant")
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
             elif statement.type(i*2+2)=="false_constant":
                 successor = statement.childTree(0)
                 successor.prune(i)
                 successor.insertProp(i, "false_constant")
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
         elif statement.type(i) == "disjunction":
             if statement.type(i*2+1)=="true_constant":
@@ -374,14 +374,14 @@ class Domination():
                 successor.prune(i)
                 successor.insertProp(i, "true_constant")
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
             elif statement.type(i*2+2)=="true_constant":
                 successor = statement.childTree(0)
                 successor.prune(i)
                 successor.insertProp(i, "true_constant")
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
 
 class Identity():
@@ -394,23 +394,23 @@ class Identity():
             if statement.type(i*2+1)=="true_constant":
                 successor = statement.graft(i,statement.childTree(i*2+2))
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
             elif statement.type(i*2+2)=="true_constant":
                 successor = statement.graft(i,statement.childTree(i*2+1))
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
         elif statement.type(i) == "disjunction":
             if statement.type(i*2+1)=="false_constant":
                 successor = statement.graft(i,statement.childTree(i*2+2))
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
             elif statement.type(i*2+2)=="false_constant":
                 successor = statement.graft(i,statement.childTree(i*2+1))
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
 
 class Negation():
@@ -425,7 +425,7 @@ class Negation():
                 successor.prune(i)
                 successor.insertProp(i, "false_constant")
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
         elif statement.type(i) == "disjunction":
             if statement.childTree(i*2+1)==statement.negatedChildTree(i*2+2):
@@ -433,7 +433,7 @@ class Negation():
                 successor.prune(i)
                 successor.insertProp(i, "true_constant")
                 successor.action = self.name
-                successor.cost = self.cost + distance.edit_distance(str(statement), str(successor))
+                successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
             
     
