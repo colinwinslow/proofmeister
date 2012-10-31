@@ -54,16 +54,17 @@ def search(start,goal,rules,verbose = False):
             return Derivation(start,goal,node.traceback(),rules)
         explored.add(node.state)
         for child in node.successors(rules):
-            child.cost += distance.edit_distance(str(child.state), goalStr) # does this need to be here?
+            h = distance.edit_distance(str(child.state), goalStr)
+            child.cost += h # does this need to be here?
             if child.state not in explored:
                 if frontier.getCheapestCost(child) == -1:
-                    frontier.push(child, child.cost + distance.edit_distance(str(child.state), goalStr))
+                    frontier.push(child, child.cost + h)
                     if verbose: 
-                        print child.cost, child.state, distance.edit_distance(str(child.state), goalStr)
+                        print child.cost, child.state, h
             elif frontier.getCheapestCost(child) > child.cost:
                 shortcuts += 1
                 print "shortcut!"
-                frontier.push(child, child.cost + distance.edit_distance(str(child.state), goalStr))
+                frontier.push(child, child.cost + h)
                 
 def bfsearch(start,goal,rules,verbose = False):
     l = len(str(start))+len(str(goal))
