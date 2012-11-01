@@ -40,8 +40,7 @@ class Test(unittest.TestCase):
         
         #should be solvable by implication law, demorgans, and double negation. 
         
-    def testConjunction(self):
-        print "conjunctiontest"
+    def testCommute(self):
         start = logicParse(' (~((p & p) -> q))')
         start.action = "Beginning Premise"
         start.cost = 0
@@ -52,7 +51,7 @@ class Test(unittest.TestCase):
         print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:
             print s.cost, "\t", s.action,"\t\t", s.state
-        print "\nTherefor, ",start," = ", goal,"."
+        print "\nTherefore, ",start," = ", goal,"."
     
     def testSearch(self):
         
@@ -66,7 +65,7 @@ class Test(unittest.TestCase):
         print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:
             print s.cost, "\t", s.action,"\t\t", s.state
-        print "\nTherefor, ",start," = ", goal,"."
+        print "\nTherefore, ",start," = ", goal,"."
 #            
     def testSearch2(self):
         
@@ -80,7 +79,7 @@ class Test(unittest.TestCase):
         print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:
             print s.cost, "\t", s.action,"\t\t", s.state
-        print "\nTherefor, ",start," = ", goal,"."
+        print "\nTherefore, ",start," = ", goal,"."
         
     def testSearch3(self):
         print "\n\n********3**********"
@@ -95,7 +94,7 @@ class Test(unittest.TestCase):
         print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:
             print s.cost, "\t", s.action,"\t\t", s.state
-        print "\nTherefor, ",start," = ", goal,"."
+        print "\nTherefore, ",start," = ", goal,"."
         
     def testSearch4(self):
         # this one needs truth constants to work. 
@@ -112,7 +111,7 @@ class Test(unittest.TestCase):
         print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:
             print s.cost, "\t", s.action,"\t\t", s.state
-        print "\nTherefor, ",start," = ", goal,"."
+        print "\nTherefore, ",start," = ", goal,"."
     
     def testSearch5(self):
         print "\n\n******************"
@@ -127,13 +126,13 @@ class Test(unittest.TestCase):
         print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:
             print s.cost, "\t", s.action,"\t\t", s.state
-        print "\nTherefor, ",start," = ", goal,"."
+        print "\nTherefore, ",start," = ", goal,"."
         
         
-    def testSearchHW1a(self):
+    def testSearchHW1(self):
         
         
-        print "\n\nHW1a***************"
+        print "\n\n******Hard Problem******"
         #(p -> q) & (q -> p) start 
         #(~p v q) & (~q v p) implication
         #((~p v q) & ~q)&((~p v q) & p) distribution
@@ -142,35 +141,15 @@ class Test(unittest.TestCase):
         start = logicParse('(p -> q) & (q -> p)')
         start.action = "Beginning Premise"
         start.cost = 0
-        goal = logicParse('((~p & ~q) v (q & ~q)) v ((p & ~p) v (q&p))',start.propMap)
+        goal = logicParse('(~p & ~q) v (q & p)')
         
         steps = search(start,goal,rules)
         print "\nDemonstrate that", start, "is logically equivalent to", goal
         print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:
             print s.cost, "\t", s.action,"\t\t", s.state
-        print "\nTherefor, ",start," = ", goal,"."
+        print "\nTherefore, ",start," = ", goal,"."
         
-    def testSearchHW1b(self):
-        
-        
-        print "\n\nHW1b***************"
-        #(p -> q) & (q -> p) start 
-        #(~p v q) & (~q v p) implication
-        #((~p v q) & ~q)&((~p v q) & p) distribution
-        # ((~p & ~q) v (q & ~q)) v ((p & ~p) v (q&p)) distribution
-        # (~p & ~q) v (q&p) ???
-        start = logicParse('((~p & ~q) v (q & ~q)) v ((p & ~p) v (q&p))')
-        start.action = "Beginning Premise"
-        start.cost = 0
-        goal = logicParse('(~p & ~q) v (q&p)',start.propMap)
-        
-        steps = search(start,goal,rules)
-        print "\nDemonstrate that", start, "is logically equivalent to", goal
-        print"\nCost:\tRule:\t\t\t\tStatement:"
-        for s in steps:
-            print s.cost, "\t", s.action,"\t\t", s.state
-        print "\nTherefor, ",start," = ", goal,"."
         
     def testSearch3H(self):
         print "\n\n******************"
@@ -185,7 +164,7 @@ class Test(unittest.TestCase):
         print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:
             print s.cost, "\t", s.action,"\t\t", s.state
-        print "\nTherefor, ",start," = ", goal,"."
+        print "\nTherefore, ",start," = ", goal,"."
 #    def testNotEquivalentSearch(self):
 #        # this one will get stuck forever until we figure out how to know when to quit
 #        
@@ -200,7 +179,7 @@ class Test(unittest.TestCase):
 #        print"\nCost:\tRule:\t\t\t\tStatement:"
 #        for s in steps:
 #            print s.cost, "\t", s.action,"\t\t", s.state
-#        print "\nTherefor, ",start," = ", goal,"."
+#        print "\nTherefore, ",start," = ", goal,"."
     
 
 

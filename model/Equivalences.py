@@ -254,29 +254,16 @@ class DoubleNegation(object):
 class DeMorgans(object):
     ''' 
     ~(p & q) = ~p v ~q
+    
+    dangerous parameter allows de-morgans to apply to statements like "p v ~q" to produce "~(~p & q) 
+    which can create a long chain of double negatives. 
     '''
-    def __init__(self, cost = 1):
+    def __init__(self, cost = 1, dangerous = False):
         self.name = "De Morgan's Laws"
         self.cost = cost
+        self.dangerous = dangerous
     
     def getSuccessors(self, statement, i):
-        if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
-            thisType = statement.type(i)
-            if thisType == "conjunction": otherType = "disjunction"
-            else: otherType = "conjunction"
-            
-            np = statement.negatedChildTree(i*2+1)
-            nq = statement.negatedChildTree(i*2+2)
-            
-            ns = Statement(dict(),statement.propMap)
-            ns.insertProp(0, "negation")
-            ns.insertProp(1, otherType)
-            ns.graftInPlace(3,np)
-            ns.graftInPlace(4,nq)
-            successor = statement.graft(i,ns)
-            successor.action = self.name
-            successor.cost = self.cost + distance(str(statement), str(successor))
-            return successor
         if statement.type(i) == "negation":
             if statement.type(i*2+1) == "conjunction" or statement.type(i*2+1) == "disjunction":
                 thisType = statement.type(i*2+1)
@@ -294,6 +281,40 @@ class DeMorgans(object):
                 successor.action = self.name
                 successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
+        elif statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
+            thisType = statement.type(i)
+            if thisType == "conjunction": otherType = "disjunction"
+            else: otherType = "conjunction"
+            
+            if self.dangerous:
+                np = statement.negatedChildTree(i*2+1)
+                nq = statement.negatedChildTree(i*2+2)
+                
+                ns = Statement(dict(),statement.propMap)
+                ns.insertProp(0, "negation")
+                ns.insertProp(1, otherType)
+                ns.graftInPlace(3,np)
+                ns.graftInPlace(4,nq)
+                successor = statement.graft(i,ns)
+                successor.action = self.name
+                successor.cost = self.cost + distance(str(statement), str(successor))
+                return successor
+            
+            else:
+                if statement.type(i*2+1) == "negation" and statement.type(i*2+2) == "negation":
+                    p = statement.childTree(i*4+3)
+                    q = statement.childTree(i*4+5)
+                    ns = Statement(dict(),statement.propMap)
+                    ns.insertProp(0, "negation")
+                    ns.insertProp(1, otherType)
+                    ns.graftInPlace(3,p)
+                    ns.graftInPlace(4,q)
+                    successor = statement.graft(i,ns)
+                    successor.action = self.name
+                    successor.cost = self.cost + distance(str(statement), str(successor))
+                    return successor
+                    
+        
         
 class ImplicationLaw(object):
     ''' 
