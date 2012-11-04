@@ -1,5 +1,5 @@
 import heapq
-from Queue import Queue, LifoQueue
+from Queue import Queue
 from Derivation import Derivation
 from Levenshtein import distance
 
@@ -62,11 +62,13 @@ def search(start,goal,rules,verbose = False):
             elif frontier.getCheapestCost(child) > child.cost:
                 shortcuts += 1
                 frontier.push(child, child.cost + h)
+    print "NOT LOGICALLY EQUIVALENT"
+    return False
+                
+                
                 
 def bfsearch(start,goal,rules,verbose = False):
-    l = len(str(start))+len(str(goal))
     nodesExpanded = 0
-    shortcuts = 0
     node = Node(start, None)
     node.cost = 1
     frontier = FIFOQueue()
@@ -84,11 +86,6 @@ def bfsearch(start,goal,rules,verbose = False):
             if child.state not in explored:
                 if child not in frontier:
                     frontier.push(child)
-                    
-
-        
-                    
-
 
 class FIFOQueue():
     def __init__(self):

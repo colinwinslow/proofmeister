@@ -11,8 +11,6 @@ class Statement(object):
     represents a parse tree as a dictionary
     '''
 
-
-    
     
     def __init__(self, inDict, propMap):
         self.d = inDict
@@ -30,7 +28,7 @@ class Statement(object):
             isucs = self.getSuccessors(i, rules)
             if len(isucs)>0: allSucs = allSucs + isucs
         if len(allSucs)>0: return allSucs
-        else: return "poop"
+        else: return "nothing here..."
             
     
     def getSuccessors(self,i,rules):
@@ -41,19 +39,19 @@ class Statement(object):
             elif sucs != None: successors.append(sucs)
         return successors
         
-    def getParent(self, i):
-        if i == 0: return None
-        return self.d.get((i - 1) / 2)
-    
-    def getLeft(self, i):
-        return self.d.get(i * 2 + 1)
+#    def getParent(self, i):
+#        if i == 0: return None
+#        return self.d.get((i - 1) / 2)
+#    
+#    def getLeft(self, i):
+#        return self.d.get(i * 2 + 1)
     
     def type(self, i):
-        '''doing this because python's actual type is confusing my brain right now'''
+        '''doing this because python's actual type, and old vs new styles, is confusing my brain right now'''
         return self.d.get(i).type()
     
-    def getRight(self, i):
-        return self.d.get(i * 2 + 2)
+#    def getRight(self, i):
+#        return self.d.get(i * 2 + 2)
     
     def insertProp(self, i, typeString):
         '''inserts a proposition at a given index. used by the equivalences to construct successors'''
@@ -87,7 +85,7 @@ class Statement(object):
             return self.propMap.unconvert(str(self.d.get(i)))
         
     def reIndex(self, i, newIndex):
-        '''reindexes a node and all it's descendents'''
+        '''reindexes a node and all its descendents'''
         if newIndex < i: print "I wasn't designed to reindex downward!"
         temp = dict()
         self.d.get(i).reIndex(i, newIndex, self.d, temp)
@@ -132,22 +130,22 @@ class Statement(object):
     def __hash__(self):
         return self.d.get(0).hash(0, self.d)
     
-    def simHash(self):
-        simdict = {}
-        for p in self.d.items():
-            if p[1].type() == "proposition":
-                try: simdict[str(p[1])].append(p[0])
-                except KeyError:
-                    simdict[str(p[1])]=[]
-                    simdict[str(p[1])].append(p[0])   
-            else: 
-                thisType = p[1].type()
-                try: simdict[thisType].append(p[0])
-                except KeyError:
-                    simdict[thisType]=[thisType]
-                    simdict[thisType].append(p[0])   
-        vals = frozenset([frozenset(v) for v in simdict.values()])
-        return hash(vals)
+#    def simHash(self):
+#        simdict = {}
+#        for p in self.d.items():
+#            if p[1].type() == "proposition":
+#                try: simdict[str(p[1])].append(p[0])
+#                except KeyError:
+#                    simdict[str(p[1])]=[]
+#                    simdict[str(p[1])].append(p[0])   
+#            else: 
+#                thisType = p[1].type()
+#                try: simdict[thisType].append(p[0])
+#                except KeyError:
+#                    simdict[thisType]=[thisType]
+#                    simdict[thisType].append(p[0])   
+#        vals = frozenset([frozenset(v) for v in simdict.values()])
+#        return hash(vals)
     
 # This is probably not needed
 #    def getMapping(self):

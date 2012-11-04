@@ -152,7 +152,7 @@ class Test(unittest.TestCase):
         
         
     def testSearch3H(self):
-        print "\n\n******************"
+        print "\n\n******Prove 3H******"
         
         start = logicParse('~(p -> q)')
         start.action = "Beginning Premise"
@@ -165,21 +165,19 @@ class Test(unittest.TestCase):
         for s in steps:
             print s.cost, "\t", s.action,"\t\t", s.state
         print "\nTherefore, ",start," = ", goal,"."
-#    def testNotEquivalentSearch(self):
-#        # this one will get stuck forever until we figure out how to know when to quit
-#        
-#        rules = [DoubleNegation(1),DeMorgans(1),ImplicationLaw(1)]
-#        
-#        start = logicParse('p -> q')
-#        start.action = "Beginning Premise"
-#        start.cost = 0
-#        goal = logicParse('q -> p')
-#        
-#        steps = search(start,goal,rules,True)
-#        print"\nCost:\tRule:\t\t\t\tStatement:"
-#        for s in steps:
-#            print s.cost, "\t", s.action,"\t\t", s.state
-#        print "\nTherefore, ",start," = ", goal,"."
+    def testNotEquivalentSearch(self):
+        # this one will get stuck forever until we figure out how to know when to quit
+        print "impossible"
+        
+        
+        start = logicParse('p -> q')
+        start.action = "Beginning Premise"
+        start.cost = 0
+        goal = logicParse('q -> p',start.propMap)
+        
+        steps = search(start,goal,rules,True)
+        print"\nCost:\tRule:\t\t\t\tStatement:"
+        assert steps == False
     
 
 

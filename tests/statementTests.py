@@ -17,6 +17,8 @@ class Test(unittest.TestCase):
         assert com.getSuccessors(s, 2) == logicParse('p v (r v q)',s.propMap)
         suc = com.getSuccessors(s, 0)
         assert suc == logicParse('(q v r) v p', s.propMap)
+        
+
     
     def testNegLaw(self):
 
