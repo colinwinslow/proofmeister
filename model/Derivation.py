@@ -25,11 +25,11 @@ class Derivation():
     
     def reMap(self,newPropMap):
         '''returns a copy with re-mapped props'''
-        copy = copy(self)
-        copy.startStatement.propMap = newPropMap
-        copy.goalStatement.propMap = newPropMap
-        for s in copy.steps:
+        dupe = copy(self)
+        dupe.startStatement.propMap = newPropMap
+        dupe.goalStatement.propMap = newPropMap
+        for s in dupe.steps:
             s.state.propMap = newPropMap
-        return copy
+        return dupe
         
     

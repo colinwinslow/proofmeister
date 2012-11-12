@@ -12,13 +12,13 @@ class Test(unittest.TestCase):
 
     def testS3(self):
         s3 = boto.connect_s3()
-#        bucket = s3.create_bucket('testbucket.colinwinslow.com')
-#        key = bucket.new_key('examples/BrainBodyWeight.csv')
-#        key.set_contents_from_filename('/Users/colinwinslow/Desktop/BrainBodyWeight.csv')
-#        key.set_acl('public-read')
+        bucket = s3.create_bucket('testbucket.colinwinslow.com')
+        key = bucket.new_key('examples/Lab8_Student.r')
+        key.set_contents_from_filename('/Users/colinwinslow/Desktop/Lab8_Student.r')
+        key.set_acl('public-read')
 
-        retrievedkey = s3.get_bucket('testbucket.colinwinslow.com').get_key('examples/BrainBodyWeight.csv')
-        retrievedkey.get_contents_to_filename('/myfile.csv')
+        retrievedkey = s3.get_bucket('testbucket.colinwinslow.com').get_key('examples/Lab8_Student.r')
+        retrievedkey.get_contents_to_filename('/lab8.r')
         print "done"
 
 
