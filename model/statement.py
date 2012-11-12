@@ -131,6 +131,11 @@ class Statement(object):
         return self.d.get(0).hash(0, self.d)
     
     def cohash(self):
+        '''
+        the cohashes of two statements will be equal iff the two statements are exactly the same except for the ordering of commutative operations.
+        for example, cohash(p & q) == cohash(q & p). The same would not be true for regular hash(). We use this to keep the commutative law from
+        bogging down the search until the very end when we're very near the goal.
+        '''
         return self.d.get(0).cohash(0, self.d)
     
 #    def simHash(self):

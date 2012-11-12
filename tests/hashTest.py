@@ -17,8 +17,7 @@ class Test(unittest.TestCase):
         s1 =  logicParse('p v (q&r)')
         s2 = logicParse('(r&q) v p', s1.propMap)
         
-        print s1.cohash()
-        print s2.cohash()
+        assert s1.cohash()== s2.cohash()
         
 
 

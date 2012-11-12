@@ -14,9 +14,12 @@ class Test(unittest.TestCase):
     def testCommute(self):
         com = Commutativity()
         s = logicParse('p v (q v r)')
-        assert com.getSuccessors(s, 2) == logicParse('p v (r v q)',s.propMap)
-        suc = com.getSuccessors(s, 0)
-        assert suc == logicParse('(q v r) v p', s.propMap)
+        goal = logicParse('p v (r v q)',s.propMap)
+        assert com.getSuccessors(s, 2, goal.cohash()) == goal
+        goal2 = logicParse('(q v r) v p', s.propMap)
+        suc = com.getSuccessors(s, 0,goal2.cohash())
+        
+        assert suc == goal2
         
 
     

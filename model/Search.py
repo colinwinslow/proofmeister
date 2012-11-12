@@ -22,7 +22,8 @@ class Node():
         else: self.cost = parent.cost + self.state.cost
         
     def successors(self,rules,goal):
-        successorNodes = [Node(i,self) for i in self.state.getAllSuccessors(rules,goal)]
+        goalCoHash = goal.cohash()
+        successorNodes = [Node(i,self) for i in self.state.getAllSuccessors(rules,goalCoHash)]
         return successorNodes
     
     def traceback(self):
