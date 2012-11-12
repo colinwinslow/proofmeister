@@ -21,20 +21,20 @@ class Statement(object):
     def __getitem__(self, key):
         return self.childTree(key)
     
-    def getAllSuccessors(self,rules):
+    def getAllSuccessors(self,rules,goal):
         allSucs = []
         keys = self.d.keys()
         for i in keys:
-            isucs = self.getSuccessors(i, rules)
+            isucs = self.getSuccessors(i, rules,goal)
             if len(isucs)>0: allSucs = allSucs + isucs
         if len(allSucs)>0: return allSucs
         else: return "nothing here..."
             
     
-    def getSuccessors(self,i,rules):
+    def getSuccessors(self,i,rules,goal):
         successors = []
         for r in rules:
-            sucs = r.getSuccessors(self,i)
+            sucs = r.getSuccessors(self,i,goal)
             if type(sucs) == list: successors = successors + sucs
             elif sucs != None: successors.append(sucs)
         return successors
@@ -129,6 +129,9 @@ class Statement(object):
     
     def __hash__(self):
         return self.d.get(0).hash(0, self.d)
+    
+    def cohash(self):
+        return self.d.get(0).cohash(0, self.d)
     
 #    def simHash(self):
 #        simdict = {}

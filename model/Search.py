@@ -21,8 +21,8 @@ class Node():
         if self.parent == None: self.cost = 1
         else: self.cost = parent.cost + self.state.cost
         
-    def successors(self,rules):
-        successorNodes = [Node(i,self) for i in self.state.getAllSuccessors(rules)]
+    def successors(self,rules,goal):
+        successorNodes = [Node(i,self) for i in self.state.getAllSuccessors(rules,goal)]
         return successorNodes
     
     def traceback(self):
@@ -53,7 +53,7 @@ def search(start,goal,rules,verbose = False):
             print "expanded: ", nodesExpanded, " shortcuts: ", shortcuts
             return Derivation(start,goal,node.traceback(),rules)
         explored.add(node.state)
-        for child in node.successors(rules):
+        for child in node.successors(rules,goal):
             h = distance(str(child.state), goalStr)
             if child.state not in explored and frontier.getCheapestCost(child) == -1:
                 frontier.push(child, child.cost + h)

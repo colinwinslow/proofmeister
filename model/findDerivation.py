@@ -8,6 +8,7 @@ def findDerivation(startStr,goalStr,rules):
     
     #parse start and goal
     startParse = logicParse(startStr)
+    startParse.action = "Beginning Premise"
     goalParse = logicParse(goalStr,startParse.propMap)
     
     #calculate hash

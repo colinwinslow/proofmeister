@@ -29,6 +29,9 @@ class Proposition():
     def hash(self, i, d, simHashStatement = None):
         if simHashStatement == None:
             return hash(self.symbol)
+        
+    def cohash(self, i, d):
+        return self.symbol
     
     def type(self):
         return "proposition"
@@ -75,6 +78,8 @@ class Negation(UnaryOperation):
         return "~"
     def hash(self, i, d):
         return hash((d.get(i * 2 + 1).hash(i * 2 + 1, d), "negation"))
+    def cohash(self, i, d):
+        return hash((d.get(i * 2 + 1).cohash(i * 2 + 1, d), "negation"))
     def type(self):
         return "negation"
     
@@ -110,11 +115,11 @@ class Conjunction(BinaryOperation):
         return "&"
     def type(self):
         return "conjunction"
-#    def hash(self, i, d):
-#        leftHash = d.get(i * 2 + 1).hash(i * 2 + 1, d)
-#        rightHash = d.get(i * 2 + 2).hash(i * 2 + 2, d)
-#        childrenHash = (frozenset([leftHash, rightHash]), "conjunction")
-#        return hash(childrenHash)
+    def cohash(self, i, d):
+        leftHash = d.get(i * 2 + 1).cohash(i * 2 + 1, d)
+        rightHash = d.get(i * 2 + 2).cohash(i * 2 + 2, d)
+        childrenHash = (frozenset([leftHash, rightHash]), "conjunction")
+        return hash(childrenHash)
         
 class Disjunction(BinaryOperation):
     def __init__(self):
@@ -123,8 +128,11 @@ class Disjunction(BinaryOperation):
         return "v"
     def type(self):
         return "disjunction"
-#    def hash(self, i, d):
-#        return hash((frozenset([d.get(i * 2 + 1).hash(i * 2 + 1, d), d.get(i * 2 + 2).hash(i * 2 + 2, d)]), "disjunction"))
+    def cohash(self, i, d):
+        leftHash = d.get(i * 2 + 1).cohash(i * 2 + 1, d)
+        rightHash = d.get(i * 2 + 2).cohash(i * 2 + 2, d)
+        childrenHash = (frozenset([leftHash, rightHash]), "disjunction")
+        return hash(childrenHash)
     
 class Implication(BinaryOperation):
     def __init__(self):
@@ -133,21 +141,21 @@ class Implication(BinaryOperation):
         return ">"
     def type(self):
         return "implication"
-#    def hash(self, i, d):
-#        return hash(((d.get(i * 2 + 1).hash(i * 2 + 1, d), d.get(i * 2 + 2).hash(i * 2 + 2, d)), self.type()))
+    def cohash(self, i, d):
+        return hash(((d.get(i * 2 + 1).cohash(i * 2 + 1, d), d.get(i * 2 + 2).cohash(i * 2 + 2, d)), self.type()))
     
 class BiImplication(BinaryOperation):
     def __init__(self):
         self.commutative = True
     def type(self):
         return "biimplication"
-    def hash(self, i, d):
-        return hash((frozenset([d.get(i * 2 + 1).hash(i * 2 + 1, d), d.get(i * 2 + 2).hash(i * 2 + 2, d)]), "biimplication"))
+    def cohash(self, i, d):
+        return hash((frozenset([d.get(i * 2 + 1).cohash(i * 2 + 1, d), d.get(i * 2 + 2).cohash(i * 2 + 2, d)]), "biimplication"))
     
 class ExclusiveOr(BinaryOperation):
     def __init__(self):
         self.commutative = True
     def type(self):
         return "xor"
-    def hash(self, i, d):
-        return hash((frozenset([d.get(i * 2 + 1).hash(i * 2 + 1, d), d.get(i * 2 + 2).hash(i * 2 + 2, d)]), "xor"))
+    def cohash(self, i, d):
+        return hash((frozenset([d.get(i * 2 + 1).cohash(i * 2 + 1, d), d.get(i * 2 + 2).cohash(i * 2 + 2, d)]), "xor"))

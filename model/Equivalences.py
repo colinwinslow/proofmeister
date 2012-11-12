@@ -14,15 +14,17 @@ class Commutativity(object):
         self.name = "Commutative Laws"
         self.cost = cost
         
-    def getSuccessors(self, statement, i):
-        if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
-            left = statement[i*2+1]
-            right = statement[i*2+2]
-            successor = statement.graft(i*2+1,right)
-            successor.graftInPlace(i*2+2,left)
-            successor.action = self.name
-            successor.cost = self.cost + distance(str(statement), str(successor))
-            return successor
+    def getSuccessors(self, statement, i, goal):
+        #maybe make commutativity discount its cost when it's close to the goal, using the older equivalence hashing method that ignores order for commuativ operators
+        if statement.cohash()==goal.cohash():
+            if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
+                left = statement[i*2+1]
+                right = statement[i*2+2]
+                successor = statement.graft(i*2+1,right)
+                successor.graftInPlace(i*2+2,left)
+                successor.action = self.name
+                successor.cost = self.cost + 1*distance(str(statement), str(successor))
+                return successor
             
             
 class Idempotence(object):
@@ -34,7 +36,7 @@ class Idempotence(object):
         self.name = "Idempotent Laws"
         self.cost = cost
         
-    def getSuccessors(self, statement, i):
+    def getSuccessors(self, statement, i, goal):
         if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
             left = statement[i * 2 + 1]
             if left == statement[i * 2 + 2]:
@@ -52,7 +54,7 @@ class Associativity(object):
         self.name = "Associative Laws"
         self.cost = cost
         
-    def getSuccessors(self, statement, i):
+    def getSuccessors(self, statement, i, goal):
         if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
             thisType = statement.type(i)
             successors = []
@@ -99,7 +101,7 @@ class Exportation(object):
         self.name = "Exportation Law"
         self.cost = cost
         
-    def getSuccessors(self, statement, i):
+    def getSuccessors(self, statement, i, goal):
         if statement.type(i) == "implication":
             thisType = statement.type(i)
             successors = []
@@ -146,7 +148,7 @@ class Distributivity(object):
         self.name = "Distributive Laws"
         self.cost = cost
     
-    def getSuccessors(self, statement, i):
+    def getSuccessors(self, statement, i, goal):
         if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
             thisType = statement.type(i)
             if thisType == "conjunction": otherType = "disjunction"
@@ -205,7 +207,7 @@ class Absorption(object):
         self.name = "Absorption Laws"
         self.cost = cost
     
-    def getSuccessors(self, statement, i):
+    def getSuccessors(self, statement, i, goal):
         if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
             thisType = statement.type(i)
             if thisType == "conjunction": otherType = "disjunction"
@@ -244,7 +246,7 @@ class DoubleNegation(object):
         self.name = "Double Negation"
         self.cost = cost
     
-    def getSuccessors(self, statement, i):
+    def getSuccessors(self, statement, i, goal):
         if statement.type(i) == "negation" and statement.type(i*2+1) == "negation":
             successor = statement.graft(i,statement.childTree(i*4+3))
             successor.action = self.name
@@ -263,7 +265,7 @@ class DeMorgans(object):
         self.cost = cost
         self.dangerous = dangerous
     
-    def getSuccessors(self, statement, i):
+    def getSuccessors(self, statement, i, goal):
         if statement.type(i) == "negation":
             if statement.type(i*2+1) == "conjunction" or statement.type(i*2+1) == "disjunction":
                 thisType = statement.type(i*2+1)
@@ -325,7 +327,7 @@ class ImplicationLaw(object):
         self.cost = cost
         self.multiplier = multiplier #increses cost when moving away from DNF
     
-    def getSuccessors(self, statement, i):
+    def getSuccessors(self, statement, i, goal):
         if statement.type(i) == "implication":
             np = statement.negatedChildTree(i*2+1)
             q = statement.childTree(i*2+2)
@@ -373,7 +375,7 @@ class Domination():
         self.name = "Domination Laws"
         self.cost = cost
         
-    def getSuccessors(self, statement, i):
+    def getSuccessors(self, statement, i, goal):
         if statement.type(i) == "conjunction":
             if statement.type(i*2+1)=="false_constant":
                 successor = statement.childTree(0)
@@ -410,7 +412,7 @@ class Identity():
         self.name = "Identity Laws   "
         self.cost = cost      
     
-    def getSuccessors(self,statement,i):
+    def getSuccessors(self,statement,i, goal):
         if statement.type(i) == "conjunction":
             if statement.type(i*2+1)=="true_constant":
                 successor = statement.graft(i,statement.childTree(i*2+2))
@@ -439,7 +441,7 @@ class Negation():
         self.name = "Negation Laws   "
         self.cost = cost      
     
-    def getSuccessors(self,statement,i):
+    def getSuccessors(self,statement,i, goal):
         if statement.type(i) == "conjunction":
             if statement.childTree(i*2+1)==statement.negatedChildTree(i*2+2):
                 successor = statement.childTree(0)
