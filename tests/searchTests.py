@@ -151,6 +151,7 @@ class Test(unittest.TestCase):
         print "\nTherefore, ",start," = ", goal,"."
         
     def testSearchHW1noCache(self):
+        import cProfile
         
         
         print "\n\n******Hard Problem, no cache******"
@@ -161,7 +162,7 @@ class Test(unittest.TestCase):
         # (~p & ~q) v (q&p) ???
         start = logicParse('(p -> q) & (q -> p)')
         goal = logicParse('(p & q)v(~p & ~q)',start.propMap)
-        
+        cProfile.run('searchTests.search(start,goal,rules)')
         steps = search(start,goal,rules)
         print "\nDemonstrate that", start, "is logically equivalent to", goal
         print"\nCost:\tEst%Complete\tRule:\t\t\t\tStatement:"

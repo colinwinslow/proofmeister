@@ -51,6 +51,7 @@ def search(start,goal,rules,verbose = False):
         node = frontier.pop()
         nodesExpanded += 1
         if node.state == goal:
+#            print "expanded: ", nodesExpanded, " shortcuts: ", shortcuts
             print "expanded: ", nodesExpanded, " shortcuts: ", shortcuts
             return Derivation(start,goal,node.traceback(),rules)
         explored.add(node.state)

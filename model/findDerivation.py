@@ -4,33 +4,35 @@ from dbtesting import *
 from model.Search import search
 
 
-def findDerivation(startStr,goalStr,rules):
+def findDerivation(startStr,goalStr,rules,cache=True):
     
     #parse start and goal
     startParse = logicParse(startStr)
     startParse.action = "Beginning Premise"
     goalParse = logicParse(goalStr,startParse.propMap)
-    
-    #calculate hash
-    thisSearchHash = hash((startParse,goalParse))
-    
-    #check db to see if we have done this proof before
-    queryResult = fetch(thisSearchHash)
-    
-    
-    
-    #if so, pull the derivation from the database
-    if queryResult:
-        print "It was cached"
-        cachedProof = pickle.loads(queryResult[0][2])
-        return cachedProof.reMap(startParse.propMap)
-    
-    
-    #otherwise, run the search. 
-    else:
-        print "Running the search"
-        queryResult = search(startParse,goalParse,rules)
-    
-    #and add it to the db
-        addItem(thisSearchHash,queryResult)
-        return queryResult
+    if cache:
+        #calculate hash
+        thisSearchHash = hash((startParse,goalParse))
+        
+        #check db to see if we have done this proof before
+        queryResult = fetch(thisSearchHash)
+        
+        
+        
+        #if so, pull the derivation from the database
+        if queryResult:
+            print "It was cached"
+            cachedProof = pickle.loads(queryResult[0][2])
+            return cachedProof.reMap(startParse.propMap)
+        
+        
+        #otherwise, run the search. 
+        else:
+            print "Running the search"
+            queryResult = search(startParse,goalParse,rules)
+        
+        #and add it to the db
+            addItem(thisSearchHash,queryResult)
+            return queryResult
+    else: 
+        return search(startParse,goalParse,rules)
