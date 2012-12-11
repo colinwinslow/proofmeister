@@ -1,14 +1,13 @@
 import heapq
-from Queue import Queue
-from Derivation import Derivation
 from Levenshtein import distance
+from InputReader import logicParse
 
 
 # read up for possible heuristics. 
 # http://grfia.dlsi.ua.es/ml/algorithms/references/editsurvey_bille.pdf
 # https://github.com/timtadh/PyGram#readme
 # https://github.com/timtadh/zhang-shasha
-
+from model.classes import Derivation
 
 
 class Node():
@@ -39,7 +38,7 @@ class Node():
 
 def search(start,goal,rules,verbose = False):
     goalStr = str(goal)
-    l = len(str(start))+len(str(goal))
+#    l = len(str(start))+len(str(goal))
     nodesExpanded = 0
     shortcuts = 0
     node = Node(start, None)
@@ -69,46 +68,14 @@ def search(start,goal,rules,verbose = False):
                 
                 
                 
-def bfsearch(start,goal,rules,verbose = False):
-    nodesExpanded = 0
-    node = Node(start, None)
-    node.cost = 1
-    frontier = FIFOQueue()
-    frontier.push(node)
-    explored = set()
-    while not frontier.isEmpty():
-        node = frontier.pop()
-        if verbose: print node.state
-        nodesExpanded += 1
-        if node.state == goal:
-            print "expanded: ", nodesExpanded
-            return node.traceback()   
-        explored.add(node.state)
-        for child in node.successors(rules):
-            if child.state not in explored:
-                if child not in frontier:
-                    frontier.push(child)
 
-class FIFOQueue():
-    def __init__(self):
-        self.q = Queue()
-        self.dir = set()
-        
-    def push(self,item):
-        self.dir.add(item.state)
-        self.q.put(item)
-        
-    def pop(self):
-        
-        item = self.q.get()
-        self.dir.remove(item.state)
-        return item
+def findDerivation(startStr,goalStr,rules,cache=True):
     
-    def __contains__(self,item):
-        return item.state in self.dir
-    
-    def isEmpty(self):
-        return self.q.empty()
+    #parse start and goal
+    startParse = logicParse(startStr)
+    startParse.action = "Beginning Premise"
+    goalParse = logicParse(goalStr,startParse.propMap)
+    return search(startParse,goalParse,rules)
         
         
 class PriorityQueue():

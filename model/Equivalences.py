@@ -3,7 +3,7 @@ Created on Oct 21, 2012
 
 @author: colinwinslow
 '''
-from statement import Statement
+from model.statement import Statement
 from Levenshtein import distance
 
 class Commutativity(object):
@@ -16,15 +16,16 @@ class Commutativity(object):
         
     def getSuccessors(self, statement, i, goalCoHash = None):
         #maybe make commutativity discount its cost when it's close to the goalCoHash, using the older equivalence hashing method that ignores order for commuativ operators
-        if statement.cohash()==goalCoHash:
-            if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
-                left = statement[i*2+1]
-                right = statement[i*2+2]
-                successor = statement.graft(i*2+1,right)
-                successor.graftInPlace(i*2+2,left)
-                successor.action = self.name
-                successor.cost = self.cost + 1*distance(str(statement), str(successor))
-                return successor
+        
+        if statement.type(i) == "conjunction" or statement.type(i) == "disjunction":
+            left = statement[i*2+1]
+            right = statement[i*2+2]
+            successor = statement.graft(i*2+1,right)
+            successor.graftInPlace(i*2+2,left)
+            successor.action = self.name
+            if statement.cohash()==goalCoHash: successor.cost = self.cost + distance(str(statement), str(successor))
+            else: successor.cost = self.cost + 10*distance(str(statement), str(successor))
+            return successor
             
             
 class Idempotence(object):

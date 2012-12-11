@@ -5,7 +5,7 @@ Created on Oct 15, 2012
 @author: colinwinslow
 '''
 
-from Propositions import *
+from model.Propositions import *
 class Statement(object):
     '''
     represents a parse tree as a dictionary

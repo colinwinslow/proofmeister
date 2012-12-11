@@ -1,6 +1,6 @@
 from pyparsing import oneOf, operatorPrecedence, opAssoc
-from statement import Statement
-import Propositions
+from model import Propositions
+from model.statement import Statement
 
 
 notOps = "~ not !"

@@ -7,8 +7,7 @@ import unittest
 from model.InputReader import logicParse, propMap
 from model.Propositions import *
 from model.Equivalences import *
-from model.Search import Node, search,bfsearch
-from model.findDerivation import findDerivation
+from model.Search import Node, search, findDerivation
 from Levenshtein import distance
 
 
@@ -147,13 +146,10 @@ class Test(unittest.TestCase):
         print "\nDemonstrate that", start, "is logically equivalent to", goal
         print"\nCost:\tEst%Complete\tRule:\t\t\t\tStatement:"
         for s in steps:
-            print s.cost, "\t", round(float(s.cost)/(s.cost+distance(str(s.state),str(logicParse(goal)))),2), "\t\t", s.action,"\t\t", s.state
+            print s.cost, "\t", distance(str(s.state),str(goal)), "\t\t", s.action,"\t\t", s.state
         print "\nTherefore, ",start," = ", goal,"."
         
     def testSearchHW1noCache(self):
-        import cProfile
-        
-        
         print "\n\n******Hard Problem, no cache******"
         #(p -> q) & (q -> p) start 
         #(~p v q) & (~q v p) implication
@@ -162,12 +158,11 @@ class Test(unittest.TestCase):
         # (~p & ~q) v (q&p) ???
         start = logicParse('(p -> q) & (q -> p)')
         goal = logicParse('(p & q)v(~p & ~q)',start.propMap)
-        cProfile.run('searchTests.search(start,goal,rules)')
         steps = search(start,goal,rules)
         print "\nDemonstrate that", start, "is logically equivalent to", goal
         print"\nCost:\tEst%Complete\tRule:\t\t\t\tStatement:"
         for s in steps:
-            print s.cost, "\t", round(float(s.cost)/(s.cost+distance(str(s.state),str(goal))),2), "\t\t", s.action,"\t\t", s.state
+            print s.cost, "\t", distance(str(s.state),str(goal)), "\t\t", s.action,"\t\t", s.state
         print "\nTherefore, ",start," = ", goal,"."
         
         

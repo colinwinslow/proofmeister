@@ -4,10 +4,8 @@ Created on Nov 12, 2012
 @author: colinwinslow
 '''
 import cProfile
-from model.findDerivation import findDerivation
+from model.Search import findDerivation
 from model.Equivalences import *
-import pstats
-
 
 
 def main():

@@ -147,7 +147,7 @@ class Test(unittest.TestCase):
     def testDist(self):
         s = logicParse("p & (q or r)")
         t = logicParse("(q & r) v p")
-        u = logicParse('(~p v q) & (~q v p)')
+
         dist = Distributivity()
         ssucs = logicParse('(p & q) v (p & r)',s.propMap)
         tsucs = logicParse('(p v q) & (p v r)',t.propMap)
