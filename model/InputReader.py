@@ -1,6 +1,6 @@
 from pyparsing import oneOf, operatorPrecedence, opAssoc
 from model import Propositions
-from model.statement import Statement
+from model.classes import Statement, propMap
 
 
 notOps = "~ not !"
@@ -18,36 +18,7 @@ falseConstants = " F 0 FALSE False false "
 ## and then only parse with those. 
 
 
-class propMap():
-    '''
-    internally, we are going to convert all propositions to the first few letters of the alphabet
-    so that statements that are identical but have different prop names can be treated the same
-    by the system. These changes will need to persist up until the point where users see output.
-    '''
-    
-    def __init__(self):
-        self.originals = []
-        self.standins = ('a', 'b', 'c', 'd', 'e', 'g', 'h', 'i')
-        
-        
-    def convert(self, char):
-        if len(char)==1:
-            try:
-                i = self.originals.index(char)
-                return self.standins[i]
-            except ValueError:
-                self.originals.append(char)
-                i = len(self.originals)-1
-                try: return self.standins[i]
-                except IndexError: 
-                    print "Proofmeister supports a maximum of 8 atomic propositions."
-        else: return char
-        
-    def unconvert(self, char):
-        if len(char) == 1:
-            i = self.standins.index(char)
-            return self.originals[i]
-        else: return char
+
         
             
         

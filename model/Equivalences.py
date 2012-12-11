@@ -3,7 +3,7 @@ Created on Oct 21, 2012
 
 @author: colinwinslow
 '''
-from model.statement import Statement
+from model.classes import Statement
 from Levenshtein import distance
 
 class Commutativity(object):
