@@ -111,6 +111,18 @@ class Statement(object):
             return "~" + self.getSymbol(i * 2 + 1)
         elif isinstance(self.d.get(i), Proposition): 
             return self.propMap.unconvert(str(self.d.get(i)))
+    
+    def mml(self, i=0):
+        return "<math><mrow>"+self.getMML(i)+"</mrow></math><br>"
+    
+    def getMML(self, i):
+        '''used for toString'''
+        if isinstance(self.d.get(i), BinaryOperation): 
+            return "<mo>(</mo>" + self.getMML(i * 2 + 1) + " " + self.d.get(i).getMMLoperator() + " " + self.getMML(i * 2 + 2) + "<mo>)</mo>"
+        elif isinstance(self.d.get(i), UnaryOperation): 
+            return "<mo>&not;</mo>" + self.getMML(i * 2 + 1)
+        elif isinstance(self.d.get(i), Proposition): 
+            return "<mi>"+self.propMap.unconvert(str(self.d.get(i)))+"</mi>"
         
     def reIndex(self, i, newIndex):
         '''reindexes a node and all its descendents'''

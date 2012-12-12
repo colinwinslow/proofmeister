@@ -66,7 +66,7 @@ class Test(unittest.TestCase):
         print"\nCost:\tRule:\t\t\t\tStatement:"
         for s in steps:
             print s.cost, "\t", round(float(s.cost)/(s.cost+distance(str(s.state),str(goal))),2), "\t\t", s.action,"\t\t", s.state
-        print "\nTherefore, ",start," = ", goal,"."
+        print "\nTherefore, ",start," = ", goal ,"."
 #            
     def testSearch2(self):
         
@@ -162,7 +162,7 @@ class Test(unittest.TestCase):
         print "\nDemonstrate that", start, "is logically equivalent to", goal
         print"\nCost:\tEst%Complete\tRule:\t\t\t\tStatement:"
         for s in steps:
-            print s.cost, "\t", distance(str(s.state),str(goal)), "\t\t", s.action,"\t\t", s.state
+            print s.cost, "\t", distance(str(s.state),str(goal)), "\t\t", s.action,"\t\t", s.state.mml()
         print "\nTherefore, ",start," = ", goal,"."
         
         

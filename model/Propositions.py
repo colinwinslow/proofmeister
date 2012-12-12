@@ -26,6 +26,9 @@ class Proposition():
     def __str__(self):
         return self.symbol
     
+    def mml(self):
+        return "<mi>"+self.symbol+"</mi>"
+    
     def hash(self, i, d, simHashStatement = None):
         if simHashStatement == None:
             return hash(self.symbol)
@@ -54,7 +57,10 @@ class Constant(Proposition):
     def __str__(self):
         if self.symbol:return "TT"
         else: return "FF"
-#        return str(self.val)
+        
+    def mml(self):
+        if self.symbol:return "<mi>True</mi>"
+        else: return "<mi>False</mi>"
     
 class UnaryOperation(Proposition):
     def __init__(self):
@@ -76,6 +82,8 @@ class Negation(UnaryOperation):
         pass
     def getOperator(self):
         return "~"
+    def getMMLoperator(self):
+        return "<mo>&not;</mo>"
     def hash(self, i, d):
         return hash((d.get(i * 2 + 1).hash(i * 2 + 1, d), "negation"))
     def cohash(self, i, d):
@@ -113,6 +121,8 @@ class Conjunction(BinaryOperation):
         self.commutative = True
     def getOperator(self):
         return "&"
+    def getMMLoperator(self):
+        return "<mo>&Wedge;</mo>"
     def type(self):
         return "conjunction"
     def cohash(self, i, d):
@@ -126,6 +136,8 @@ class Disjunction(BinaryOperation):
         self.commutative = True
     def getOperator(self):
         return "v"
+    def getMMLoperator(self):
+        return "<mo>&Vee;</mo>"
     def type(self):
         return "disjunction"
     def cohash(self, i, d):
@@ -139,6 +151,8 @@ class Implication(BinaryOperation):
         self.commutative = False
     def getOperator(self):
         return ">"
+    def getMMLoperator(self):
+        return "<mo>&rarr;</mo>"
     def type(self):
         return "implication"
     def cohash(self, i, d):

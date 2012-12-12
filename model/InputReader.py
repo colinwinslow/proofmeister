@@ -16,15 +16,6 @@ falseConstants = " F 0 FALSE False false "
 ## parser seems to get slower quickly the more operations are in play
 ## might be smart to preprocess the string and see which ops are needed,
 ## and then only parse with those. 
-
-
-
-        
-            
-        
-
-    
-
         
 
 def logicParse(inStr,pm = None):

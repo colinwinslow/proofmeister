@@ -1,6 +1,7 @@
 import heapq
 from Levenshtein import distance
 from InputReader import logicParse
+from Equivalences import *
 
 
 # read up for possible heuristics. 
@@ -9,6 +10,7 @@ from InputReader import logicParse
 # https://github.com/timtadh/zhang-shasha
 from model.classes import Derivation
 
+defaultRules = [Negation(),Commutativity(),Identity(),Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
 
 class Node():
     def __init__(self, state, parent):
@@ -69,7 +71,7 @@ def search(start,goal,rules,verbose = False):
                 
                 
 
-def findDerivation(startStr,goalStr,rules,cache=True):
+def findDerivation(startStr,goalStr,rules=defaultRules,cache=True):
     
     #parse start and goal
     startParse = logicParse(startStr)
