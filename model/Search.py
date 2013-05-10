@@ -17,10 +17,9 @@ class Node():
         self.state = state
         self.parent = parent
         self.action = state.action
-
-
         if self.parent == None: self.cost = 1
         else: self.cost = parent.cost + self.state.cost
+
         
     def successors(self,rules,goal):
         goalCoHash = goal.cohash()
@@ -71,7 +70,7 @@ def search(start,goal,rules,verbose = False):
                 
                 
 
-def findDerivation(startStr,goalStr,rules=defaultRules,cache=True):
+def findDerivation(startStr,goalStr,rules=defaultRules):
     
     #parse start and goal
     startParse = logicParse(startStr)
