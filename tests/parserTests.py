@@ -6,7 +6,7 @@ Created on Mar 16, 2013
 from model.InputReader import logicParse
 
 
-a = logicParse("a")
+a = logicParse("((w v a ))v true")
 b = logicParse("a -")
 c = logicParse("a ->")
 d = logicParse("a -> b")

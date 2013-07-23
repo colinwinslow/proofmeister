@@ -11,7 +11,7 @@ from model.Search import Node, search, findDerivation
 from Levenshtein import distance
 
 
-rules = [Negation(),Commutativity(),Identity(),Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
+rules = [Negation(),Inversion(),Commutativity(),Identity(),Domination(),Idempotence(),Associativity(),Exportation(),Distributivity(),Absorption(),DoubleNegation(),DeMorgans(),ImplicationLaw()]
 
 
 class Test(unittest.TestCase):
@@ -26,7 +26,7 @@ class Test(unittest.TestCase):
 #        assert pm.convert('q') == 'b'
 #        assert pm.convert('p')
 #        
-#    
+#  
 #    def testNode(self):
 #        
 #        start = logicParse('~((p -> q))')
@@ -37,9 +37,16 @@ class Test(unittest.TestCase):
 #        n = Node(start,None)
 #        s = n.successors(rules,goal)
 #        assert s[0].state == logicParse('~(~p v q)')
-#        
-#        
-#        #should be solvable by implication law, demorgans, and double negation. 
+        
+        
+
+        
+        
+        
+        #should be solvable by implication law, demorgans, and double negation. 
+        
+        
+        #should be solvable by implication law, demorgans, and double negation. 
 #        
 #    def testCommute(self):
 #        start = logicParse(' (~((p & p) -> q))')
@@ -194,8 +201,8 @@ class Test(unittest.TestCase):
     
     def testBug(self):
         print "buggy test"
-        start = 'True'
-        goal = 'True'
+        start = 'p'
+        goal = 'np'
         
         steps = findDerivation(start,goal,rules)
         print "\nDemonstrate that", start, "is logically equivalent to", goal

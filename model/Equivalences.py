@@ -460,6 +460,30 @@ class Negation():
                 successor.cost = self.cost + distance(str(statement), str(successor))
                 return successor
             
+class Inversion():
+    '''
+    ~T = F
+    '''
+    def __init__(self, cost = 1):
+        self.name = "Inversion Law   "
+        self.cost = cost      
+    
+    def getSuccessors(self, statement, i, goalCoHash = None):
+        if statement.type(i) == "negation" and statement.type(i*2+1) == "true_constant":
+            successor = statement.childTree(0)
+            successor.prune(i)
+            successor.insertProp(i, "false_constant")
+            successor.action = self.name
+            successor.cost = self.cost + distance(str(statement), str(successor))
+            return successor
+        elif statement.type(i) == "negation" and statement.type(i*2+1) == "false_constant":
+            successor = statement.childTree(0)
+            successor.prune(i)
+            successor.insertProp(i, "true_constant")
+            successor.action = self.name
+            successor.cost = self.cost + distance(str(statement), str(successor))
+            return successor
+            
     
             
         
