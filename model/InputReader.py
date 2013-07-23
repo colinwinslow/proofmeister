@@ -3,10 +3,10 @@ from model import Propositions
 from model.classes import Statement, propMap
 
 
-notOps = "~ not !"
-orOps = "| v or"
-andOps = "and & &&"
-impOps = "implies -> => --> ==>"
+notOps = "~ not ! NOT"
+orOps = "| v or OR"
+andOps = "and & ^ AND"
+impOps = "implies -> => --> ==> IMPLIES"
 bimpOps = "<-> <--> <=> <==> iff"
 xorOps = "xor"
 trueConstants = " T 1 TRUE True true "

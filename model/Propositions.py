@@ -55,8 +55,8 @@ class Constant(Proposition):
         else: return "false_constant"
     
     def __str__(self):
-        if self.symbol:return "TT"
-        else: return "FF"
+        if self.symbol:return "True"
+        else: return "False"
         
     def mml(self):
         if self.symbol:return "<mi>True</mi>"

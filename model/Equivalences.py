@@ -243,7 +243,7 @@ class DoubleNegation(object):
     ''' 
     ~(~p) = p
     '''
-    def __init__(self, cost = 0.5):
+    def __init__(self, cost = 1):
         self.name = "Double Negation"
         self.cost = cost
     

@@ -1,6 +1,10 @@
 from copy import copy
 from model.Propositions import *
 
+class TimeOutException(Exception):
+    pass
+    
+
 class propMap():
     '''
     internally, we are going to convert all propositions to the first few letters of the alphabet
@@ -113,7 +117,7 @@ class Statement(object):
             return self.propMap.unconvert(str(self.d.get(i)))
     
     def mml(self, i=0):
-        return "<math><mrow>"+self.getMML(i)+"</mrow></math><br>"
+        return "<math>"+self.getMML(i)+"</math>"
     
     def getMML(self, i):
         '''used for toString'''

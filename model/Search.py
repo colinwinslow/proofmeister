@@ -2,6 +2,7 @@ import heapq
 from Levenshtein import distance
 from InputReader import logicParse
 from Equivalences import *
+from classes import TimeOutException
 
 
 # read up for possible heuristics. 
@@ -48,7 +49,11 @@ def search(start,goal,rules,verbose = False):
     frontier.push(node,node.cost)
     explored = set()
     while not frontier.isEmpty():
+        if nodesExpanded > 2000:
+            raise TimeOutException()
         node = frontier.pop()
+        if nodesExpanded%10==0:
+            print nodesExpanded
         nodesExpanded += 1
         if node.state == goal:
 #            print "expanded: ", nodesExpanded, " shortcuts: ", shortcuts
